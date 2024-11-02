@@ -16,7 +16,7 @@ builder.Services.AddDbContext<ExcemblyDbContext>(options =>
     )
 );
 
-// Inyección servicios "tal vez haga mas en un futuro"
+// Inyección servicios "tal vez haga mas en un futuro" SUJETO A CAMBIOS
 builder.Services.AddScoped<ServicioService, ServicioService>();
 builder.Services.AddScoped<PlanService, PlanService>();
 builder.Services.AddScoped<UsuarioService, UsuarioService>();

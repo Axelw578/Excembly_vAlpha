@@ -1,4 +1,6 @@
-﻿namespace Excembly_vAlpha.Models
+﻿using Excembly_vAlpha.Services;
+
+namespace Excembly_vAlpha.Models
 {
     public class Plan
     {
@@ -6,13 +8,11 @@
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
         public decimal Precio { get; set; }
-        public string Duracion { get; set; }
+        public string Imagen { get; set; }
 
-        // Relacinn con Servicio
-        public ICollection<Plan_Servicio> Servicios { get; set; }
-        public ICollection<Cita> Citas { get; set; }
-        public ICollection<HistorialUsoPlan> HistorialUsoPlanes { get; set; }
+        public ICollection<PlanServicio> PlanServicios { get; set; }
+        public ICollection<ServicioAdicional> ServiciosAdicionales { get; set; }
         public ICollection<DispositivoPlanFamiliar> DispositivosPlanFamiliar { get; set; }
-        public ICollection<CambioContratacion> CambiosContratacion { get; set; }
     }
+
 }

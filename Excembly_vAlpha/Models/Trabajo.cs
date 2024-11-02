@@ -5,14 +5,13 @@ namespace Excembly_vAlpha.Models
     public class Trabajo
     {
         public int TrabajoId { get; set; }
+        public int CitaId { get; set; }
         public int UsuarioId { get; set; }
         public int TecnicoId { get; set; }
-        public DateTime Fecha { get; set; } = DateTime.Now;
         public string Descripcion { get; set; }
-        public string Imagenes { get; set; }
-        public string Comentarios { get; set; }
+        public DateTime FechaTrabajo { get; set; } = DateTime.Now;
 
-        // Relaciones
+        public Cita Cita { get; set; }
         public Usuario Usuario { get; set; }
         public Tecnico Tecnico { get; set; }
     }

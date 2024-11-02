@@ -11,12 +11,12 @@ namespace Excembly_vAlpha.Models
         public int Edad { get; set; }
         public string Experiencia { get; set; }
         public string Foto { get; set; }
-        public string Disponibilidad { get; set; } = "disponible"; // Default
+        public bool Disponibilidad { get; set; } = true;
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
 
-        // Relación con otras entidades
-        public ICollection<Trabajo> Trabajos { get; set; }
         public ICollection<Cita> Citas { get; set; }
-        public ICollection<AsignacionTecnico> AsignacionTecnicos { get; set; }
+        public ICollection<AsignacionTecnico> AsignacionesTecnico { get; set; }
+        public ICollection<Trabajo> Trabajos { get; set; }
     }
+
 }

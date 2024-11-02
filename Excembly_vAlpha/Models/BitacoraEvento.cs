@@ -11,7 +11,7 @@ namespace Excembly_vAlpha.Models
         public DateTime FechaHora { get; set; } = DateTime.Now;
         public string IPUsuario { get; set; }
 
-        // Relaciones
         public Usuario Usuario { get; set; }
     }
+
 }

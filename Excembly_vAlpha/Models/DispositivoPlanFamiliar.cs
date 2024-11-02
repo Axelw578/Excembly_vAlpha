@@ -9,9 +9,10 @@ namespace Excembly_vAlpha.Models
         public string MACAddress { get; set; }
         public int PlanId { get; set; }
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
+        public bool EquipoAdicional { get; set; } = false;
 
-        // Relaciones
         public Usuario Usuario { get; set; }
         public Plan Plan { get; set; }
     }
+
 }

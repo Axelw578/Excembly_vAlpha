@@ -1,4 +1,6 @@
-﻿namespace Excembly_vAlpha.Models
+﻿using Excembly_vAlpha.Services;
+
+namespace Excembly_vAlpha.Models
 {
     public class Servicio
     {
@@ -6,14 +8,16 @@
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
         public decimal Precio { get; set; }
-        public string Duracion { get; set; }
-        public string Categoria { get; set; }
         public string Imagen { get; set; }
-        public string TipoServicio { get; set; } = "preventivo"; // Default
-        public bool EsExclusivo { get; set; } = false;
+        public int? TipoServicioId { get; set; }
+        public bool ExclusivoPaquete { get; set; }
 
-        // Relacin con Plan
-        public ICollection<Plan_Servicio> Planes { get; set; }
-        public ICollection<AsignacionTecnico> AsignacionTecnicos { get; set; }
+        public TipoServicio TipoServicio { get; set; }
+        public ICollection<PlanServicio> PlanServicios { get; set; }
+        public ICollection<ServicioAdicional> ServiciosAdicionales { get; set; }
+        public ICollection<PlanPersonalizado> PlanesPersonalizados { get; set; }
+        public ICollection<AsignacionTecnico> AsignacionesTecnicos { get; set; }
+        public ICollection<Trabajo> Trabajos { get; set; }
     }
+
 }
