@@ -24,12 +24,8 @@
     // Animación al hacer clic en el botón del navbar-toggler
     var navbarToggler = document.querySelector('.navbar-toggler');
     navbarToggler.addEventListener('click', function () {
-        navbarToggler.classList.toggle('active');
-        if (navbarToggler.classList.contains('active')) {
-            navbarToggler.style.transform = 'rotate(90deg)';
-        } else {
-            navbarToggler.style.transform = 'rotate(0deg)';
-        }
+        this.classList.toggle('active');
+        this.style.transform = this.classList.contains('active') ? 'rotate(90deg)' : 'rotate(0deg)';
     });
 
     // Transiciones suaves para las imágenes de perfil
@@ -37,7 +33,6 @@
     profileImages.forEach(function (image) {
         image.addEventListener('mouseenter', function () {
             image.style.transform = 'scale(1.1)';
-            image.style.transition = 'transform 0.3s ease, border-color 0.3s ease';
         });
 
         image.addEventListener('mouseleave', function () {
@@ -77,11 +72,7 @@
             if (window.innerWidth < 992) {
                 e.preventDefault();
                 let dropdownMenu = this.querySelector('.dropdown-menu');
-                if (dropdownMenu.style.display === 'block') {
-                    dropdownMenu.style.display = 'none';
-                } else {
-                    dropdownMenu.style.display = 'block';
-                }
+                dropdownMenu.style.display = (dropdownMenu.style.display === 'block') ? 'none' : 'block';
             }
         });
     });
@@ -99,4 +90,3 @@
         });
     });
 });
-

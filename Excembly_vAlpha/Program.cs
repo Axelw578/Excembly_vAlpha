@@ -1,7 +1,7 @@
 using Excembly_vAlpha.Data;
 using Excembly_vAlpha.Services;
+using Microsoft.AspNetCore.Authentication.Cookies; // Asegúrate de importar este espacio de nombres
 using Microsoft.EntityFrameworkCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,23 +16,21 @@ builder.Services.AddDbContext<ExcemblyDbContext>(options =>
     )
 );
 
-// Inyección servicios "tal vez haga mas en un futuro" SUJETO A CAMBIOS
-builder.Services.AddScoped<ServicioService, ServicioService>();
-builder.Services.AddScoped<PlanService, PlanService>();
-builder.Services.AddScoped<UsuarioService, UsuarioService>();
-builder.Services.AddScoped<CitaService, CitaService>();
-builder.Services.AddScoped<TrabajoService, TrabajoService>();
-builder.Services.AddScoped<PagoService, PagoService>();
-builder.Services.AddScoped<HistorialService, HistorialService>();
-builder.Services.AddScoped<DispositivoService, DispositivoService>();
-builder.Services.AddScoped<TarjetaService, TarjetaService>();
-builder.Services.AddScoped<BitacoraService, BitacoraService>();
-builder.Services.AddScoped<AcercaDeService, AcercaDeService>();
-builder.Services.AddScoped<PoliticaPrivacidadService, PoliticaPrivacidadService>();
-builder.Services.AddScoped<TecnicoService, TecnicoService>();
-builder.Services.AddScoped<CambioContratacionService, CambioContratacionService>();
+// Registrar IHttpContextAccessor para permitir la inyección en LoginService
+builder.Services.AddHttpContextAccessor();
 
+// Inyección servicios
+builder.Services.AddScoped<LoginService, LoginService>();
 
+// Configuración de autenticación de cookies
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Login"; // Ruta de inicio de sesión
+        options.LogoutPath = "/Logout"; // Ruta de cierre de sesión
+        options.AccessDeniedPath = "/Home/AccessDenied"; // Ruta para acceso denegado
+        options.SlidingExpiration = true; // Expiración deslizante
+    });
 
 var app = builder.Build();
 
@@ -48,6 +46,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Agrega el middleware de autenticación
+app.UseAuthentication(); // Asegúrate de agregar esta línea
 app.UseAuthorization();
 
 app.MapControllerRoute(

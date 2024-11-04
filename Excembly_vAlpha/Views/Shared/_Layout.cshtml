@@ -1,7 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Este Layout es no tiene logica por lo cual esta incompleto, falta desarrollo: "El css y el js estan bien desarrollados ya que los reutilce" -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Excembly</title>
@@ -10,7 +9,18 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Excembly.styles.css" asp-append-version="true" />
     <style>
+        .profile-image {
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+        }
 
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-left: 10px; 
+        }
     </style>
 </head>
 <body>
@@ -44,7 +54,10 @@
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="bi bi-person-circle"></i> @User.Identity.Name
+                                    <div class="user-info">
+                                        <img src="@User.FindFirst("URLFotoPerfil")?.Value" alt="Imagen de perfil" class="profile-image" />
+                                        <span>@User.Identity.Name</span>
+                                    </div>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" asp-area="" asp-controller="Usuarios" asp-action="Perfil">Perfil</a>
@@ -58,8 +71,14 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="modal" data-target="#modalLogin">
-                                    <i class="bi bi-person-circle"></i> Cuenta
+                                <a class="nav-link" asp-area="" asp-controller="Registro" asp-action="Registrar">
+                                    
+                                    <i class="bi bi-person-circle"></i> Iniciar Sesión
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Registro" asp-action="Registrar">
+                                    <i class="bi bi-person-plus-fill"></i> Registrarse
                                 </a>
                             </li>
                         }
@@ -68,13 +87,13 @@
             </div>
         </nav>
     </header>
-    
+
     <main role="main">
         <div class="container mt-4">
             @RenderBody()
         </div>
     </main>
-    
+
     <footer class="bg-dark text-center py-4">
         <div class="container">
             <div class="row">
@@ -97,72 +116,8 @@
             </div>
         </div>
     </footer>
-    
-    <!-- Acerca de -->
-    <div class="modal fade" id="modalAcercaDe" tabindex="-1" role="dialog" aria-labelledby="modalAcercaDeLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalAcercaDeLabel">Acerca de Excembly</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    
-                    <p>Excembly es una plataforma de mantenimiento preventivo que te ayuda a mantener tus dispositivos en óptimas condiciones.</p
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!--Politica de Privacidad -->
-    <div class="modal fade" id="modalPoliticaPrivacidad" tabindex="-1" role="dialog" aria-labelledby="modalPoliticaPrivacidadLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalPoliticaPrivacidadLabel">Política de Privacidad</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Excembly se compromete a proteger su privacidad...</p>
-                    
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!--Términos y Condiciones -->
-    <div class="modal fade" id="modalTerminos" tabindex="-1" role="dialog" aria-labelledby="modalTerminosLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTerminosLabel">Términos y Condiciones</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    
-                    <p>Al utilizar Excembly, usted acepta los siguientes términos...</p>
-                    
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- inicio de sesión -->
+
+    <!-- Modal de inicio de sesión -->
     <div class="modal fade" id="modalLogin" tabindex="-1" role="dialog" aria-labelledby="modalLoginLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -173,7 +128,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--  -->
                     <form asp-controller="Auth" asp-action="Login" method="post">
                         <div class="form-group">
                             <label for="email">Correo Electrónico</label>
@@ -189,7 +143,7 @@
             </div>
         </div>
     </div>
-    
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

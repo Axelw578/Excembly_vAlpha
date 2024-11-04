@@ -4,11 +4,13 @@ body {
     font-family: 'Arial', sans-serif;
 }
 
+/* Navbar */
 .navbar {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     animation: fadeIn 0.8s ease-in-out;
 }
 
+/* Enlaces del menú de navegación */
 .navbar-nav .nav-link {
     color: #fff;
     transition: color 0.3s ease;
@@ -16,7 +18,6 @@ body {
 
     .navbar-nav .nav-link:hover {
         color: #FFD700;
-        transition: color 0.3s ease-in-out;
     }
 
 /* Perfil de Usuario */
@@ -84,7 +85,7 @@ body {
     }
 }
 
-/* Botón de Buscar "aqui no implementado" */
+/* Estilo para el formulario de búsqueda (si se implementa) */
 .form-control {
     transition: border-color 0.3s ease;
 }
@@ -94,6 +95,7 @@ body {
         box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
     }
 
+/* Botón de inicio de sesión */
 .btn-outline-light:hover {
     background-color: #FFD700;
     border-color: #FFD700;
@@ -114,14 +116,14 @@ footer {
         animation: fadeIn 1s ease-in-out;
     }
 
-/* Menú de navegación: "pendiente" */
+/* Menú de navegación: asegurando que el dropdown funcione */
 .navbar-nav .nav-item:hover .dropdown-menu {
     display: block;
     opacity: 1;
     transform: translateY(0);
 }
 
-/* Botón desplegable: "pendiente"*/
+/* Botón desplegable: mejora visual al hacer hover */
 .navbar-toggler {
     transition: transform 0.3s ease;
 }
@@ -129,3 +131,17 @@ footer {
     .navbar-toggler:hover {
         transform: rotate(90deg);
     }
+
+/* Estilos para la imagen de perfil */
+.profile-image {
+    width: 40px; /* Ajusta el tamaño de la imagen */
+    height: 40px; /* Ajusta el tamaño de la imagen */
+    border-radius: 50%; /* Hacer la imagen redonda */
+    object-fit: cover; /* Mantener la proporción de la imagen */
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-left: 10px; /* Espacio entre la imagen y el nombre */
+}

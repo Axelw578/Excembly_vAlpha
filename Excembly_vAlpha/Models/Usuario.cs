@@ -16,6 +16,8 @@ namespace Excembly_vAlpha.Models
         public int? RolId { get; set; }
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
 
+        public string FotoPerfilUrl { get; set; }  // por weyes 
+
         public Direccion Direccion { get; set; }
         public Rol Rol { get; set; }
         public ICollection<Cita> Citas { get; set; }
@@ -27,5 +29,4 @@ namespace Excembly_vAlpha.Models
         public ICollection<AsignacionTecnico> AsignacionesTecnico { get; set; }
         public ICollection<Trabajo> Trabajos { get; set; }
     }
-
 }

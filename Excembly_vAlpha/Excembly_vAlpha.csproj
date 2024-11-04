@@ -14,7 +14,6 @@
     <Folder Include="Views\AcercaDe\" />
     <Folder Include="Views\AsignacionTecnicos\" />
     <Folder Include="Views\CambiosCita\" />
-    <Folder Include="Views\Login\" />
     <Folder Include="Views\PoliticaPrivacidad\" />
     <Folder Include="Views\Tarjetas\" />
     <Folder Include="Views\Pagos\" />
@@ -39,6 +38,13 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Design" Version="1.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Registro\Registrar.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
