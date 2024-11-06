@@ -62,12 +62,11 @@ namespace Excembly_vAlpha.Controllers
                     return RedirectToAction("Login", "Index");
                 }
 
-                // Agrega un mensaje de error específico del servicio al modelo
                 ModelState.AddModelError("", message);
             }
             catch (Exception ex)
             {
-                // Manejo de excepción: añade el mensaje de error al modelo
+                // Manejo de excepción: 
                 ModelState.AddModelError("", $"Error inesperado: {ex.Message}");
             }
 

@@ -1,0 +1,22 @@
+﻿@model Excembly_vAlpha.ViewModels.EmpresaViewModel
+
+<h1>Información de la Empresa</h1>
+
+<div>
+    <h2>Misión y Visión</h2>
+    <p>@Model.MisionVision</p>
+
+    <h2>Horario de la Tienda</h2>
+    <p>@Model.HorarioTienda</p>
+
+    <h2>Domicilio de la Tienda</h2>
+    <p>@Model.DomicilioTienda</p>
+
+    <h2>Aclaración</h2>
+    <p>@Model.Aclaracion</p>
+
+    <h2>Mapa</h2>
+    <img src="@Model.ImagenMapa" alt="Mapa de la tienda" style="max-width:100%; height:auto;" />
+</div>
+
+<a href="@Url.Action("Reseñas", "Empresa")">Ver Reseñas de Usuarios</a>

@@ -20,7 +20,7 @@ namespace Excembly_vAlpha.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View("~/Views/Login/Index.cshtml"); // Apunta a Index.cshtml
+            return View("~/Views/Login/Index.cshtml"); 
         }
 
         // Procesa el inicio de sesión del usuario
@@ -29,7 +29,7 @@ namespace Excembly_vAlpha.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("~/Views/Login/Index.cshtml", model); // Retorna a la misma vista con los errores
+                return View("~/Views/Login/Index.cshtml", model); 
             }
 
             var resultado = await _loginService.IniciarSesionAsync(model.Correo, model.Contraseña);
@@ -38,7 +38,7 @@ namespace Excembly_vAlpha.Controllers
             {
                 var usuario = resultado.Usuario;
 
-                // Crear claims del usuario, incluyendo UsuarioId y la URL de la imagen de perfil
+                // Creaa claims del usuario, incluyendo UsuarioId y la URL de la imagen de perfil
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, usuario.Nombre),
@@ -62,7 +62,7 @@ namespace Excembly_vAlpha.Controllers
 
             // Si hay error, lo agrega al estado del modelo y vuelve a mostrar la vista de inicio de sesión
             ModelState.AddModelError("", resultado.Message);
-            return View("~/Views/Login/Index.cshtml", model); // Retorna a la vista con el modelo en caso de error
+            return View("~/Views/Login/Index.cshtml", model); 
         }
 
         // Cierra sesión del usuario

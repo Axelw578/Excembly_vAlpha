@@ -7,18 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Citas\" />
-    <Folder Include="Views\Historial\" />
-    <Folder Include="Views\Dispositivos\" />
-    <Folder Include="Views\Bitacora\" />
-    <Folder Include="Views\AcercaDe\" />
-    <Folder Include="Views\AsignacionTecnicos\" />
-    <Folder Include="Views\CambiosCita\" />
     <Folder Include="Views\PoliticaPrivacidad\" />
     <Folder Include="Views\Tarjetas\" />
     <Folder Include="Views\Pagos\" />
     <Folder Include="Views\Trabajos\" />
-    <Folder Include="Views\Tecnicos\" />
     <Folder Include="Views\Planes\" />
     <Folder Include="Views\Servicios\" />
     <Folder Include="wwwroot\img\" />

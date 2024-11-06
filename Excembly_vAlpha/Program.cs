@@ -1,6 +1,6 @@
 using Excembly_vAlpha.Data;
 using Excembly_vAlpha.Services;
-using Microsoft.AspNetCore.Authentication.Cookies; // Asegúrate de importar este espacio de nombres
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,11 +16,11 @@ builder.Services.AddDbContext<ExcemblyDbContext>(options =>
     )
 );
 
-// Registrar IHttpContextAccessor para permitir la inyección en LoginService
 builder.Services.AddHttpContextAccessor();
 
-// Inyección servicios
+// Inyección de servicios
 builder.Services.AddScoped<LoginService, LoginService>();
+builder.Services.AddScoped<EmpresaService, EmpresaService>(); // Agrega esta línea para el EmpresaService
 
 // Configuración de autenticación de cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -46,8 +46,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Agrega el middleware de autenticación
-app.UseAuthentication(); // Asegúrate de agregar esta línea
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
