@@ -1,0 +1,100 @@
+﻿/* Contenedor de todos los planes */
+.planes {
+    display: flex;
+    gap: 50px;
+    justify-content: center;
+    margin: 50px auto;
+    max-width: 1200px;
+    flex-wrap: wrap; /* Permite que las tarjetas se acomoden en varias líneas en pantallas pequeñas */
+}
+
+/* Estilos generales para cada tarjeta de plan */
+.plan {
+    width: 30%; /* Ajusta el ancho para que las tres tarjetas quepan en una fila */
+    min-width: 300px; /* Asegura que las tarjetas no sean demasiado pequeñas en pantallas pequeñas */
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+    background-color: white;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0;
+}
+
+    .plan:hover {
+        transform: scale(1.05);
+    }
+
+/* Estilo del encabezado de cada plan */
+.header {
+    color: white;
+    padding: 30px;
+    font-size: 24px;
+    font-weight: bold;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+/* Estilos específicos para cada plan */
+.plan-basico .header {
+    background-color: #ff9f43; /* Color específico para Plan Básico */
+}
+
+.plan-estandar .header {
+    background-color: #1e90ff; /* Color específico para Plan Estándar */
+}
+
+.plan-familiar .header {
+    background-color: #34495e; /* Color específico para Plan Familiar */
+}
+
+/* Precio del plan */
+.precio {
+    font-size: 32px;
+    color: #333;
+    margin: 15px 0;
+}
+
+/* Detalles de cada plan */
+.detalles {
+    padding: 20px;
+    color: #555;
+    font-size: 16px;
+    text-align: left;
+    flex-grow: 1;
+}
+
+    .detalles ul {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0;
+    }
+
+        .detalles ul li {
+            margin: 8px 0;
+        }
+
+/* Botón de contratar */
+.boton {
+    display: inline-block;
+    margin: 15px auto; /* Centra el botón */
+    padding: 12px 0;
+    width: 80%; /* Ajusta el ancho del botón */
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+    .boton:hover {
+        background-color: #0056b3;
+    }
+
+/* Estilo para listas dentro de .detalles */
+ul {
+    padding-left: 20px;
+}

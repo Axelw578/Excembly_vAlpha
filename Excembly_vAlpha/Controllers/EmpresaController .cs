@@ -21,6 +21,15 @@ namespace Excembly_vAlpha.Controllers
             // Obtener la información de la empresa a través del servicio
             var empresaData = await _empresaService.InformacionEmpresa();
 
+            if (empresaData == null)
+            {
+                // Log de diagnóstico para saber si el objeto empresaData es null
+                Console.WriteLine("No se encontró información de la empresa en la base de datos.");
+
+                // Puedes retornar un mensaje personalizado o una vista de error
+                return NotFound("No se encontró información de la empresa.");
+            }
+
             // Mapear los datos a EmpresaViewModel
             var empresaViewModel = new EmpresaViewModel
             {
@@ -28,13 +37,14 @@ namespace Excembly_vAlpha.Controllers
                 HorarioTienda = empresaData.HorarioTienda,
                 DomicilioTienda = empresaData.DomicilioTienda,
                 Aclaracion = empresaData.Aclaracion,
-                PoliticaCancelacion = empresaData.PoliticaCancelacion, // Incluyendo PoliticaCancelacion
-                ImagenMapa = empresaData.ImagenMapa,
-
+                PoliticaCancelacion = empresaData.PoliticaCancelacion,
+                ImagenMapa = empresaData.ImagenMapa
             };
 
             return View("Views/Empresa/Index.cshtml", empresaViewModel);
         }
+
+
 
         // Acción para la vista de reseñas (Reseñas)
         public async Task<IActionResult> Reseñas()

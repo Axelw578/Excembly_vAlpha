@@ -11,8 +11,6 @@
     <Folder Include="Views\Tarjetas\" />
     <Folder Include="Views\Pagos\" />
     <Folder Include="Views\Trabajos\" />
-    <Folder Include="Views\Planes\" />
-    <Folder Include="Views\Servicios\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 

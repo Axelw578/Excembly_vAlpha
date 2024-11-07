@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Excembly_vAlpha.ViewModels.PlanViewModel>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planes de Mantenimiento</title>
+    <link href="~/css/Planes.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="planes">
+        @foreach (var plan in Model)
+        {
+            <div class="plan">
+                <!-- Imagen del plan -->
+                <div class="imagen">
+                    <img src="@plan.Imagen" alt="@plan.Nombre" class="img-fluid" />
+                </div>
+
+                <!-- Nombre del plan -->
+                <div class="header" style="font-size: 1.5em; font-weight: bold; color: #333;">@plan.Nombre</div>
+
+                <!-- Precio del plan -->
+                <div class="precio" style="font-size: 1.2em; color: #007bff;">@plan.Precio.ToString("C")</div>
+
+                <!-- Detalles del plan -->
+                <div class="detalles">
+                    <p><strong>Incluye:</strong></p>
+                    <ul>
+                        @foreach (var servicio in plan.ServiciosIncluidos)
+                        {
+                            <li>@servicio</li>
+                        }
+                    </ul>
+
+                    <!-- Servicios adicionales del plan -->
+                    @if (plan.ServiciosAdicionales?.Any() == true)
+                    {
+                        <p><strong>Servicios Adicionales:</strong></p>
+                        <ul>
+                            @foreach (var adicional in plan.ServiciosAdicionales)
+                            {
+                                <li>
+                                    @adicional.NombreServicio -
+                                    <span class="precio-original">@adicional.PrecioOriginal.ToString("C")</span>
+                                    <span class="precio-con-descuento">
+                                        @adicional.PrecioConDescuento.ToString("C")
+                                    </span>
+                                    (Descuento: @adicional.Descuento.ToString("P"))
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>No incluye servicios adicionales. Los servicios adicionales pueden ser contratados por un costo adicional.</p>
+                    }
+                </div>
+
+                <!-- Botón de contratación -->
+                <a href="#" class="boton">Contratar</a>
+            </div>
+        }
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

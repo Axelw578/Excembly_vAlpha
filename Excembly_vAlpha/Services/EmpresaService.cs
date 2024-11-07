@@ -9,7 +9,7 @@ namespace Excembly_vAlpha.Services
 {
     public class EmpresaService
     {
-        private readonly ExcemblyDbContext _context; // Cambia DbContext por ExcemblyDbContext
+        private readonly ExcemblyDbContext _context; // 
 
         public EmpresaService(ExcemblyDbContext context)
         {
