@@ -1,7 +1,7 @@
 ﻿using Excembly_vAlpha.Services;
-
 namespace Excembly_vAlpha.Models
 {
+    // actualizado
     public class Plan
     {
         public int PlanId { get; set; }
@@ -10,9 +10,19 @@ namespace Excembly_vAlpha.Models
         public decimal Precio { get; set; }
         public string Imagen { get; set; }
 
+        // Propiedad de navegación para los servicios del plan
         public ICollection<PlanServicio> PlanServicios { get; set; }
-        public ICollection<ServicioAdicional> ServiciosAdicionales { get; set; }
-        public ICollection<DispositivoPlanFamiliar> DispositivosPlanFamiliar { get; set; }
-    }
 
+        // Relación con los servicios adicionales
+        public ICollection<ServicioAdicional> ServiciosAdicionales { get; set; }
+
+        // Relación con citas para control de contrataciones específicas
+        public ICollection<Cita> Citas { get; set; }
+
+        // Relación con contrataciones
+        public ICollection<Contratacion> Contrataciones { get; set; }
+
+        // Relación con dispositivos de plan familiar
+        public ICollection<DispositivoPlanFamiliar> DispositivosPlanFamiliar { get; set; } 
+    }
 }

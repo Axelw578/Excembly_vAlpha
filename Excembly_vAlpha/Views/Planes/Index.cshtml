@@ -37,7 +37,7 @@
                     <!-- Servicios adicionales del plan -->
                     @if (plan.ServiciosAdicionales?.Any() == true)
                     {
-                        <p><strong>Servicios Adicionales:</strong></p>
+                        <p><strong>Servicios Adicionales (con descuento aplicable):</strong></p>
                         <ul>
                             @foreach (var adicional in plan.ServiciosAdicionales)
                             {
@@ -51,6 +51,7 @@
                                 </li>
                             }
                         </ul>
+                        <p class="nota">Los servicios adicionales se pueden incluir con el descuento mostrado.</p>
                     }
                     else
                     {

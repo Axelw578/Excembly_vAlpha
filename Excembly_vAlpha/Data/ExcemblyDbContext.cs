@@ -8,7 +8,11 @@ namespace Excembly_vAlpha.Data
         public ExcemblyDbContext(DbContextOptions<ExcemblyDbContext> options)
             : base(options)
         {
+
+
         }
+
+
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Direccion> Direcciones { get; set; }
@@ -32,7 +36,16 @@ namespace Excembly_vAlpha.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configuracion de Usuario
+
+
+            // Configuración de la relación uno a uno entre Cita y Contratacion
+            modelBuilder.Entity<Cita>()
+                .HasOne(c => c.Contratacion) // Cita tiene una Contratacion
+                .WithOne(co => co.Cita)      // Contratacion tiene una Cita
+                .HasForeignKey<Contratacion>(co => co.CitaId) // Especifica que Contratacion tiene la clave foránea
+                .OnDelete(DeleteBehavior.Restrict); // Define el comportamiento de eliminación
+
+            // Configuración de Usuario
             modelBuilder.Entity<Usuario>()
                 .HasKey(u => u.UsuarioId);
             modelBuilder.Entity<Usuario>()
@@ -46,15 +59,15 @@ namespace Excembly_vAlpha.Data
                 .HasForeignKey(u => u.RolId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configuracin de Direccion
+            // Configuración de Direccion
             modelBuilder.Entity<Direccion>()
                 .HasKey(d => d.DireccionId);
 
-            // Configuracion de Rol
+            // Configuración de Rol
             modelBuilder.Entity<Rol>()
                 .HasKey(r => r.RolId);
 
-            // Configuracinn de Servicio
+            // Configuración de Servicio
             modelBuilder.Entity<Servicio>()
                 .HasKey(s => s.ServicioId);
             modelBuilder.Entity<Servicio>()
@@ -63,15 +76,15 @@ namespace Excembly_vAlpha.Data
                 .HasForeignKey(s => s.TipoServicioId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configuracion de TipoServicio
+            // Configuración de TipoServicio
             modelBuilder.Entity<TipoServicio>()
                 .HasKey(ts => ts.TipoServicioId);
 
-            // Configuracion de Plan
+            // Configuración de Plan
             modelBuilder.Entity<Plan>()
                 .HasKey(p => p.PlanId);
 
-            // Configuracion de PlanServicio (Llave Compuesta)
+            // Configuración de PlanServicio (Llave Compuesta)
             modelBuilder.Entity<PlanServicio>()
                 .HasKey(ps => new { ps.PlanId, ps.ServicioId });
             modelBuilder.Entity<PlanServicio>()
@@ -85,7 +98,7 @@ namespace Excembly_vAlpha.Data
                 .HasForeignKey(ps => ps.ServicioId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Configuracion de ServicioAdicional (Llave Compuesta)
+            // Configuración de ServicioAdicional (Llave Compuesta)
             modelBuilder.Entity<ServicioAdicional>()
                 .HasKey(sa => new { sa.PlanId, sa.ServicioId });
             modelBuilder.Entity<ServicioAdicional>()
@@ -99,7 +112,7 @@ namespace Excembly_vAlpha.Data
                 .HasForeignKey(sa => sa.ServicioId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configuracion de PlanPersonalizado (Llave Compuesta)
+            // Configuración de PlanPersonalizado (Llave Compuesta)
             modelBuilder.Entity<PlanPersonalizado>()
                 .HasKey(pp => new { pp.UsuarioId, pp.CitaId, pp.ServicioId });
             modelBuilder.Entity<PlanPersonalizado>()
@@ -118,11 +131,11 @@ namespace Excembly_vAlpha.Data
                 .HasForeignKey(pp => pp.ServicioId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Configuracion de Tecnico
+            // Configuración de Técnico
             modelBuilder.Entity<Tecnico>()
                 .HasKey(t => t.TecnicoId);
 
-            // Configuracion de Cita
+            // Configuración de Cita
             modelBuilder.Entity<Cita>()
                 .HasKey(c => c.CitaId);
             modelBuilder.Entity<Cita>()
@@ -136,7 +149,7 @@ namespace Excembly_vAlpha.Data
                 .HasForeignKey(c => c.TecnicoId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configuracion de Pago
+            // Configuración de Pago
             modelBuilder.Entity<Pago>()
                 .HasKey(p => p.PagoId);
             modelBuilder.Entity<Pago>()
@@ -150,7 +163,7 @@ namespace Excembly_vAlpha.Data
                 .HasForeignKey(p => p.CitaId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configuracion de DispositivoPlanFamiliar
+            // Configuración de DispositivoPlanFamiliar
             modelBuilder.Entity<DispositivoPlanFamiliar>()
                 .HasKey(dpf => dpf.DispositivoId);
             modelBuilder.Entity<DispositivoPlanFamiliar>()
@@ -164,7 +177,7 @@ namespace Excembly_vAlpha.Data
                 .HasForeignKey(dpf => dpf.PlanId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configuracion de TarjetaGuardada
+            // Configuración de TarjetaGuardada
             modelBuilder.Entity<TarjetaGuardada>()
                 .HasKey(tg => tg.TarjetaId);
             modelBuilder.Entity<TarjetaGuardada>()
@@ -173,7 +186,7 @@ namespace Excembly_vAlpha.Data
                 .HasForeignKey(tg => tg.UsuarioId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Configuracion de BitacoraEvento
+            // Configuración de BitacoraEvento
             modelBuilder.Entity<BitacoraEvento>()
                 .HasKey(be => be.EventoId);
             modelBuilder.Entity<BitacoraEvento>()
@@ -182,15 +195,15 @@ namespace Excembly_vAlpha.Data
                 .HasForeignKey(be => be.UsuarioId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Configuracion de AcercaDe
+            // Configuración de AcercaDe
             modelBuilder.Entity<AcercaDe>()
                 .HasKey(ad => ad.AcercaDeId);
 
-            // Configuracion de PoliticaPrivacidad
+            // Configuración de PoliticaPrivacidad
             modelBuilder.Entity<PoliticaPrivacidad>()
                 .HasKey(pp => pp.PoliticaId);
 
-            // Configuracion de AsignacionTecnico
+            // Configuración de AsignacionTecnico
             modelBuilder.Entity<AsignacionTecnico>()
                 .HasKey(at => at.AsignacionId);
             modelBuilder.Entity<AsignacionTecnico>()

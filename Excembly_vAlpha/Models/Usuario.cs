@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Excembly_vAlpha.Models
 {
+    // actualizado
     public class Usuario
     {
         public int UsuarioId { get; set; }
@@ -15,11 +16,12 @@ namespace Excembly_vAlpha.Models
         public string Telefono { get; set; }
         public int? RolId { get; set; }
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
-
-        public string FotoPerfilUrl { get; set; }  // por weyes 
+        public string FotoPerfilUrl { get; set; }
 
         public Direccion Direccion { get; set; }
         public Rol Rol { get; set; }
+
+        // Colecciones de navegación
         public ICollection<Cita> Citas { get; set; }
         public ICollection<Pago> Pagos { get; set; }
         public ICollection<DispositivoPlanFamiliar> DispositivosPlanFamiliar { get; set; }
@@ -28,5 +30,8 @@ namespace Excembly_vAlpha.Models
         public ICollection<PlanPersonalizado> PlanesPersonalizados { get; set; }
         public ICollection<AsignacionTecnico> AsignacionesTecnico { get; set; }
         public ICollection<Trabajo> Trabajos { get; set; }
+
+        // Nueva propiedad para la relación con Contratacion
+        public ICollection<Contratacion> Contrataciones { get; set; } = new List<Contratacion>();
     }
 }
