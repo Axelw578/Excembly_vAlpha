@@ -27,5 +27,8 @@ namespace Excembly_vAlpha.Models
         public PlanPersonalizado PlanPersonalizado { get; set; }
         public Cita Cita { get; set; }
         public ICollection<ServicioAdicionalContratado> ServiciosAdicionalesContratados { get; set; }
+        // Relación con Comentarios
+        public ICollection<Comentario> Comentarios { get; set; }  // Debe ser ICollection<Comentario>
+
     }
 }

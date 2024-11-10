@@ -1,22 +1,75 @@
 ﻿@model Excembly_vAlpha.ViewModels.EmpresaViewModel
 
-<h1>Información de la Empresa</h1>
+@{
+    ViewData["Title"] = "Empresa";
+}
 
-<div>
-    <h2>Misión y Visión</h2>
-    <p>@Model.MisionVision</p>
+<!-- Enlace al archivo CSS -->
+<link rel="stylesheet" href="~/css/empresa.css" />
+<!-- Enlace al archivo JavaScript -->
+<script src="~/js/empresa.js"></script>
 
-    <h2>Horario de la Tienda</h2>
-    <p>@Model.HorarioTienda</p>
+<!-- Sección con imagen de fondo y texto centrado -->
+<section class="section section-lg section-main-bunner section-main-bunner-filter text-center">
+    <div class="hero-container">
+        <div class="main-bunner-img">
+            <div class="overlay"></div>
+        </div>
+    </div>
+    <div class="main-bunner-inner">
+        <div class="container">
+            <div class="banner-content">
+                <h1 class="box-default-title">Excembly</h1>
+                <div class="box-default-decor"></div>
+                <p class="big box-default-text">Descubre más sobre nuestra misión, visión y servicios.</p>
+            </div>
+        </div>
+    </div>
+</section>
 
-    <h2>Domicilio de la Tienda</h2>
-    <p>@Model.DomicilioTienda</p>
+<div class="container mt-4">
+    <!-- Misión y Visión -->
+    <div class="info-box fade-in-left animate-on-scroll">
+        <h2>Misión y Visión</h2>
+        <p>@Model.MisionVision</p>
+    </div>
 
-    <h2>Aclaración</h2>
-    <p>@Model.Aclaracion</p>
+    <!-- Contenedor principal para Mapa, Domicilio y Horario -->
+    <div class="info-box main-container fade-in-left animate-on-scroll">
+        <!-- Mapa a la izquierda -->
+        <div class="col-left">
+            <iframe src="@Model.ImagenMapa" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
 
-    <h2>Mapa</h2>
-    <img src="@Model.ImagenMapa" alt="Mapa de la tienda" style="max-width:100%; height:auto;" />
+        <!-- Contenedor derecho para Domicilio y Horario -->
+        <div class="col-right">
+            <!-- Domicilio en la parte superior -->
+            <div class="info-box-inner">
+                <h2>Domicilio</h2>
+                <p>@Model.DomicilioTienda</p>
+            </div>
+            <!-- Horario en la parte inferior -->
+            <div class="info-box-inner">
+                <h2>Horario</h2>
+                <p>@Model.HorarioTienda</p>
+            </div>
+
+            <div class="info-box-inner">
+                <h2>Aclaración</h2>
+                <p>@Model.Aclaracion</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aclaración -->
+    <div class="info-box fade-in-right animate-on-scroll">
+        <h2>Politicas de cancelación</h2>
+        <p>@Model.PoliticaCancelacion</p>
+    </div>
+
+    <!-- Contenedor donde se cargará la vista parcial de reseñas -->
+    <div id="reseñasContainer" class="mt-4">
+        <h2 class="text-center">Reseñas de clientes</h2>
+        <!-- Aquí se cargará el contenido de la vista parcial -->
+    </div>
 </div>
-
-<a href="@Url.Action("Reseñas", "Empresa")">Ver Reseñas de Usuarios</a>

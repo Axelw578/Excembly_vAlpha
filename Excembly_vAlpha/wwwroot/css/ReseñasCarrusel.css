@@ -1,0 +1,91 @@
+﻿/* Contenedor principal de las reseñas */
+.reseñas-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Estilo de cada elemento de reseña */
+.reseña-item {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px; /* Limitar el tamaño del contenedor */
+    margin: 0 auto; /* Centrar el contenedor */
+    overflow: hidden;
+}
+
+/* Sección superior de la reseña: Foto de perfil + Nombre */
+.reseña-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #f5f5f5;
+}
+
+/* Estilo de la imagen de perfil */
+.profile-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 20%; /* Hace la imagen de perfil redonda */
+}
+
+/* Estilo del nombre del usuario */
+.user-name {
+    font-weight: bold;
+    font-size: 26px;
+    color: #333;
+    text-align: center;
+    flex-grow: 1; /* Centra el nombre */
+}
+
+/* Estilo para titulo del carrusel*/
+.titulo-reseñas {
+    color: white;
+}
+
+/* Contenedor del cuerpo de la reseña (comentarios) */
+.reseña-body-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 30px;
+    min-height: 150px; /* Altura mínima ajustable */
+    overflow-y: auto; /* Permite el desplazamiento vertical si el contenido es largo */
+}
+
+/* Estilo para el texto del comentario */
+.comment-text {
+    margin: 0;
+    word-wrap: break-word; /* Permite que las palabras se dividan si son largas */
+    white-space: normal; /* Permite que el texto se ajuste a múltiples líneas */
+    font-size: 14px;
+    display: block;
+    width: 100%; /* Asegura que el texto ocupe todo el ancho disponible */
+    max-height: 100px; /* Limita la altura del texto */
+    overflow-y: auto; /* Desplazamiento vertical si el texto es largo */
+}
+
+/* Puntos de navegación del carrusel (indicadores) */
+.carousel-indicators {
+    position: absolute;
+    bottom: 100px; /* Coloca los puntos de navegación a 100px de la parte inferior */
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    z-index: 10; /* Asegura que los puntos estén por encima de otros elementos */
+}
+
+    .carousel-indicators li {
+        background-color: #007bff; /* Color de los puntos */
+        width: 22px; /* Tamaño de los puntos */
+        height: 22px; /* Tamaño de los puntos */
+        border-radius: 10%; /* Hace los puntos circulares */
+    }
+
+    /* Color de los puntos activos */
+    .carousel-indicators .active {
+        background-color: #0056b3; /* Color de los puntos activos */
+    }

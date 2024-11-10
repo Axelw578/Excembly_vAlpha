@@ -221,6 +221,18 @@ namespace Excembly_vAlpha.Data
                 .WithMany(s => s.AsignacionesTecnicos)
                 .HasForeignKey(at => at.ServicioId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Configuración del modelo Comentario
+            modelBuilder.Entity<Comentario>()
+                .HasOne(c => c.Contratacion)
+                .WithMany(ct => ct.Comentarios)  
+                .HasForeignKey(c => c.ContratacionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+
+
+
         }
     }
 }

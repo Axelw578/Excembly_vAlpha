@@ -63,14 +63,19 @@
                                     <a class="dropdown-item" asp-area="" asp-controller="Usuarios" asp-action="MisCitas">Mis Citas</a>
                                     <a class="dropdown-item" asp-area="" asp-controller="Usuarios" asp-action="MisPagos">Mis Pagos</a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Auth" asp-action="Logout">Cerrar Sesión</a>
+                                    <form asp-controller="Login" asp-action="Logout" method="post" class="dropdown-item" style="display: inline;">
+                                        <button type="submit" class="btn btn-link" style="padding: 0; color: inherit; text-decoration: none;">Cerrar Sesión</button>
+                                        @Html.AntiForgeryToken() <!-- Agrega el token para seguridad -->
+                                    </form>
+
+
                                 </div>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Registro" asp-action="Registrar">
+                                <a class="nav-link" asp-area="" asp-controller="Login" asp-action="Index">
                                     
                                     <i class="bi bi-person-circle"></i> Iniciar Sesión
                                 </a>

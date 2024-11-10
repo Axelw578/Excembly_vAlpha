@@ -3,7 +3,9 @@ using Excembly_vAlpha.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Excembly_vAlpha.Controllers
 {
@@ -20,7 +22,7 @@ namespace Excembly_vAlpha.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View("~/Views/Login/Index.cshtml"); 
+            return View("~/Views/Login/Index.cshtml");
         }
 
         // Procesa el inicio de sesión del usuario
@@ -29,7 +31,7 @@ namespace Excembly_vAlpha.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("~/Views/Login/Index.cshtml", model); 
+                return View("~/Views/Login/Index.cshtml", model);
             }
 
             var resultado = await _loginService.IniciarSesionAsync(model.Correo, model.Contraseña);
@@ -38,11 +40,11 @@ namespace Excembly_vAlpha.Controllers
             {
                 var usuario = resultado.Usuario;
 
-                // Creaa claims del usuario, incluyendo UsuarioId y la URL de la imagen de perfil
+                // Crea claims del usuario, incluyendo UsuarioId y la URL de la imagen de perfil
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, usuario.Nombre),
-                    new Claim(ClaimTypes.Surname, usuario.Apellidos), // Cambiado a ClaimTypes.Surname
+                    new Claim(ClaimTypes.Surname, usuario.Apellidos),
                     new Claim(ClaimTypes.Email, usuario.CorreoElectronico),
                     new Claim(ClaimTypes.NameIdentifier, usuario.UsuarioId.ToString()),  // Claim para el UsuarioId
                     new Claim("URLFotoPerfil", usuario.FotoPerfilUrl ?? "/img/default-user.png")
@@ -62,15 +64,16 @@ namespace Excembly_vAlpha.Controllers
 
             // Si hay error, lo agrega al estado del modelo y vuelve a mostrar la vista de inicio de sesión
             ModelState.AddModelError("", resultado.Message);
-            return View("~/Views/Login/Index.cshtml", model); 
+            return View("~/Views/Login/Index.cshtml", model);
         }
 
         // Cierra sesión del usuario
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
+            // Finaliza la sesión del usuario y elimina las cookies de autenticación
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Login"); // Redirige a la vista de inicio de sesión
+            return RedirectToAction("Index", "Home"); // Redirige al menu
         }
     }
 }

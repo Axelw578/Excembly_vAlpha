@@ -1,4 +1,6 @@
-﻿namespace Excembly_vAlpha.ViewModels
+﻿using System;
+
+namespace Excembly_vAlpha.ViewModels
 {
     public class ComentarioViewModel
     {
@@ -6,6 +8,6 @@
         public string Opinion { get; set; }
         public DateTime FechaComentario { get; set; }
         public string FotoPerfilUrl { get; set; } // Foto de perfil del usuario
-        public string FotoComentarioUrl { get; set; } 
+        public string FotoComentarioUrl { get; set; } // Foto adjunta al comentario
     }
 }

@@ -10,6 +10,7 @@ namespace Excembly_vAlpha.Controllers
     {
         private readonly EmpresaService _empresaService;
 
+        // Inyectar el servicio EmpresaService
         public EmpresaController(EmpresaService empresaService)
         {
             _empresaService = empresaService;
@@ -23,8 +24,7 @@ namespace Excembly_vAlpha.Controllers
 
             if (empresaData == null)
             {
-                // Log de diagnóstico para saber si el objeto empresaData es null
-                Console.WriteLine("No se encontró información de la empresa en la base de datos.");
+                // Si no se encuentra la información, redirigir o mostrar un mensaje adecuado
                 return NotFound("No se encontró información de la empresa.");
             }
 
@@ -39,7 +39,8 @@ namespace Excembly_vAlpha.Controllers
                 ImagenMapa = empresaData.ImagenMapa
             };
 
-            return View("Views/Empresa/Index.cshtml", empresaViewModel);
+            // Pasar el modelo a la vista
+            return View(empresaViewModel);
         }
 
         // Acción para la vista de reseñas (Reseñas)
@@ -48,23 +49,31 @@ namespace Excembly_vAlpha.Controllers
             // Obtener los comentarios de los usuarios a través del servicio
             var comentarios = await _empresaService.ObtenerComentariosUsuarios();
 
+            if (comentarios == null || !comentarios.Any())
+            {
+                // Si no se encuentran comentarios, mostrar un mensaje adecuado
+                ViewBag.Mensaje = "No hay comentarios disponibles.";
+            }
+
             // Mapear los comentarios a una lista de ComentarioViewModel
             var reseñasViewModel = comentarios.Select(c => new ComentarioViewModel
             {
-                NombreUsuario = c.Usuario.Nombre,
-                Opinion = c.Opinion,
-                FechaComentario = c.FechaComentario,
-                FotoPerfilUrl = c.Usuario.FotoPerfilUrl,
-                FotoComentarioUrl = c.FotoUrl // URL de la foto adjunta al comentario, si la hay
+                NombreUsuario = c.NombreUsuario,       // Nombre del usuario
+                Opinion = c.Opinion,                   // Opinión del comentario
+                FechaComentario = c.FechaComentario,  // Fecha del comentario
+                FotoPerfilUrl = c.FotoPerfilUrl,       // Foto de perfil del usuario
+                FotoComentarioUrl = c.FotoComentarioUrl // Foto adjunta al comentario
             }).ToList();
 
             // Crear un EmpresaViewModel que solo contiene la lista de reseñas
             var empresaViewModel = new EmpresaViewModel
             {
+                // Asignar la lista de comentarios a Reseñas
                 Reseñas = reseñasViewModel
             };
 
-            return View("Views/Empresa/Reseñas.cshtml", empresaViewModel);
+            // Pasar el modelo a la vista
+            return View(empresaViewModel);
         }
     }
 }

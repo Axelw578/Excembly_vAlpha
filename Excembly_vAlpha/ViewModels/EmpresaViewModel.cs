@@ -10,6 +10,8 @@ namespace Excembly_vAlpha.ViewModels
         public string Aclaracion { get; set; }
         public string PoliticaCancelacion { get; set; }
         public string ImagenMapa { get; set; }
-        public List<ComentarioViewModel> Reseñas { get; set; } // Nueva propiedad para comentarios
+
+        // Agregar la propiedad Reseñas como una lista de ComentarioViewModel
+        public List<ComentarioViewModel> Reseñas { get; set; }
     }
 }

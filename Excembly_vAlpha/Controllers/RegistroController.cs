@@ -59,7 +59,7 @@ namespace Excembly_vAlpha.Controllers
                 {
                     TempData["RegistroExitoso"] = "Usuario registrado con éxito.";
                     // Redirige a la acción de Login en el controlador LoginController
-                    return RedirectToAction("Login", "Index");
+                    return RedirectToAction("Index", "Login");
                 }
 
                 ModelState.AddModelError("", message);
