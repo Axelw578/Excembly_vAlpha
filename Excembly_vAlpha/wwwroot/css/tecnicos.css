@@ -1,0 +1,51 @@
+﻿tecnicos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+}
+
+.tecnico-card {
+    background-color: #000; /* Fondo negro */
+    color: #fff; /* Texto blanco */
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 20px; /* Espacio interno aumentado */
+    text-align: center;
+    width: 250px; /* Aumenta el ancho de la tarjeta */
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.3); /* Sombra más marcada */
+}
+
+.imagen-tecnico img {
+    width: 80%; /* Ajusta el tamaño de la imagen */
+    height: auto;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
+
+.nombre-tecnico {
+    font-size: 1.5em; /* Aumenta el tamaño de fuente */
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.experiencia-tecnico,
+.edad-tecnico,
+.disponibilidad-tecnico,
+.fecha-registro-tecnico {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.disponibilidad-tecnico {
+    font-weight: bold;
+}
+
+    .disponibilidad-tecnico:contains('No Disponible') {
+        color: red;
+    }
+
+    .disponibilidad-tecnico:contains('Disponible') {
+        color: green;
+    }

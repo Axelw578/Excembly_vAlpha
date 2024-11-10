@@ -25,8 +25,6 @@ namespace Excembly_vAlpha.Controllers
             {
                 // Log de diagnóstico para saber si el objeto empresaData es null
                 Console.WriteLine("No se encontró información de la empresa en la base de datos.");
-
-                // Puedes retornar un mensaje personalizado o una vista de error
                 return NotFound("No se encontró información de la empresa.");
             }
 
@@ -44,21 +42,20 @@ namespace Excembly_vAlpha.Controllers
             return View("Views/Empresa/Index.cshtml", empresaViewModel);
         }
 
-
-
         // Acción para la vista de reseñas (Reseñas)
         public async Task<IActionResult> Reseñas()
         {
-            // Obtener las reseñas de usuarios a través del servicio
-            var citas = await _empresaService.ReseñasUsuarios();
+            // Obtener los comentarios de los usuarios a través del servicio
+            var comentarios = await _empresaService.ObtenerComentariosUsuarios();
 
-            // Mapear las citas a una lista de ReseñasViewModel
-            var reseñasViewModel = citas.Select(c => new ReseñasViewModel
+            // Mapear los comentarios a una lista de ComentarioViewModel
+            var reseñasViewModel = comentarios.Select(c => new ComentarioViewModel
             {
                 NombreUsuario = c.Usuario.Nombre,
-                Comentarios = c.Comentarios, // Cambié 'Comentario' a 'Comentarios' para que coincida con el nombre de la propiedad en ReseñasViewModel
-                FechaCita = c.FechaCita, // Asumiendo que deseas incluir la fecha de la cita
-                FotoPerfilUrl = c.Usuario.FotoPerfilUrl // URL de la imagen del usuario
+                Opinion = c.Opinion,
+                FechaComentario = c.FechaComentario,
+                FotoPerfilUrl = c.Usuario.FotoPerfilUrl,
+                FotoComentarioUrl = c.FotoUrl // URL de la foto adjunta al comentario, si la hay
             }).ToList();
 
             // Crear un EmpresaViewModel que solo contiene la lista de reseñas

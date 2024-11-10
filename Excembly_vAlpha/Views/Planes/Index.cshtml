@@ -37,7 +37,7 @@
                     <!-- Servicios adicionales del plan -->
                     @if (plan.ServiciosAdicionales?.Any() == true)
                     {
-                        <p><strong>Servicios Adicionales (con descuento aplicable):</strong></p>
+                        <p><strong>Servicios Adicionales:</strong></p>
                         <ul>
                             @foreach (var adicional in plan.ServiciosAdicionales)
                             {
@@ -51,7 +51,6 @@
                                 </li>
                             }
                         </ul>
-                        <p class="nota">Los servicios adicionales se pueden incluir con el descuento mostrado.</p>
                     }
                     else
                     {
@@ -59,8 +58,10 @@
                     }
                 </div>
 
-                <!-- Botón de contratación -->
-                <a href="#" class="boton">Contratar</a>
+                <!-- Botón para contratar -->
+                <a href="@Url.Action("Contratar", "Planes", new { id = plan.PlanId })"
+                   class="btn btn-primary mt-2 contratar-btn"
+                   title="Haz clic para contratar este servicio">Contratar</a>
             </div>
         }
     </div>

@@ -1,26 +1,23 @@
-﻿$(document).ready(function () {
-    // Inicializar tooltips de Bootstrap
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
+﻿// Verifica si el elemento es visible en la pantalla
+function isVisible(element) {
+    const rect = element.getBoundingClientRect();
+    return rect.top < window.innerHeight && rect.bottom >= 0;
+}
+
+// Aplica la clase 'visible' a los elementos visibles
+function revealOnScroll() {
+    const services = document.querySelectorAll('.servicio');
+    services.forEach(servicio => {
+        if (isVisible(servicio)) {
+            servicio.classList.add('visible');
+        } else {
+            servicio.classList.remove('visible');
+        }
     });
+}
 
-    // Configuración del modal
-    $('.boton').on('click', function (event) {
-        event.preventDefault();
 
-        let servicio = $(this).closest('.servicio');
-        let nombre = servicio.find('.header').text();
-        let precio = servicio.find('.precio').text();
+// Ejecuta revealOnScroll al cargar la página y al hacer scroll
+window.addEventListener('load', revealOnScroll);
+window.addEventListener('scroll', revealOnScroll);
 
-        $('#nombreServicio').text(nombre);
-        $('#precioServicio').text(precio);
-        $('#modalConfirmacion').modal('show');
-    });
-
-    // Confirmación de contratación
-    $('#confirmarContratacion').on('click', function () {
-        alert("Servicio contratado.");
-        $('#modalConfirmacion').modal('hide');
-    });
-});

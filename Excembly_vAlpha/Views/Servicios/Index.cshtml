@@ -10,53 +10,35 @@
     <link href="~/css/Servicios.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="servicios-container">
+    <div class="container servicios-container">
         @foreach (var servicio in Model)
         {
-            <div class="servicio">
+            <div class="servicio card my-3 p-3">
                 <!-- Imagen del servicio -->
                 <div class="imagen">
-                    <img src="@servicio.ImagenUrl" alt="@servicio.Nombre" class="img-fluid" />
+                    <img src="@servicio.ImagenUrl" alt="@servicio.Nombre" class="img-fluid card-img-top" />
                 </div>
 
                 <!-- Nombre del servicio -->
-                <div class="header">@servicio.Nombre</div>
+                <div class="header card-title h5">@servicio.Nombre</div>
 
                 <!-- Precio del servicio -->
-                <div class="precio">@servicio.Precio.ToString("C")</div>
+                <div class="precio card-text">@servicio.Precio.ToString("C")</div>
 
                 <!-- Descripción del servicio -->
-                <div class="descripcion">
+                <div class="descripcion card-text">
                     <p>@servicio.Descripcion</p>
                 </div>
 
                 <!-- Botón para contratar -->
-                <a href="#" class="boton" data-toggle="tooltip" title="Haz clic para contratar este servicio">Contratar</a>
+                <a href="@Url.Action("Contratar", "Servicios", new { id = servicio.ServicioId })"
+                   class="btn btn-primary mt-2 contratar-btn"
+                   title="Haz clic para contratar este servicio">Contratar</a>
             </div>
         }
     </div>
-
-    <!-- Modal de Confirmación -->
-    <div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Confirmación de Contratación</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    ¿Deseas contratar el servicio <span id="nombreServicio"></span> por <span id="precioServicio"></span>?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="confirmarContratacion">Confirmar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/Servicios.js"> </script>
+    <script src="~/js/Servicios.js"></script>
 </body>
 </html>

@@ -1,0 +1,33 @@
+﻿@model List<Excembly_vAlpha.ViewModels.TecnicoViewModel>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Técnicos de la Empresa</title>
+    <link href="~/css/tecnicos.css" rel="stylesheet">
+</head>
+<body>
+    <main>
+        <h1>Técnicos de la Empresa</h1>
+        <div class="tecnicos">
+            @foreach (var tecnico in Model)
+            {
+                <div class="tecnico-card">
+                    <div class="imagen-tecnico">
+                        <img src="@tecnico.Foto" alt="Imagen de @tecnico.Nombre" />
+                    </div>
+                    <div class="nombre-tecnico">@tecnico.Nombre @tecnico.Apellidos</div>
+                    <div class="experiencia-tecnico">Experiencia: @tecnico.Experiencia</div>
+                    <div class="edad-tecnico">Edad: @tecnico.Edad</div>
+                    <div class="disponibilidad-tecnico">
+                        Disponibilidad: @(tecnico.Disponibilidad ? "Disponible" : "No Disponible")
+                    </div>
+                    <div class="fecha-registro-tecnico">Registrado el: @tecnico.FechaRegistro</div>
+                </div>
+            }
+        </div>
+    </main>
+</body>
+</html>
