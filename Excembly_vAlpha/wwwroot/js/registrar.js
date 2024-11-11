@@ -3,8 +3,9 @@
     $('#registroForm').on('submit', function (e) {
         e.preventDefault(); // Evitar el envío normal del formulario
 
-        // Limpiar mensajes de error anteriores
+        // Limpiar mensajes de error anteriores y el mensaje de carga
         $('.error-message').remove();
+        $('.loading-message').remove();
 
         // Validar campos
         let valid = true;
@@ -52,10 +53,22 @@
             valid = false;
         }
 
+        // Validar teléfono (opcional, agregar regla de validación si es necesario)
+        if (telefono && !validatePhone(telefono)) {
+            showError('#Telefono', 'El número de teléfono no es válido.');
+            valid = false;
+        }
+
+        // Validar URL de la foto de perfil (opcional, solo si el campo es obligatorio)
+        if (fotoPerfilUrl && !validateUrl(fotoPerfilUrl)) {
+            showError('#FotoPerfilUrl', 'La URL de la foto de perfil no es válida.');
+            valid = false;
+        }
+
         // Si el formulario es válido, enviar el formulario
         if (valid) {
-            // Mostrar mensaje de espera (puedes personalizar esto)
-            $('#registroForm').append('<div class="loading-message">Enviando...</div>');
+            // Mostrar mensaje de carga
+            $('#registroForm').append('<div class="loading-message text-info">Enviando...</div>');
             this.submit(); // Enviar el formulario
         }
     });
@@ -69,5 +82,17 @@
     function validateEmail(email) {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(String(email).toLowerCase());
+    }
+
+    // Función para validar el formato del número de teléfono (ejemplo simple, adaptar según sea necesario)
+    function validatePhone(phone) {
+        const phoneRe = /^\d{10}$/; // Acepta solo números de 10 dígitos
+        return phoneRe.test(phone);
+    }
+
+    // Función para validar URLs (opcional)
+    function validateUrl(url) {
+        const urlRe = /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/;
+        return urlRe.test(url);
     }
 });

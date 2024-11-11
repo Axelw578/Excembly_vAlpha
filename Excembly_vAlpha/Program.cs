@@ -20,10 +20,11 @@ builder.Services.AddHttpContextAccessor();
 
 // Inyección de servicios
 builder.Services.AddScoped<LoginService, LoginService>();
-builder.Services.AddScoped<EmpresaService, EmpresaService>(); // EmpresaService
+builder.Services.AddScoped<EmpresaService, EmpresaService>(); 
 builder.Services.AddScoped<PlanesService, PlanesService>();
 builder.Services.AddScoped<ServiciosService, ServiciosService>();
 builder.Services.AddScoped<TecnicosService, TecnicosService>();
+builder.Services.AddScoped<DireccionService, DireccionService>();
 
 // Configuración de autenticación de cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Dirección</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/direccion.css">
+</head>
+<body>
+    @model Excembly_vAlpha.ViewModels.DireccionViewModel
+
+    @{
+        Layout = null;
+    }
+
+    <!-- Contenedor para centrar el formulario -->
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+
+        <!-- Estilo de la tarjeta para dirección -->
+        <div class="card p-4" style="width: 100%; max-width: 500px;">
+
+            <!-- Título del formulario -->
+            <h2 class="card-title text-center mb-4">
+                @((Model.TieneDireccion) ? "Editar Dirección" : "Agregar Dirección")
+            </h2>
+
+            <!-- Formulario para agregar o editar la dirección -->
+            <form asp-action="GuardarDireccion" method="post" class="needs-validation" novalidate id="direccionForm">
+                @if (TempData["Exito"] != null)
+                {
+                    <div class="alert alert-success" role="alert">
+                        @TempData["Exito"]
+                    </div>
+                }
+
+                <!-- Contenedor de campos de entrada -->
+                <div class="mb-3">
+                    <label for="Colonia" class="form-label">Colonia</label>
+                    <input asp-for="Colonia" class="form-control" id="Colonia" required>
+                    <div class="invalid-feedback">
+                        <span class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                            <span asp-validation-for="Colonia"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Calle" class="form-label">Calle</label>
+                    <input asp-for="Calle" class="form-control" id="Calle" required>
+                    <div class="invalid-feedback">
+                        <span class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                            <span asp-validation-for="Calle"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="NumeroEdificio" class="form-label">Número de Edificio</label>
+                    <input asp-for="NumeroEdificio" class="form-control" id="NumeroEdificio" required>
+                    <div class="invalid-feedback">
+                        <span class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                            <span asp-validation-for="NumeroEdificio"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="DescripcionEdificio" class="form-label">Descripción del Edificio</label>
+                    <input asp-for="DescripcionEdificio" class="form-control" id="DescripcionEdificio">
+                    <div class="invalid-feedback">
+                        <span class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                            <span asp-validation-for="DescripcionEdificio"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="ReferenciaEdificio" class="form-label">Referencia</label>
+                    <input asp-for="ReferenciaEdificio" class="form-control" id="ReferenciaEdificio">
+                    <div class="invalid-feedback">
+                        <span class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                            <span asp-validation-for="ReferenciaEdificio"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Campo oculto para almacenar el UsuarioId -->
+                <input type="hidden" asp-for="UsuarioId">
+
+                <!-- Botón de enviar -->
+                <button type="submit" class="btn btn-primary w-100">Guardar Dirección</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- jQuery y Bootstrap Bundle -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"></script>
+    <script src="~/js/direccion.js"></script>
+
+    <!-- Script para validación del formulario -->
+    <script>
+        $(document).ready(function () {
+            // Manejar el envío del formulario
+            $('#direccionForm').on('submit', function (e) {
+                e.preventDefault(); // Evitar el envío normal del formulario
+
+                // Validar cada campo manualmente
+                let valid = true;
+                $('#direccionForm .form-control[required]').each(function () {
+                    if (!$(this).val().trim()) {
+                        $(this).addClass('is-invalid');
+                        valid = false;
+                    } else {
+                        $(this).removeClass('is-invalid');
+                    }
+                });
+
+                // Si el formulario es válido, proceder con el envío
+                if (valid) {
+                    // Mostrar mensaje de carga
+                    $('#direccionForm').append('<div class="loading-message text-info mt-3">Guardando...</div>');
+                    this.submit(); // Enviar el formulario
+                }
+            });
+
+            // Función para validar entrada en tiempo real
+            $('#direccionForm .form-control[required]').on('input', function () {
+                if ($(this).val().trim()) {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

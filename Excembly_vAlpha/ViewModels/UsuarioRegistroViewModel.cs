@@ -33,5 +33,8 @@ namespace Excembly_vAlpha.ViewModels
 
         [Url(ErrorMessage = "Ingrese una URL válida para la foto de perfil.")]
         public string FotoPerfilUrl { get; set; }
+
+        // Nueva propiedad para la opción de registrar dirección
+        public bool RegistrarDireccion { get; set; }
     }
 }

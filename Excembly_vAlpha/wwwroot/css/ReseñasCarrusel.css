@@ -1,4 +1,5 @@
-﻿/* Contenedor principal de las reseñas */
+﻿
+/* Contenedor principal de las reseñas */
 .reseñas-container {
     display: flex;
     flex-direction: column;
@@ -26,7 +27,7 @@
 }
 
 /* Estilo de la imagen de perfil */
-.profile-image {
+.profile-image-comment {
     width: 50px;
     height: 50px;
     border-radius: 20%; /* Hace la imagen de perfil redonda */
@@ -68,6 +69,49 @@
     overflow-y: auto; /* Desplazamiento vertical si el texto es largo */
 }
 
+/* Estilo para la imagen adjunta en el comentario */
+.comentario-img {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+}
+
+/* Tamaño de la imagen ampliada en el modal */
+.modal-image {
+    width: 600px;
+    height: 600px;
+}
+
+/* Fondo del modal con transparencia */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(128, 128, 128, 0.8); /* Gris transparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+    overflow: hidden; /* Evita el scroll */
+}
+
+/* Contenedor del cuerpo de la reseña */
+.reseña-body-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Estilo para la fecha del comentario en la sección derecha */
+.reseña-header .comment-date {
+    font-size: 12px;
+    color: #777;
+    text-align: right;
+    flex-grow: 1;
+}
+
 /* Puntos de navegación del carrusel (indicadores) */
 .carousel-indicators {
     position: absolute;
@@ -89,3 +133,14 @@
     .carousel-indicators .active {
         background-color: #0056b3; /* Color de los puntos activos */
     }
+
+/* Estilo para el texto del comentario */
+.opinion-text {
+    flex: 1;
+    margin: 0;
+    padding-right: 10px;
+    font-size: 14px;
+    word-wrap: break-word;
+    max-height: 100px; /* Altura máxima del comentario */
+    overflow-y: auto; /* Activa el desplazamiento vertical */
+}

@@ -33,6 +33,9 @@ namespace Excembly_vAlpha.Data
         public DbSet<AcercaDe> AcercaDe { get; set; }
         public DbSet<PoliticaPrivacidad> PoliticasPrivacidad { get; set; }
         public DbSet<AsignacionTecnico> AsignacionesTecnicos { get; set; }
+        public DbSet<Contratacion> Contratacion{ get; set; }
+        public DbSet<ServicioAdicionalContratado> ServicioAdicionalContratado { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

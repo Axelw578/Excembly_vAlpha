@@ -4,18 +4,19 @@
     gap: 20px;
     justify-content: start;
     margin: 20px auto;
-    max-width: 1200px;
-    overflow-x: auto;
+    max-width: 200%; /* Ajuste del ancho máximo del contenedor */
+    overflow-x: auto; /* Scroll horizontal */
     overflow-y: hidden;
     padding: 10px;
+    scroll-behavior: smooth;
 }
- 
+
 /* Tarjeta de servicio */
 .servicio {
     width: 300px;
     min-width: 300px;
-    border-radius: 10px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     background-color: white;
     display: flex;
     flex-direction: column;
@@ -23,56 +24,66 @@
     padding: 20px;
     position: relative;
     text-align: center;
+    transition: transform 0.3s ease;
+    justify-content: space-between; /* Distribuye el espacio */
 }
- 
+
+    .servicio:hover {
+        transform: translateY(-5px);
+    }
+
     /* Estilo de encabezado */
-    .servicio h3 {
-        font-size: 24px;
+    .servicio .header {
+        font-size: 22px;
         font-weight: bold;
-        background-color: #007bff; /* Azul Telmex */
-        color: white;
+        color: #333;
         padding: 10px 0;
         width: 100%;
         text-transform: uppercase;
-        border-radius: 5px 5px 0 0;
-        margin: 0;
+        border-bottom: 2px solid #007bff;
+        margin-bottom: 10px;
     }
- 
+
     /* Sección de imagen */
     .servicio .imagen {
         width: 100%;
         height: 150px;
         overflow: hidden;
+        border-radius: 10px;
         margin-bottom: 15px;
     }
- 
+
         .servicio .imagen img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.5s ease;
         }
- 
-    /* Precio estilo llamativo */
-    .servicio .precio {
-        font-size: 32px;
-        font-weight: bold;
-        color: white;
-        background-color: #e63946; /* Fondo rojo llamativo */
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 10px;
+
+    .servicio:hover .imagen img {
+        transform: scale(1.1);
     }
- 
+
+    /* Precio */
+    .servicio .precio {
+        font-size: 20px;
+        color: #007bff;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
     /* Descripción del servicio */
-    .servicio p {
-        font-size: 16px;
-        color: #333;
+    .servicio .descripcion p {
+        font-size: 20x;
+        color: #555;
         padding: 0 15px;
         line-height: 1.5;
+        flex-grow: 1; /* Expande el texto para empujar el botón hacia abajo */
+        text-align: justify; /* Justifica el texto */
     }
- 
+
     /* Botón de contratar */
-    .servicio .boton {
+    .servicio .contratar-btn {
         font-size: 18px;
         padding: 12px 25px;
         background-color: #007bff;
@@ -82,29 +93,11 @@
         cursor: pointer;
         text-decoration: none;
         margin-top: 15px;
+        transition: background-color 0.3s ease;
+        align-self: stretch; /* Hace que el botón ocupe todo el ancho disponible */
+        text-align: center;
     }
- 
-        .servicio .boton:hover {
+
+        .servicio .contratar-btn:hover {
             background-color: #0056b3;
         }
- 
-#serviceModal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
- 
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 500px;
-    width: 80%;
-}

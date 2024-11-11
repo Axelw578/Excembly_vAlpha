@@ -1,0 +1,90 @@
+﻿/* Fondo */
+body {
+    background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+    height: 100vh; /* Mantener altura completa */
+    margin: 0;
+}
+
+/* Contenedor de la tarjeta centrado */
+.container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Estilo de la tarjeta */
+.card {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 1s ease-in-out;
+    padding: 30px;
+    width: 100%;
+    max-width: 500px; /* Máximo ancho de la tarjeta */
+}
+
+/* Título */
+.card-title {
+    color: #000DFF;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Estilo de los campos de entrada */
+.form-control {
+    border-radius: 25px;
+    padding: 12px;
+    font-size: 14px;
+    margin-bottom: 15px; /* Espaciado entre los campos */
+    border: 1px solid #ccc; /* Color de borde suave */
+}
+
+/* Botón de envío */
+.btn-primary {
+    border-radius: 25px;
+    background-color: #000DFF;
+    border-color: #000DFF;
+    transition: background-color 0.3s ease;
+    padding: 12px;
+    font-size: 16px;
+}
+
+
+
+/* Animación de aparición de la tarjeta */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilo de los mensajes de error */
+.invalid-feedback {
+    color: red;
+}
+
+/* Estilo para los mensajes de éxito */
+.alert-success {
+    background-color: #6B73FF;
+    color: #fff;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* Estilo adicional de la página */
+.text-center a {
+    color: #000DFF;
+    text-decoration: none;
+}
+
+    .text-center a:hover {
+        text-decoration: underline;
+    }

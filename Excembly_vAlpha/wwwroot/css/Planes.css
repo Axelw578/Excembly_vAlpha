@@ -1,100 +1,156 @@
 ﻿/* Contenedor de todos los planes */
 .planes {
     display: flex;
-    gap: 50px;
+    gap: 20px;
     justify-content: center;
     margin: 50px auto;
     max-width: 1200px;
-    flex-wrap: wrap; /* Permite que las tarjetas se acomoden en varias líneas en pantallas pequeñas */
+    flex-wrap: wrap;
+    align-items: stretch; /* Asegura que todas las tarjetas tengan la misma altura */
 }
 
 /* Estilos generales para cada tarjeta de plan */
 .plan {
-    width: 30%; /* Ajusta el ancho para que las tres tarjetas quepan en una fila */
-    min-width: 300px; /* Asegura que las tarjetas no sean demasiado pequeñas en pantallas pequeñas */
-    border-radius: 10px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    text-align: center;
-    background-color: white;
-    transition: transform 0.3s ease;
+    position: relative; /* Permite que el botón se posicione dentro de la tarjeta */
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-width: 300px;
+    max-width: 30%;
+    min-height: 1150px; /* Asegura una altura mínima */
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffffff 0%, #f7f9fc 100%);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
     margin: 20px 0;
 }
 
+    /* Efecto hover */
     .plan:hover {
         transform: scale(1.05);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    }
+
+/* Contenedor de la imagen con tamaño fijo */
+.imagen-contenedor {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .imagen-contenedor .imagen {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
     }
 
 /* Estilo del encabezado de cada plan */
 .header {
-    color: white;
-    padding: 30px;
-    font-size: 24px;
+    color: #333;
+    font-size: 1.8em;
     font-weight: bold;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    margin-top: 15px;
 }
 
-/* Estilos específicos para cada plan */
-.plan-basico .header {
-    background-color: #ff9f43; /* Color específico para Plan Básico */
-}
-
-.plan-estandar .header {
-    background-color: #1e90ff; /* Color específico para Plan Estándar */
-}
-
-.plan-familiar .header {
-    background-color: #34495e; /* Color específico para Plan Familiar */
+/* Precio normal del plan (sin tachado) */
+.precio-original-texto {
+    font-size: 1em;
+    color: #888;
+    font-style: italic;
+    margin-bottom: 5px;
 }
 
 /* Precio del plan */
 .precio {
-    font-size: 32px;
-    color: #333;
-    margin: 15px 0;
+    font-size: 1.5em;
+    color: #007bff;
+    margin: 10px 0;
+    font-weight: bold;
 }
 
-/* Detalles de cada plan */
 .detalles {
-    padding: 20px;
+    padding: 25px;
     color: #555;
     font-size: 16px;
     text-align: left;
-    flex-grow: 1;
+    flex-grow: 1; /* Ocupa el espacio restante en la tarjeta */
+    display: flex;
+    flex-direction: column;
 }
 
     .detalles ul {
         list-style: none;
         padding: 0;
-        margin: 10px 0;
+        margin: 15px 0;
     }
 
         .detalles ul li {
-            margin: 8px 0;
+            margin: 10px 0;
         }
 
 /* Botón de contratar */
-.boton {
-    display: inline-block;
-    margin: 15px auto; /* Centra el botón */
-    padding: 12px 0;
-    width: 80%; /* Ajusta el ancho del botón */
+.contratar-btn {
+    position: absolute; /* Fija el botón en la parte inferior */
+    bottom: 20px; /* Espacio desde el borde inferior */
+    left: 50%; /* Centra el botón horizontalmente */
+    transform: translateX(-50%);
+    padding: 12px 25px;
     background-color: #007bff;
     color: white;
-    text-decoration: none;
-    border-radius: 5px;
+    border-radius: 20px;
+    width: 90%;
+    font-size: 18px;
+    font-weight: bold;
     text-align: center;
-    transition: background-color 0.3s;
 }
 
-    .boton:hover {
+    .contratar-btn:hover {
         background-color: #0056b3;
+        transform: translate(-50%, -3px); /* Ajuste en la animación */
     }
 
-/* Estilo para listas dentro de .detalles */
-ul {
-    padding-left: 20px;
+/* Checkbox personalizado */
+.adicional-checkbox {
+    accent-color: #007bff;
+}
+
+/* Precio y detalles */
+.subtotal, .total {
+    font-size: 1em;
+    margin: 5px 0;
+}
+
+.subtotal {
+    color: #555;
+    font-weight: bold;
+}
+
+.total {
+    color: #007bff;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+/* Estilo para el precio original tachado solo de los servicios adicionales */
+.precio-original {
+    color: #888;
+    font-style: italic;
+    text-decoration: line-through; /* Aplica el tachado solo en los precios de servicios adicionales */
+    margin-right: 5px;
+}
+
+/* Estilo para el precio con descuento en verde */
+.precio-con-descuento {
+    color: #28a745; /* Verde */
+    font-weight: bold;
 }

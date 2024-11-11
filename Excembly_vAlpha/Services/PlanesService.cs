@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Excembly_vAlpha.Data;
 using Excembly_vAlpha.Models;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,6 @@ namespace Excembly_vAlpha.Services
             return _context.Set<Plan>()
                            .Include(p => p.PlanServicios)
                                .ThenInclude(ps => ps.Servicio)
-                                   .ThenInclude(s => s.TipoServicio)
                            .Include(p => p.ServiciosAdicionales)
                                .ThenInclude(sa => sa.Servicio)
                            .Include(p => p.DispositivosPlanFamiliar)
@@ -41,7 +41,7 @@ namespace Excembly_vAlpha.Services
 
             if (plan != null)
             {
-                // Recupera servicios adicionales con su descuento aplicado
+                // Aplicar descuento a los servicios adicionales
                 foreach (var servicioAdicional in plan.ServiciosAdicionales)
                 {
                     servicioAdicional.Servicio.Precio -= servicioAdicional.Servicio.Precio * servicioAdicional.Descuento;
@@ -51,11 +51,32 @@ namespace Excembly_vAlpha.Services
             return plan;
         }
 
-        // Método para recuperar el ID de un plan para pasarlo a otra vista
-        public int RecuperarPlanId(int planId)
+        // Método para guardar una contratación de plan
+        public async Task<int> GuardarContratacionAsync(int planId, string usuarioEmail)
         {
-            var plan = _context.Set<Plan>().Find(planId);
-            return plan != null ? plan.PlanId : 0;
+            var contratacion = new Contratacion
+            {
+                PlanId = planId,
+                FechaContratacion = DateTime.Now
+            };
+
+            _context.Contratacion.Add(contratacion);
+            await _context.SaveChangesAsync();
+
+            return contratacion.ContratacionId;
+        }
+
+        // Método para guardar los servicios adicionales seleccionados en una contratación
+        public async Task GuardarServiciosAdicionalesAsync(int contratacionId, List<int> serviciosAdicionalesSeleccionados)
+        {
+            var serviciosAdicionales = serviciosAdicionalesSeleccionados.Select(id => new ServicioAdicionalContratado
+            {
+                ContratacionId = contratacionId,
+                ServicioAdicionalId = id
+            });
+
+            _context.ServicioAdicionalContratado.AddRange(serviciosAdicionales);
+            await _context.SaveChangesAsync();
         }
 
         // Método para obtener todos los IDs de los servicios adicionales asociados a los planes

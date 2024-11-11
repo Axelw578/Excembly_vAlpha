@@ -4,6 +4,8 @@
 }
 <!-- Incluir CSS personalizado para el carrusel -->
 <link rel="stylesheet" href="~/css/ReseñasCarrusel.css" />
+<!-- Incluir JS personalizado para el modal de imagen ampliada -->
+<script src="~/js/reseñasCarrusel.js"></script>
 <!-- Incluir Bootstrap 5.3.3 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <!-- Incluir jQuery -->
@@ -13,7 +15,7 @@
 
 <div class="container mt-4">
     <!-- Título de la sección -->
-    <h2 class="text-center titulo-reseñas">Reseñas de clientes</h2>
+    <h2 class="text-center titulo-reseñas">Comentarios Recientes</h2>
 
     <!-- Carrusel de Reseñas -->
     <div id="carouselReseñas" class="carousel slide" data-bs-ride="carousel">
@@ -21,31 +23,26 @@
         <div class="carousel-inner">
             @foreach (var reseña in Model.Reseñas)
             {
-                <div class="carousel-item @(Model.Reseñas.IndexOf(reseña) == 0 ? "active" : "")" style="height: 280px;">
+                <div class="carousel-item @(Model.Reseñas.IndexOf(reseña) == 0 ? "active" : "")" style="height: 350px;">
                     <!-- Tarjeta de la reseña -->
                     <div class="reseña-item p-3">
-                        <!-- Sección superior de la reseña: Foto y nombre -->
+                        <!-- Sección superior de la reseña: Foto, nombre y fecha-->
                         <div class="reseña-header d-flex align-items-center mb-2">
-                            <img src="@reseña.FotoPerfilUrl" alt="Foto de Perfil" class="profile-image me-2">
+                            <img src="@reseña.FotoPerfilUrl" alt="Foto de Perfil" class="profile-image-comment me-2">
                             <span class="user-name">@reseña.NombreUsuario</span>
+                            <small class="comment-date">@reseña.FechaComentario.ToString("dd MMM yyyy")</small>
                         </div>
 
-                        <!-- Sección del cuerpo de la reseña: Comentario -->
+                        <!-- Sección del cuerpo de la reseña: Comentario y Imagen -->
                         <div class="reseña-body-container">
-                            <p class="opinion-text">@reseña.Opinion</p>
+                            <p class="comment-text">@reseña.Opinion</p>
 
                             @if (!string.IsNullOrEmpty(reseña.FotoComentarioUrl))
                             {
-                                <!-- Imagen adjunta al comentario -->
-                                <div class="comentario-imagen mt-2">
+                                <div class="comentario-imagen ms-3">
                                     <img src="@reseña.FotoComentarioUrl" alt="Imagen del comentario" class="comentario-img">
                                 </div>
                             }
-                        </div>
-
-                        <!-- Fecha del comentario -->
-                        <div class="reseña-footer mt-2 text-muted">
-                            <small>@reseña.FechaComentario.ToString("dd MMM yyyy")</small>
                         </div>
                     </div>
                 </div>
@@ -73,3 +70,6 @@
 </div>
 
 <div class="mt-4" style="height: 40px;"></div>
+
+
+
