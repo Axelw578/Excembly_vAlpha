@@ -1,0 +1,112 @@
+﻿@model Excembly_vAlpha.ViewModels.MetodoPagoViewModel
+@{
+    ViewData["Title"] = "Métodos de Pago";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Métodos de Pago</h2>
+
+    @if (Model.TarjetasGuardadas?.Any() == true)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Tarjetas Guardadas</h5>
+                @foreach (var tarjeta in Model.TarjetasGuardadas)
+                {
+                    <p><strong>Tarjeta:</strong> @tarjeta.NumeroTarjeta - @tarjeta.NombreTitular</p>
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#confirmarPagoModal" onclick="setSelectedCard('@tarjeta.TarjetaId')">
+                        Seleccionar Método de Pago
+                    </button>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarTarjetaModal" onclick="setDeleteCardId('@tarjeta.TarjetaId')">
+                        Eliminar Tarjeta
+                    </button>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            No tienes tarjetas guardadas.
+            <a href="@Url.Action("AgregarTarjeta", "TarjetasGuardadas")" class="btn btn-primary ms-2">Agregar Nueva Tarjeta</a>
+        </div>
+    }
+</div>
+
+<!-- Modal de Confirmación de Método de Pago -->
+<div class="modal fade" id="confirmarPagoModal" tabindex="-1" aria-labelledby="confirmarPagoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmarPagoLabel">Confirmar Método de Pago</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Tarjeta:</strong> @Model.TarjetaSeleccionada?.NumeroTarjeta</p>
+                <p><strong>Nombre del Titular:</strong> @Model.TarjetaSeleccionada?.NombreTitular</p>
+                <button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#politicasModal">Ver Políticas de Cancelación y Reembolso</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Confirmar Pago</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmación de Eliminación de Tarjeta -->
+<div class="modal fade" id="eliminarTarjetaModal" tabindex="-1" aria-labelledby="eliminarTarjetaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eliminarTarjetaLabel">Eliminar Tarjeta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar esta tarjeta?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form asp-action="Eliminar" asp-controller="TarjetasGuardadas" method="post">
+                    <input type="hidden" name="tarjetaId" id="deleteCardId" />
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Políticas de Cancelación y Reembolso -->
+<div class="modal fade" id="politicasModal" tabindex="-1" aria-labelledby="politicasLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="politicasLabel">Políticas de Cancelación y Reembolso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @foreach (var politica in Model.Politica.PoliticasCancelacionReembolso)
+                {
+                    <p>@politica</p>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts para Bootstrap y jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function setSelectedCard(tarjetaId) {
+        console.log("Tarjeta seleccionada:", tarjetaId);
+        // Aquí puedes implementar lógica adicional para manejar la selección
+    }
+
+    function setDeleteCardId(tarjetaId) {
+        document.getElementById("deleteCardId").value = tarjetaId;
+    }
+</script>

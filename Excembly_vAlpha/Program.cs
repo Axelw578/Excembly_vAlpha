@@ -25,6 +25,8 @@ builder.Services.AddScoped<PlanesService, PlanesService>();
 builder.Services.AddScoped<ServiciosService, ServiciosService>();
 builder.Services.AddScoped<TecnicosService, TecnicosService>();
 builder.Services.AddScoped<DireccionService, DireccionService>();
+builder.Services.AddScoped<TarjetaService, TarjetaService>();
+builder.Services.AddScoped<PoliticaService, PoliticaService>();
 
 // Configuración de autenticación de cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
