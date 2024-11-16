@@ -35,10 +35,27 @@ namespace Excembly_vAlpha.Data
         public DbSet<AsignacionTecnico> AsignacionesTecnicos { get; set; }
         public DbSet<Contratacion> Contratacion{ get; set; }
         public DbSet<ServicioAdicionalContratado> ServicioAdicionalContratado { get; set; }
+        public DbSet<ServicioAdicional> ServicioAdicional { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+
+            modelBuilder.Entity<PlanServicio>()
+    .HasKey(ps => new { ps.PlanId, ps.ServicioId }); 
+
+            modelBuilder.Entity<PlanServicio>()
+                .HasOne(ps => ps.Plan)
+                .WithMany(p => p.PlanServicios)
+                .HasForeignKey(ps => ps.PlanId);
+
+            modelBuilder.Entity<PlanServicio>()
+                .HasOne(ps => ps.Servicio)
+                .WithMany(s => s.PlanServicios)
+                .HasForeignKey(ps => ps.ServicioId);
+
 
 
             // Configuración de la relación uno a uno entre Cita y Contratacion
@@ -88,21 +105,32 @@ namespace Excembly_vAlpha.Data
                 .HasKey(p => p.PlanId);
 
             // Configuración de PlanServicio (Llave Compuesta)
-            modelBuilder.Entity<PlanServicio>()
-                .HasKey(ps => new { ps.PlanId, ps.ServicioId });
-            modelBuilder.Entity<PlanServicio>()
-                .HasOne(ps => ps.Plan)
-                .WithMany(p => p.PlanServicios)
-                .HasForeignKey(ps => ps.PlanId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<PlanServicio>()
-                .HasOne(ps => ps.Servicio)
-                .WithMany(s => s.PlanServicios)
-                .HasForeignKey(ps => ps.ServicioId)
-                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configuración de ServicioAdicional
+            modelBuilder.Entity<ServicioAdicional>()
+                .ToTable("serviciosadicionales"); // Nombre de la tabla
+
+            modelBuilder.Entity<ServicioAdicional>()
+                .HasKey(sa => new { sa.PlanId, sa.ServicioId }); // Llave compuesta
+
+            modelBuilder.Entity<ServicioAdicional>()
+                .HasOne(sa => sa.Plan)
+                .WithMany(p => p.ServiciosAdicionales)
+                .HasForeignKey(sa => sa.PlanId)
+                .OnDelete(DeleteBehavior.Restrict); // Relación con Plan
+
+            modelBuilder.Entity<ServicioAdicional>()
+                .HasOne(sa => sa.Servicio)
+                .WithMany(s => s.ServiciosAdicionales)
+                .HasForeignKey(sa => sa.ServicioId)
+                .OnDelete(DeleteBehavior.Restrict); // Relación con Servicio
+
+
+
 
             // Configuración de ServicioAdicional (Llave Compuesta)
             modelBuilder.Entity<ServicioAdicional>()
+
                 .HasKey(sa => new { sa.PlanId, sa.ServicioId });
             modelBuilder.Entity<ServicioAdicional>()
                 .HasOne(sa => sa.Plan)

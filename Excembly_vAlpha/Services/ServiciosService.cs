@@ -4,6 +4,7 @@ using Excembly_vAlpha.Data;
 using Excembly_vAlpha.Models;
 using Excembly_vAlpha.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Excembly_vAlpha.Services
 {
@@ -52,6 +53,30 @@ namespace Excembly_vAlpha.Services
                            .Include(s => s.ServiciosAdicionales)
                            .ThenInclude(sa => sa.Plan)
                            .FirstOrDefault(s => s.ServicioId == servicioId);
+        }
+
+        // Método para obtener servicios individuales por el ID del plan
+        public async Task<IEnumerable<ServicioViewModel>> ObtenerServiciosIndividualesPorPlanIdAsync(int planId)
+        {
+            var servicios = await _context.Set<Servicio>()
+                                           .Where(s => s.PlanServicios.Any(ps => ps.PlanId == planId)) // Filtramos por PlanId
+                                           .Select(s => new ServicioViewModel
+                                           {
+                                               ServicioId = s.ServicioId,
+                                               Nombre = s.Nombre,
+                                               Descripcion = s.Descripcion,
+                                               Precio = s.Precio,
+                                               ImagenUrl = s.Imagen
+                                           })
+                                           .ToListAsync();
+
+            return servicios;
+        }
+
+        public async Task<List<Servicio>> ObtenerServiciosIndividualesAsync()
+        {
+            var servicios = await _context.Servicios.ToListAsync();
+            return servicios.Where(s => s.EsIndividual).ToList(); // Filtrado en memoria
         }
 
         // Método para recuperar el ID de un servicio para pasarlo a otra vista

@@ -27,6 +27,9 @@ builder.Services.AddScoped<TecnicosService, TecnicosService>();
 builder.Services.AddScoped<DireccionService, DireccionService>();
 builder.Services.AddScoped<TarjetaService, TarjetaService>();
 builder.Services.AddScoped<PoliticaService, PoliticaService>();
+builder.Services.AddScoped<ContratacionService, ContratacionService>();
+builder.Services.AddScoped<ServicioAdicionalService, ServicioAdicionalService>();
+
 
 // Configuración de autenticación de cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

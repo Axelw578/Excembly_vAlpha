@@ -1,0 +1,123 @@
+﻿@model Excembly_vAlpha.ViewModels.ContratacionViewModel
+
+@{
+    ViewData["Title"] = "Crear Contratación";
+}
+
+<h2>Crear Contratación</h2>
+
+<form asp-action="CrearContratacion" method="post">
+    <div class="form-group">
+        <h3>Planes Disponibles</h3>
+        @if (Model.Planes != null && Model.Planes.Any())
+        {
+            <ul class="list-group">
+                @foreach (var plan in Model.Planes)
+                {
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <img src="@plan.Imagen" alt="@plan.Nombre" style="width: 50px; height: 50px; object-fit: cover;" />
+                                <strong>@plan.Nombre</strong>: @plan.Precio.ToString("C")
+                                <p>@plan.Descripcion</p>
+                            </div>
+                            <input type="radio" name="PlanId" value="@plan.PlanId" class="plan-selector" data-plan-id="@plan.PlanId" />
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No hay planes disponibles.</p>
+        }
+    </div>
+
+    <div class="form-group mt-4" id="serviciosAdicionalesContainer">
+        <h3>Servicios Adicionales del Plan Seleccionado</h3>
+        <ul class="list-group" id="serviciosAdicionalesList">
+            <li class="list-group-item">Seleccione un plan para ver los servicios adicionales disponibles.</li>
+        </ul>
+    </div>
+
+    <div class="form-group mt-4">
+        <h3>Servicios Individuales</h3>
+        @if (Model.ServiciosIndividualesDisponibles != null && Model.ServiciosIndividualesDisponibles.Any())
+        {
+            <ul class="list-group">
+                @foreach (var servicio in Model.ServiciosIndividualesDisponibles)
+                {
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <img src="@servicio.ImagenUrl" alt="@servicio.Nombre" style="width: 50px; height: 50px; object-fit: cover;" />
+                                <strong>@servicio.Nombre</strong>: @servicio.Precio.ToString("C")
+                                <p>@servicio.Descripcion</p>
+                            </div>
+                            <input type="checkbox" name="ServiciosIndividualesIds" value="@servicio.ServicioId" />
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No hay servicios individuales disponibles.</p>
+        }
+    </div>
+
+    <div class="form-group mt-4">
+        <h3>Datos del Técnico y Domicilio</h3>
+        <p>
+            <strong>Técnico Asignado:</strong> @Model.NombreTecnico <br />
+            <img src="@Model.FotoTecnicoUrl" alt="Foto del Técnico" style="width: 100px; height: 100px; object-fit: cover;" />
+        </p>
+        <p>
+            <strong>Dirección:</strong> @Model.DireccionDomicilio
+        </p>
+    </div>
+
+    <div class="form-group mt-4">
+        <button type="submit" class="btn btn-primary">Contratar</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        // Servicios adicionales por plan
+        const serviciosAdicionalesPorPlan = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
+        Model.Planes.ToDictionary(p => p.PlanId, p => p.ServiciosAdicionales)
+        ));
+
+        // Evento de selección de plan
+        document.querySelectorAll('.plan-selector').forEach(planRadio => {
+            planRadio.addEventListener('change', function () {
+                const planId = this.dataset.planId;
+                const servicios = serviciosAdicionalesPorPlan[planId] || [];
+                const serviciosContainer = document.getElementById('serviciosAdicionalesList');
+                serviciosContainer.innerHTML = "";
+
+                if (servicios.length > 0) {
+                    servicios.forEach(servicio => {
+                        const item = `
+                                    <li class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>${servicio.NombreServicio}</strong>:
+                                                <span class="text-success">${servicio.PrecioConDescuento.toFixed(2)} MXN</span>
+                                                <span class="text-muted text-decoration-line-through">${servicio.PrecioOriginal.toFixed(2)} MXN</span>
+                                                <span class="badge bg-success">-${(servicio.Descuento * 100).toFixed(0)}%</span>
+                                            </div>
+                                            <input type="checkbox" name="ServiciosAdicionalesIds" value="${servicio.ServicioId}" />
+                                        </div>
+                                    </li>`;
+                        serviciosContainer.insertAdjacentHTML('beforeend', item);
+                    });
+                } else {
+                    serviciosContainer.innerHTML = "<li class='list-group-item'>Este plan no tiene servicios adicionales.</li>";
+                }
+            });
+        });
+    </script>
+}

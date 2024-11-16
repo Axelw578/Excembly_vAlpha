@@ -15,6 +15,27 @@ namespace Excembly_vAlpha.Services
         {
             _context = context;
         }
+        public async Task<IEnumerable<Plan>> ObtenerTodosLosPlanesAsync()
+        {
+            return await _context.Planes
+                .Include(p => p.PlanServicios)
+                    .ThenInclude(ps => ps.Servicio)
+                .Include(p => p.ServiciosAdicionales)
+                    .ThenInclude(sa => sa.Servicio)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Plan>> ObtenerTodosLosPlanesFamiliarAsync()
+        {
+            return await _context.Set<Plan>()
+                .Include(p => p.PlanServicios)  // Cargar la relación PlanServicio
+                    .ThenInclude(ps => ps.Servicio)  // Cargar el Servicio relacionado
+                .Include(p => p.ServiciosAdicionales)
+                    .ThenInclude(sa => sa.Servicio)
+                .Include(p => p.DispositivosPlanFamiliar)
+                .ToListAsync();
+        }
+
 
         // Método para obtener todos los planes
         public IEnumerable<Plan> ObtenerTodosLosPlanes()
@@ -95,6 +116,14 @@ namespace Excembly_vAlpha.Services
                            .Include(s => s.ServiciosAdicionales)
                            .FirstOrDefault(s => s.ServicioId == servicioId);
         }
+
+        public async Task<List<Servicio>> ObtenerServiciosIndividualesAsync()
+        {
+            var servicios = await _context.Servicios.ToListAsync();
+            return servicios.Where(s => s.EsIndividual).ToList(); // Filtrado en memoria
+        }
+
+
 
         // Método para recuperar solo el ID de un servicio adicional específico
         public int RecuperarServicioAdicionalId(int servicioId)
