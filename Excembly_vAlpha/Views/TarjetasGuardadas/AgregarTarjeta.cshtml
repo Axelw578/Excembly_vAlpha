@@ -3,92 +3,108 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8" />
-    <title>Agregar Tarjeta</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/agregarTarjeta.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>Agregar Tarjeta</h2>
+    <div class="container">
+        <div class="tarjeta-form">
+            <div class="header">
+                <h2>@(Model.TarjetaId != null ? "Editar Tarjeta" : "Agregar una Tarjeta de Crédito o Débito")</h2>
+            </div>
 
-        <!-- Muestra los mensajes de error generales si existen -->
-        @if (!ViewData.ModelState.IsValid)
-        {
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            <div class="form-preview-container">
+                <!-- FORMULARIO -->
+                <form asp-action="@(Model.TarjetaId != null ? "EditarTarjeta" : "AgregarTarjeta")" method="post" class="form-section">
+                    <!-- Campo oculto para ID de la tarjeta (solo para edición) -->
+                    @if (Model.TarjetaId != null)
                     {
-                        <li>@error.ErrorMessage</li>
+                        <input type="hidden" asp-for="TarjetaId" />
                     }
-                </ul>
-            </div>
-        }
 
-        <form asp-action="AgregarTarjeta" asp-controller="TarjetasGuardadas" method="post" class="needs-validation" novalidate>
-            <div class="mb-3">
-                <label for="NombreTitular" class="form-label">Nombre del Titular</label>
-                <input asp-for="NombreTitular" class="form-control" required />
-                <span asp-validation-for="NombreTitular" class="text-danger"></span>
+                    <div class="form-group">
+                        <label for="NombreTitular">Nombre del Titular</label>
+                        <input asp-for="NombreTitular" class="input-field" id="nombreTitular" placeholder="e.g. Pedro Ramirez" required>
+                        @Html.ValidationMessageFor(model => model.NombreTitular, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label for="NumeroTarjeta">Número de tarjeta</label>
+                        <input asp-for="NumeroTarjeta" class="input-field" id="numeroTarjeta" maxlength="19" placeholder="e.g. 1234 5678 9123 0000" required>
+                        @Html.ValidationMessageFor(model => model.NumeroTarjeta, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group date-group">
+                        <div class="input-container">
+                            <label for="MesExpiracion">Mes</label>
+                            <input asp-for="MesExpiracion" class="small-input" id="mesExpiracion" maxlength="2" placeholder="MM" required>
+                            @Html.ValidationMessageFor(model => model.MesExpiracion, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="input-container">
+                            <label for="AñoExpiracion">Año</label>
+                            <input asp-for="AñoExpiracion" class="small-input" id="añoExpiracion" maxlength="4" placeholder="AAAA" min="2024" max="2035" required>
+                            @Html.ValidationMessageFor(model => model.AñoExpiracion, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="CVV">Código de Seguridad (CVV)</label>
+                        <input asp-for="CVV" class="input-field small-input" id="cvv" maxlength="3" placeholder="e.g. 123" required>
+                        @Html.ValidationMessageFor(model => model.CVV, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Banco">Banco</label>
+                        <input asp-for="Banco" class="input-field" id="banco" placeholder="e.g. Banco del Estado">
+                        @Html.ValidationMessageFor(model => model.Banco, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Marca">Marca de la tarjeta</label>
+                        <input asp-for="Marca" class="input-field" id="marca" placeholder="e.g. Visa, MasterCard">
+                        @Html.ValidationMessageFor(model => model.Marca, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label for="TipoTarjeta">Tipo de tarjeta</label>
+                        <select asp-for="TipoTarjeta" id="tipoTarjeta" class="input-field" required>
+                            <option value="">Seleccione tipo</option>
+                            <option value="Credito">Crédito</option>
+                            <option value="Debito">Débito</option>
+                        </select>
+                        @Html.ValidationMessageFor(model => model.TipoTarjeta, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save">
+                            @(Model.TarjetaId != null ? "Guardar Cambios" : "Guardar Tarjeta")
+                        </button>
+                        <button type="button" class="btn-back" onclick="window.location.href='/TarjetasGuardadas/Index';">Volver</button>
+                    </div>
+                </form>
+
+                <!-- Vista previa -->
+                <div class="tarjeta-preview">
+                    <div class="icono-tarjeta">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="tarjeta-numero" id="preview-numeroTarjeta">
+                        @(Model.NumeroTarjeta != null ? Model.NumeroTarjeta : "0000 0000 0000 0000")
+                    </div>
+                    <div class="tarjeta-nombre" id="preview-nombreTitular">
+                        @(Model.NombreTitular != null ? Model.NombreTitular : "NOMBRE TITULAR")
+                    </div>
+                    <div class="tarjeta-fecha" id="preview-fechaExpiracion">
+                        @(Model.MesExpiracion.ToString("D2") + "/" + Model.AñoExpiracion.ToString("D2"))
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="NumeroTarjeta" class="form-label">Número de Tarjeta</label>
-                <input asp-for="NumeroTarjeta" class="form-control" type="text" required pattern="\d{16}" maxlength="16" />
-                <span asp-validation-for="NumeroTarjeta" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label for="MesExpiracion" class="form-label">Mes de Expiración</label>
-                <input asp-for="MesExpiracion" class="form-control" type="number" min="1" max="12" required />
-                <span asp-validation-for="MesExpiracion" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label for="AñoExpiracion" class="form-label">Año de Expiración</label>
-                <input asp-for="AñoExpiracion" class="form-control" type="number" min="2023" required />
-                <span asp-validation-for="AñoExpiracion" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label for="CVV" class="form-label">CVV</label>
-                <input asp-for="CVV" class="form-control" type="password" required pattern="\d{3,4}" maxlength="4" />
-                <span asp-validation-for="CVV" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label for="Banco" class="form-label">Banco</label>
-                <input asp-for="Banco" class="form-control" required />
-                <span asp-validation-for="Banco" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label for="Marca" class="form-label">Marca</label>
-                <input asp-for="Marca" class="form-control" required />
-                <span asp-validation-for="Marca" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label for="TipoTarjeta" class="form-label">Tipo de Tarjeta</label>
-                <select asp-for="TipoTarjeta" class="form-control" required>
-                    <option value="">Seleccione un tipo</option>
-                    <option value="Debito">Débito</option>
-                    <option value="Credito">Crédito</option>
-                </select>
-                <span asp-validation-for="TipoTarjeta" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary">Guardar Tarjeta</button>
-        </form>
+        </div>
     </div>
 
-    <script>
-        (function () {
-            'use strict';
-            var forms = document.querySelectorAll('.needs-validation');
-            Array.prototype.slice.call(forms).forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        })();
-    </script>
+    <script src="~/js/agregarTarjeta.js"></script>
 </body>
 </html>

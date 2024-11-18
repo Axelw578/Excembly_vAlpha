@@ -1,0 +1,88 @@
+﻿body {
+}
+.custom-card {
+    background-color: #1e1e2f;
+    border-radius: 16px;
+    color: #ffc107;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+    .custom-card .icon {
+        font-size: 32px;
+        margin-bottom: 15px;
+        color: #ffc107;
+    }
+
+    .custom-card .card-number {
+        font-size: 18px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        margin-bottom: 15px;
+    }
+
+    .custom-card .card-footer {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+    }
+
+    .custom-card .card-actions {
+        margin-top: 15px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+.modal-header {
+    border-bottom: 0;
+}
+
+.modal-footer {
+    border-top: 0;
+}
+
+.modal-content {
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header.bg-primary {
+    background-color: #007bff !important;
+}
+
+.modal-header.bg-danger {
+    background-color: #dc3545 !important;
+}
+/* Botón agregar */
+.agregar-metodo {
+    display: flex;
+}
+
+.btn-agregar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #000000cf;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 150px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+    .btn-agregar:hover {
+        background: #000000;
+    }
+/* Ajustar posición del botón de agregar */
+.text-center.mt-3 button {
+    width: 900%;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 15px;
+}
+

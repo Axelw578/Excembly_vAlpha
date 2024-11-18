@@ -124,34 +124,76 @@ namespace Excembly_vAlpha.Controllers
 
 
 
+        public async Task<IActionResult> Editar(int tarjetaId)
+        {
+            try
+            {
+                var tarjeta = await _tarjetaService.SeleccionarTarjetaAsync(tarjetaId);
+                if (tarjeta == null)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                // Mapea el modelo a la vista
+                var tarjetaViewModel = new TarjetaViewModel
+                {
+                    NombreTitular = tarjeta.NombreTitular,
+                    NumeroTarjeta = tarjeta.NumeroTarjeta,
+                    MesExpiracion = tarjeta.FechaExpiracion.Month,
+                    AñoExpiracion = tarjeta.FechaExpiracion.Year,
+                    CVV = tarjeta.CVV,
+                    Banco = tarjeta.Banco,
+                    Marca = tarjeta.Marca,
+                    TipoTarjeta = tarjeta.TipoTarjeta
+                };
+
+                return View("EditarTarjeta", tarjetaViewModel); // Reutiliza la vista de editar
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al cargar la tarjeta para editar. Tarjeta ID: {TarjetaId}", tarjetaId);
+                return View("Error");
+            }
+        }
 
 
+
+
+
+        // Eliminar tarjeta
         [HttpPost]
         public async Task<IActionResult> Eliminar(int tarjetaId)
         {
             try
             {
-                var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(usuarioIdClaim) || !int.TryParse(usuarioIdClaim, out int usuarioId))
+                var usuarioId = ObtenerUsuarioId(); // Verificar que esto no sea null
+                if (usuarioId == null)
                 {
                     return RedirectToAction("Index", "Login");
                 }
 
-                var tarjeta = await _tarjetaService.ObtenerTarjetaPorUsuarioIdAsync(usuarioId);
-                if (tarjeta != null && tarjeta.TarjetaId == tarjetaId && await _tarjetaService.EliminarTarjetaAsync(tarjetaId))
+                var tarjeta = await _tarjetaService.ObtenerTarjetaPorUsuarioIdAsync(usuarioId.Value);
+                if (tarjeta == null || tarjeta.TarjetaId != tarjetaId)
                 {
-                    return RedirectToAction("Agregar");
+                    return Json(new { success = false, message = "No se encontró la tarjeta o no tienes permisos para eliminarla." });
                 }
 
-                _logger.LogWarning("Tarjeta no encontrada o no autorizada para eliminación.");
-                return RedirectToAction("Index");
+                var eliminado = await _tarjetaService.EliminarTarjetaAsync(tarjetaId);
+                if (eliminado)
+                {
+                    return Json(new { success = true });
+                }
+
+                return Json(new { success = false, message = "No se pudo eliminar la tarjeta." });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al eliminar tarjeta.");
-                return View("Error");
+                return Json(new { success = false, message = "Ocurrió un error inesperado." });
             }
         }
+
+
 
         public async Task<IActionResult> Seleccionar(int tarjetaId)
         {
@@ -172,6 +214,9 @@ namespace Excembly_vAlpha.Controllers
             }
         }
 
+
+
+
         public async Task<IActionResult> ConfirmarMetodoDePago(int tarjetaId)
         {
             try
@@ -190,5 +235,16 @@ namespace Excembly_vAlpha.Controllers
                 return View("Error");
             }
         }
+
+        private int? ObtenerUsuarioId()
+        {
+            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(usuarioIdClaim, out int usuarioId))
+            {
+                return usuarioId;
+            }
+            return null;
+        }
+
     }
 }

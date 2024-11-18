@@ -126,6 +126,43 @@ namespace Excembly_vAlpha.Services
             }
         }
 
+        public async Task<Result> EditarTarjetaAsync(int tarjetaId, TarjetaGuardada tarjetaActualizada)
+        {
+            try
+            {
+                var tarjeta = await _context.TarjetasGuardadas.FindAsync(tarjetaId);
+
+                if (tarjeta == null)
+                {
+                    _logger.LogWarning("No se encontró la tarjeta con ID {TarjetaId} para editar.", tarjetaId);
+                    return new Result { IsSuccess = false, ErrorMessage = "Tarjeta no encontrada." };
+                }
+
+                // Actualizar los campos necesarios
+                tarjeta.NombreTitular = tarjetaActualizada.NombreTitular;
+                tarjeta.NumeroTarjeta = tarjetaActualizada.NumeroTarjeta;
+                tarjeta.FechaExpiracion = tarjetaActualizada.FechaExpiracion;
+                tarjeta.CVV = tarjetaActualizada.CVV;
+                tarjeta.Banco = tarjetaActualizada.Banco;
+
+                _context.TarjetasGuardadas.Update(tarjeta);
+                int resultado = await _context.SaveChangesAsync();
+
+                if (resultado > 0)
+                {
+                    return new Result { IsSuccess = true };
+                }
+
+                return new Result { IsSuccess = false, ErrorMessage = "No se pudieron guardar los cambios en la tarjeta." };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al editar la tarjeta con ID {TarjetaId}", tarjetaId);
+                return new Result { IsSuccess = false, ErrorMessage = ex.Message };
+            }
+        }
+
+
         public async Task<TarjetaGuardada> SeleccionarTarjetaAsync(int tarjetaId)
         {
             try

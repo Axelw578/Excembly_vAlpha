@@ -1,112 +1,72 @@
 ﻿@model Excembly_vAlpha.ViewModels.MetodoPagoViewModel
+
 @{
     ViewData["Title"] = "Métodos de Pago";
 }
 
+<link rel="stylesheet" href="~/css/Tarjeta.css">
+
 <div class="container mt-5">
-    <h2 class="mb-4">Métodos de Pago</h2>
+    <div class="row">
+        <!-- Tarjetas Guardadas -->
+        <div class="col-md-8">
+            <div class="card border-light shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h5>Métodos de Pago Guardados</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.TarjetasGuardadas?.Any() == true)
+                    {
+                        <div class="row row-cols-1 row-cols-md-2 g-3">
+                            @foreach (var tarjeta in Model.TarjetasGuardadas)
+                            {
+                                <div class="col">
+                                    <div class="custom-card">
+                                        <div class="icon">
+                                            <i class="bi bi-credit-card-fill"></i>
+                                        </div>
+                                        <div class="card-number">
+                                            **** **** **** @tarjeta.NumeroTarjeta.Substring(tarjeta.NumeroTarjeta.Length - 4)
+                                        </div>
 
-    @if (Model.TarjetasGuardadas?.Any() == true)
-    {
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Tarjetas Guardadas</h5>
-                @foreach (var tarjeta in Model.TarjetasGuardadas)
-                {
-                    <p><strong>Tarjeta:</strong> @tarjeta.NumeroTarjeta - @tarjeta.NombreTitular</p>
-                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#confirmarPagoModal" onclick="setSelectedCard('@tarjeta.TarjetaId')">
-                        Seleccionar Método de Pago
-                    </button>
-                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarTarjetaModal" onclick="setDeleteCardId('@tarjeta.TarjetaId')">
-                        Eliminar Tarjeta
-                    </button>
-                }
+                                        <div class="card-footer">
+                                            <span>@tarjeta.NombreTitular</span>
+                                            <span>@tarjeta.MesExpiracion.ToString("D2")/@tarjeta.AñoExpiracion.ToString("D2")</span>
+                                        </div>
+
+                                        <div class="card-actions">
+                                            <button class="btn btn-outline-warning btn-sm" title="Editar" onclick="location.href='@Url.Action("EditarTarjeta", "TarjetasGuardadas", new { id = tarjeta.TarjetaId })'">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm" title="Eliminar" onclick="eliminarTarjeta('@tarjeta.TarjetaId')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center">
+                            <p class="text-muted">No tienes métodos de pago guardados.</p>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
-    }
-    else
-    {
-        <div class="alert alert-info" role="alert">
-            No tienes tarjetas guardadas.
-            <a href="@Url.Action("AgregarTarjeta", "TarjetasGuardadas")" class="btn btn-primary ms-2">Agregar Nueva Tarjeta</a>
-        </div>
-    }
-</div>
 
-<!-- Modal de Confirmación de Método de Pago -->
-<div class="modal fade" id="confirmarPagoModal" tabindex="-1" aria-labelledby="confirmarPagoLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmarPagoLabel">Confirmar Método de Pago</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p><strong>Tarjeta:</strong> @Model.TarjetaSeleccionada?.NumeroTarjeta</p>
-                <p><strong>Nombre del Titular:</strong> @Model.TarjetaSeleccionada?.NombreTitular</p>
-                <button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#politicasModal">Ver Políticas de Cancelación y Reembolso</button>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary">Confirmar Pago</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal de Confirmación de Eliminación de Tarjeta -->
-<div class="modal fade" id="eliminarTarjetaModal" tabindex="-1" aria-labelledby="eliminarTarjetaLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="eliminarTarjetaLabel">Eliminar Tarjeta</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>¿Estás seguro de que deseas eliminar esta tarjeta?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <form asp-action="Eliminar" asp-controller="TarjetasGuardadas" method="post">
-                    <input type="hidden" name="tarjetaId" id="deleteCardId" />
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
-            </div>
+        <!-- Botón para Agregar Método de Pago -->
+        <div class="col-md-4 d-flex align-items-center justify-content-end mt-3">
+            <button class="btn-agregar" onclick="location.href='@Url.Action("AgregarTarjeta", "TarjetasGuardadas")'" style="width: 250px; height: 100px; font-size: 18px;">
+                <i class="bi bi-plus-circle" style="font-size: 32px; margin-bottom: 5px;"></i>
+                <span>Agregar un método de pago</span>
+            </button>
         </div>
     </div>
 </div>
 
-<!-- Modal de Políticas de Cancelación y Reembolso -->
-<div class="modal fade" id="politicasModal" tabindex="-1" aria-labelledby="politicasLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="politicasLabel">Políticas de Cancelación y Reembolso</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                @foreach (var politica in Model.Politica.PoliticasCancelacionReembolso)
-                {
-                    <p>@politica</p>
-                }
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Scripts para Bootstrap y jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    function setSelectedCard(tarjetaId) {
-        console.log("Tarjeta seleccionada:", tarjetaId);
-        // Aquí puedes implementar lógica adicional para manejar la selección
-    }
 
-    function setDeleteCardId(tarjetaId) {
-        document.getElementById("deleteCardId").value = tarjetaId;
-    }
 </script>
