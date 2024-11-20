@@ -8,6 +8,12 @@
         public string NumeroEdificio { get; set; }
         public string DescripcionEdificio { get; set; }
         public string ReferenciaEdificio { get; set; }
+       
+        // Nueva propiedad calculada
+        public string Descripcion =>
+            $"{Calle} {NumeroEdificio}, {Colonia}. {DescripcionEdificio}. Ref: {ReferenciaEdificio}";
+
+
     }
 
 }

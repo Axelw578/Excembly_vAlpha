@@ -6,21 +6,41 @@
 
 <!-- Incluir Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/css/contratacion.css" rel="stylesheet" />
 
+<!-- Contenedor principal de contrataciones -->
 <div class="container mt-5">
-    <h2>Mis Contrataciones</h2>
 
+    <!-- Título dentro de un contenedor con color personalizado -->
+    <div class="row">
+        <div class="col-12">
+            <div class="titulo-container p-3 text-center">
+                <h2>@ViewData["Title"]</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verifica si no hay contrataciones -->
     @if (ViewBag.SinContrataciones != null)
+
     {
         <div class="alert alert-warning">
-            @ViewBag.SinContrataciones
+            <h4 class="alert-heading">¡No tienes contrataciones activas!</h4>
+            <p>No tienes servicios contratados en este momento. Por favor, crea una nueva contratación para acceder a nuestros servicios.</p>
+        </div>
+
+        <!-- Imagen ilustrativa -->
+        <img src="https://cdn-icons-png.flaticon.com/512/5385/5385567.png" alt="Sin Contrataciones" class="no-contracts-image" />
+
+        <!-- Botón para crear nueva contratación -->
+        <div class="text-center">
+            <a href="@Url.Action("Crear", "Contratacion")" class="btn btn-success mb-3">Crear Nueva Contratación</a>
         </div>
     }
 
-    <!-- Botón para crear nueva contratación -->
-    <a href="@Url.Action("Crear", "Contratacion")" class="btn btn-success mb-3">Crear Nueva Contratación</a>
-
+    <!-- Listado de contrataciones -->
     @foreach (var contratacion in Model)
+
     {
         <div class="card mb-4">
             <div class="card-body">

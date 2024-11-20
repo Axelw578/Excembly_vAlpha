@@ -40,6 +40,36 @@ namespace Excembly_vAlpha.Services
             }
         }
 
+        // Agrega este método si aún no existe
+        public async Task<(bool IsSuccess, string ErrorMessage)> ActualizarTarjetaAsync(TarjetaGuardada tarjeta)
+        {
+            try
+            {
+                // Lógica para actualizar la tarjeta en la base de datos
+                // Por ejemplo:
+                var tarjetaExistente = await _context.TarjetasGuardadas.FindAsync(tarjeta.TarjetaId);
+                if (tarjetaExistente == null)
+                {
+                    return (false, "Tarjeta no encontrada");
+                }
+
+                tarjetaExistente.NombreTitular = tarjeta.NombreTitular;
+                tarjetaExistente.NumeroTarjeta = tarjeta.NumeroTarjeta;
+                tarjetaExistente.FechaExpiracion = tarjeta.FechaExpiracion;
+                tarjetaExistente.CVV = tarjeta.CVV;
+                tarjetaExistente.Banco = tarjeta.Banco;
+                tarjetaExistente.Marca = tarjeta.Marca;
+                tarjetaExistente.TipoTarjeta = tarjeta.TipoTarjeta;
+
+                await _context.SaveChangesAsync();
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
 
         public async Task<string> ObtenerTarjetaCensuradaAsync(int usuarioId)
         {
@@ -160,6 +190,12 @@ namespace Excembly_vAlpha.Services
                 _logger.LogError(ex, "Error al editar la tarjeta con ID {TarjetaId}", tarjetaId);
                 return new Result { IsSuccess = false, ErrorMessage = ex.Message };
             }
+        }
+
+
+        public async Task<TarjetaGuardada> ObtenerTarjetaPorIdAsync(int tarjetaId)
+        {
+            return await _context.TarjetasGuardadas.FirstOrDefaultAsync(t => t.TarjetaId == tarjetaId);
         }
 
 

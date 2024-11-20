@@ -34,6 +34,7 @@ namespace Excembly_vAlpha.Models
         public int? PlanId { get; set; }
         public Plan Plan { get; set; }
 
+
         // Propiedad de navegación para PlanPersonalizado
         public ICollection<PlanPersonalizado> PlanesPersonalizados { get; set; }
 

@@ -1,0 +1,72 @@
+﻿/* Contenedor seleccionable */
+.selectable-card {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+    /* Efecto de hover (zoom) */
+    .selectable-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Estilo para la tarjeta seleccionada */
+    .selectable-card.selected-card {
+        background-color: #e9f5ff;
+        border: 2px solid #007bff;
+        border-radius: 10px;
+    }
+
+    /* Imagen de las opciones */
+    .selectable-card img {
+        border-radius: 5px;
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+    }
+
+    /* Estilo de texto */
+    .selectable-card strong {
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    .selectable-card p {
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+/* Estilo del botón */
+button.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    transition: background-color 0.2s ease-in-out;
+}
+
+    button.btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+/* Ajuste para las listas */
+.list-group-item {
+    border: none;
+    margin-bottom: 8px;
+}
+
+/* Servicios individuales */
+.individual-service {
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+    .individual-service:hover {
+        background-color: #e0f7fa;
+        transform: scale(1.02);
+    }
+
+    .individual-service.selected-service {
+        background-color: #b2ebf2;
+    }

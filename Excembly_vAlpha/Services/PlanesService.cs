@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Excembly_vAlpha.Data;
 using Excembly_vAlpha.Models;
+using Excembly_vAlpha.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Excembly_vAlpha.Services
@@ -50,27 +51,43 @@ namespace Excembly_vAlpha.Services
         }
 
         // Método para obtener un plan por ID
-        public Plan ObtenerPlanPorId(int planId)
+        public PlanViewModel ObtenerPlanPorId(int planId)
         {
-            var plan = _context.Set<Plan>()
-                               .Include(p => p.PlanServicios)
-                                   .ThenInclude(ps => ps.Servicio)
-                               .Include(p => p.ServiciosAdicionales)
-                                   .ThenInclude(sa => sa.Servicio)
-                               .Include(p => p.DispositivosPlanFamiliar)
-                               .FirstOrDefault(p => p.PlanId == planId);
+            var plan = _context.Planes
+                .Include(p => p.PlanServicios)
+                    .ThenInclude(ps => ps.Servicio)
+                .Include(p => p.ServiciosAdicionales)
+                    .ThenInclude(sa => sa.Servicio)
+                .FirstOrDefault(p => p.PlanId == planId);
 
-            if (plan != null)
+            if (plan == null) return null;
+
+            return new PlanViewModel
             {
-                // Aplicar descuento a los servicios adicionales
-                foreach (var servicioAdicional in plan.ServiciosAdicionales)
+                PlanId = plan.PlanId,
+                Nombre = plan.Nombre,
+                Descripcion = plan.Descripcion,
+                Precio = plan.Precio,
+                Imagen = plan.Imagen,
+                ServiciosIncluidos = plan.PlanServicios.Select(ps => ps.Servicio.Nombre).ToList(),
+                ServiciosAdicionales = plan.ServiciosAdicionales.Select(sa => new ServicioAdicionalViewModel
                 {
-                    servicioAdicional.Servicio.Precio -= servicioAdicional.Servicio.Precio * servicioAdicional.Descuento;
-                }
-            }
-
-            return plan;
+                    ServicioId = sa.ServicioId,
+                    NombreServicio = sa.Servicio.Nombre,
+                    PrecioOriginal = sa.Servicio.Precio,
+                    Descuento = sa.Descuento,
+                    PrecioConDescuento = AplicarDescuento(sa.Servicio.Precio, sa.Descuento)
+                }).ToList()
+            };
         }
+
+        public decimal AplicarDescuento(decimal precioOriginal, decimal descuento)
+        {
+            return precioOriginal - (precioOriginal * descuento);
+        }
+
+
+
 
         // Método para guardar una contratación de plan
         public async Task<int> GuardarContratacionAsync(int planId, string usuarioEmail)

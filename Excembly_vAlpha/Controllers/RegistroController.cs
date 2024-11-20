@@ -59,14 +59,6 @@ namespace Excembly_vAlpha.Controllers
                 {
                     TempData["RegistroExitoso"] = "Usuario registrado con éxito.";
 
-                    //// Verifica si el usuario quiere registrar su dirección
-                    //if (model.RegistrarDireccion)
-                    //{
-                    //    // Redirige a la acción de registrar dirección, pasando el ID del usuario recién registrado
-                    //    return RedirectToAction("RegistrarDireccion", "Direccion", new { usuarioId = nuevoUsuario.UsuarioId });
-                    //}
-
-                    // Si no desea registrar la dirección, redirige a la página de inicio de sesión
                     return RedirectToAction("Index", "Login");
                 }
 

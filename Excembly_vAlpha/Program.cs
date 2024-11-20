@@ -8,13 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Configuración de la base de datos
 builder.Services.AddDbContext<ExcemblyDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection")),
+        mysqlOptions => mysqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
     )
 );
+
 
 builder.Services.AddHttpContextAccessor();
 
@@ -29,6 +30,8 @@ builder.Services.AddScoped<TarjetaService, TarjetaService>();
 builder.Services.AddScoped<PoliticaService, PoliticaService>();
 builder.Services.AddScoped<ContratacionService, ContratacionService>();
 builder.Services.AddScoped<ServicioAdicionalService, ServicioAdicionalService>();
+builder.Services.AddScoped<CitasService, CitasService>();
+builder.Services.AddScoped<CuentaService, CuentaService>();
 
 
 // Configuración de autenticación de cookies

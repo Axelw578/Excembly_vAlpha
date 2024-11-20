@@ -11,5 +11,7 @@
         // Relaciones
         public Plan Plan { get; set; }
         public Servicio Servicio { get; set; }
+        // Propiedad calculada para obtener el nombre del servicio
+        public string Nombre => Servicio?.Nombre ?? "Servicio desconocido";
     }
 }

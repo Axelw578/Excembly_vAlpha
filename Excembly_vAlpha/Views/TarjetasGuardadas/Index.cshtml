@@ -35,10 +35,14 @@
                                         </div>
 
                                         <div class="card-actions">
-                                            <button class="btn btn-outline-warning btn-sm" title="Editar" onclick="location.href='@Url.Action("EditarTarjeta", "TarjetasGuardadas", new { id = tarjeta.TarjetaId })'">
+                                            <button class="btn btn-outline-info btn-sm" title="Seleccionar" onclick="location.href='@Url.Action("Seleccionar", "TarjetasGuardadas", new { tarjetaId = tarjeta.TarjetaId })'">
+                                                <i class="bi bi-check-circle"></i>
+                                            </button>
+                                            <button class="btn btn-outline-warning btn-sm" title="Editar" onclick="location.href='@Url.Action("Editar", "TarjetasGuardadas", new { tarjetaId = tarjeta.TarjetaId })'">
                                                 <i class="bi bi-pencil"></i>
                                             </button>
-                                            <button class="btn btn-outline-danger btn-sm" title="Eliminar" onclick="eliminarTarjeta('@tarjeta.TarjetaId')">
+
+                                            <button class="btn btn-outline-danger btn-sm" title="Eliminar" onclick="confirmarEliminar('@tarjeta.TarjetaId')">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -68,5 +72,35 @@
 </div>
 
 <script>
+    // Confirmar eliminación de tarjeta pruba
+    function confirmarEliminar(tarjetaId) {
+        if (confirm("¿Estás seguro de que deseas eliminar esta tarjeta?")) {
+            eliminarTarjeta(tarjetaId);
+        }
+    }
 
+    // Función para eliminar tarjeta prueba
+    async function eliminarTarjeta(tarjetaId) {
+        try {
+            const response = await fetch('@Url.Action("Eliminar", "TarjetasGuardadas")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()  
+                body: JSON.stringify({ tarjetaId: tarjetaId })
+            });
+            const result = await response.json();
+
+            if (result.success) {
+                alert("Tarjeta eliminada con éxito.");
+                location.reload(); 
+            } else {
+                alert(result.message || "Error al eliminar la tarjeta.");
+            }
+        } catch (error) {
+            alert("Ocurrió un error al intentar eliminar la tarjeta.");
+        }
+    }
 </script>
+
+<script src="~/js/Tarjeta.js"></script>

@@ -59,9 +59,8 @@
                 </div>
 
                 <!-- Botón para contratar -->
-                <a href="@Url.Action("Contratar", "Planes", new { id = plan.PlanId })"
-                   class="btn btn-primary mt-2 contratar-btn"
-                   title="Haz clic para contratar este plan">Contratar</a>
+                <a href="@Url.Action("Crear", "Contratacion", new { planId = plan.PlanId, serviciosAdicionalesSeleccionados = string.Join(",", plan.ServiciosAdicionales.Select(s => s.ServicioId)) })"
+                   class="btn btn-primary mt-2 contratar-btn" title="Haz clic para contratar este plan">Contratar</a>
 
             </div>
         }

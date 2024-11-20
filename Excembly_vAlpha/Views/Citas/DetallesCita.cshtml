@@ -1,0 +1,117 @@
+﻿@model Excembly_vAlpha.ViewModels.DetalleCitaViewModel
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Detalles de la Cita</h2>
+
+    <!-- Mensajes de éxito o error -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Información de la cita -->
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <i class="bi bi-calendar-event"></i> Información de la Cita
+        </div>
+        <div class="card-body">
+            <p><strong>Fecha de la Cita:</strong> @Model.FechaCita.ToString("dd/MM/yyyy HH:mm")</p>
+            <p>
+                <strong>Estado:</strong>
+                <span class="badge bg-@EstadoClase(Model.EstadoCita)">
+                    @Model.EstadoCita
+                </span>
+            </p>
+            <p><strong>Tipo de Servicio:</strong> @(Model.Domicilio ? "A domicilio" : "En sucursal")</p>
+            <p><strong>Comentarios:</strong> @(!string.IsNullOrEmpty(Model.Comentarios) ? Model.Comentarios : "No hay comentarios adicionales.")</p>
+            <p>
+                <strong>Dirección:</strong> @(Model.Direccion != null
+                ? $"{Model.Direccion.Calle}, {Model.Direccion.Colonia}, {Model.Direccion.NumeroEdificio}"
+                : "Sin dirección asignada")
+            </p>
+            <p><strong>Técnico Asignado:</strong> @(Model.TecnicoId > 0 ? $"Técnico #{Model.TecnicoId}" : "Pendiente de asignar")</p>
+
+            <p><strong>Plan Asociado:</strong> @(Model.Plan?.Nombre ?? "No especificado")</p>
+            @if (Model.FechaCitaModificada.HasValue)
+            {
+                <p><strong>Fecha Modificada:</strong> @Model.FechaCitaModificada.Value.ToString("dd/MM/yyyy HH:mm")</p>
+            }
+        </div>
+    </div>
+
+    <!-- Información de la contratación -->
+    @if (Model.Contratacion != null)
+    {
+        <div class="card mt-4">
+            <div class="card-header bg-success text-white">
+                <i class="bi bi-bag-check"></i> Información de la Contratación
+            </div>
+            <div class="card-body">
+                <p><strong>ID de la Contratación:</strong> @Model.Contratacion.ContratacionId</p>
+                <p><strong>Plan:</strong> @(Model.Plan?.Nombre ?? "No especificado")</p>
+                <h5>Servicios Adicionales Contratados</h5>
+                <ul>
+                    @if (Model.ServiciosAdicionales.Any())
+                    {
+                        @foreach (var servicio in Model.ServiciosAdicionales)
+                        {
+                            <li>@servicio.Nombre</li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="text-muted">No hay servicios adicionales asociados.</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning mt-4" role="alert">
+            <i class="bi bi-info-circle"></i> No se encontró información de la contratación asociada.
+        </div>
+    }
+
+    <!-- Botones de acción -->
+    <div class="mt-4">
+        <a href="@Url.Action("MisCitas", "Citas")" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver a Mis Citas
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto cerrar alertas después de 5 segundos
+        setTimeout(() => {
+            document.querySelectorAll('.alert-dismissible').forEach(alert => {
+                new bootstrap.Alert(alert).close();
+            });
+        }, 5000);
+    </script>
+}
+
+@functions {
+    // Clase Bootstrap para el estado
+    private string EstadoClase(string estado)
+    {
+        return estado switch
+        {
+            "Pendiente" => "warning",
+            "Confirmada" => "success",
+            "Cancelada" => "danger",
+            _ => "secondary"
+        };
+    }
+}

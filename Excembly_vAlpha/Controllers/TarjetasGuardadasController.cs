@@ -45,6 +45,7 @@ namespace Excembly_vAlpha.Controllers
                 {
                     TarjetasGuardadas = tarjetas.Select(t => new TarjetaViewModel
                     {
+                        TarjetaId = t.TarjetaId, 
                         NombreTitular = t.NombreTitular,
                         NumeroTarjeta = t.NumeroTarjeta,
                         MesExpiracion = t.FechaExpiracion.Month,
@@ -67,6 +68,7 @@ namespace Excembly_vAlpha.Controllers
                 return View("Error");
             }
         }
+
 
 
         public IActionResult AgregarTarjeta()
@@ -104,7 +106,7 @@ namespace Excembly_vAlpha.Controllers
 
                     if (!resultado.IsSuccess)
                     {
-                        // Si hay un error, añade el mensaje de error específico a ModelState
+                        
                         ModelState.AddModelError("", resultado.ErrorMessage);
                         return View("AgregarTarjeta", model);
                     }
@@ -124,49 +126,14 @@ namespace Excembly_vAlpha.Controllers
 
 
 
-        public async Task<IActionResult> Editar(int tarjetaId)
-        {
-            try
-            {
-                var tarjeta = await _tarjetaService.SeleccionarTarjetaAsync(tarjetaId);
-                if (tarjeta == null)
-                {
-                    return RedirectToAction("Index");
-                }
-
-                // Mapea el modelo a la vista
-                var tarjetaViewModel = new TarjetaViewModel
-                {
-                    NombreTitular = tarjeta.NombreTitular,
-                    NumeroTarjeta = tarjeta.NumeroTarjeta,
-                    MesExpiracion = tarjeta.FechaExpiracion.Month,
-                    AñoExpiracion = tarjeta.FechaExpiracion.Year,
-                    CVV = tarjeta.CVV,
-                    Banco = tarjeta.Banco,
-                    Marca = tarjeta.Marca,
-                    TipoTarjeta = tarjeta.TipoTarjeta
-                };
-
-                return View("EditarTarjeta", tarjetaViewModel); // Reutiliza la vista de editar
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al cargar la tarjeta para editar. Tarjeta ID: {TarjetaId}", tarjetaId);
-                return View("Error");
-            }
-        }
 
 
-
-
-
-        // Eliminar tarjeta
         [HttpPost]
         public async Task<IActionResult> Eliminar(int tarjetaId)
         {
             try
             {
-                var usuarioId = ObtenerUsuarioId(); // Verificar que esto no sea null
+                var usuarioId = ObtenerUsuarioId();
                 if (usuarioId == null)
                 {
                     return RedirectToAction("Index", "Login");
@@ -194,7 +161,6 @@ namespace Excembly_vAlpha.Controllers
         }
 
 
-
         public async Task<IActionResult> Seleccionar(int tarjetaId)
         {
             try
@@ -214,6 +180,106 @@ namespace Excembly_vAlpha.Controllers
             }
         }
 
+        // Editar tarjeta
+        [HttpGet]
+        public async Task<IActionResult> Editar(int tarjetaId)
+        {
+            try
+            {
+                // Recuperar el usuario actual
+                var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(usuarioIdClaim) || !int.TryParse(usuarioIdClaim, out int usuarioId))
+                {
+                    return RedirectToAction("Index", "Login");
+                }
+
+                // Recuperar la tarjeta por ID
+                var tarjeta = await _tarjetaService.ObtenerTarjetaPorIdAsync(tarjetaId);
+                if (tarjeta == null || tarjeta.UsuarioId != usuarioId) // Verifica que la tarjeta pertenece al usuario
+                {
+                    return RedirectToAction("Index"); // Si no es la tarjeta del usuario, redirigir al índice
+                }
+
+                // Mapear los datos de la tarjeta al nuevo ViewModel de edición
+                var editarTarjetaViewModel = new EditarTarjetaViewModel
+                {
+                    TarjetaId = tarjeta.TarjetaId,
+                    NombreTitular = tarjeta.NombreTitular,
+                    NumeroTarjeta = tarjeta.NumeroTarjeta,
+                    MesExpiracion = tarjeta.FechaExpiracion.Month,
+                    AñoExpiracion = tarjeta.FechaExpiracion.Year,
+                    CVV = tarjeta.CVV,
+                    Banco = tarjeta.Banco,
+                    Marca = tarjeta.Marca,
+                    TipoTarjeta = tarjeta.TipoTarjeta
+                };
+
+                return View(editarTarjetaViewModel); // Devuelve la vista con el modelo adecuado
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al cargar tarjeta para editar.");
+                return View("Error"); // Si ocurre un error, muestra la vista de error
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Editar(int tarjetaId, EditarTarjetaViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(model); 
+                }
+
+                // Verificar que la fecha de expiración es válida
+                if (model.MesExpiracion < 1 || model.MesExpiracion > 12)
+                {
+                    ModelState.AddModelError("MesExpiracion", "El mes de expiración debe estar entre 1 y 12.");
+                    return View(model);
+                }
+
+                if (model.AñoExpiracion < DateTime.Now.Year || (model.AñoExpiracion == DateTime.Now.Year && model.MesExpiracion < DateTime.Now.Month))
+                {
+                    ModelState.AddModelError("AñoExpiracion", "La tarjeta no puede estar expirado.");
+                    return View(model);
+                }
+
+                // Mapear los datos del ViewModel a una entidad de TarjetaGuardada
+                var tarjetaActualizada = new TarjetaGuardada
+                {
+                    TarjetaId = tarjetaId,
+                    NombreTitular = model.NombreTitular,
+                    NumeroTarjeta = model.NumeroTarjeta,
+                    FechaExpiracion = new DateTime(model.AñoExpiracion, model.MesExpiracion, 1), // Crear la fecha con mes y año
+                    CVV = model.CVV,
+                    Banco = model.Banco,
+                    Marca = model.Marca,
+                    TipoTarjeta = model.TipoTarjeta
+                };
+
+                // Llamar al servicio para actualizar la tarjeta
+                var resultado = await _tarjetaService.EditarTarjetaAsync(tarjetaId, tarjetaActualizada);
+
+                if (resultado.IsSuccess)
+                {
+                    TempData["SuccessMessage"] = "La tarjeta ha sido actualizada correctamente."; 
+                    return RedirectToAction("Index"); // Redirigir al índice después de guardar
+                }
+
+                // Si hay un error, añade un mensaje de error
+                ModelState.AddModelError("", resultado.ErrorMessage ?? "No se pudo editar la tarjeta.");
+                return View(model); // Si algo salió mal, vuelve a mostrar el formulario
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al editar tarjeta.");
+                ModelState.AddModelError("", "Ocurrió un error inesperado.");
+                return View(model); // Si hay un error, vuelve a mostrar el formulario
+            }
+        }
 
 
 

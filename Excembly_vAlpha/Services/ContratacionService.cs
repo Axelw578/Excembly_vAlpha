@@ -17,47 +17,42 @@ namespace Excembly_vAlpha.Services
             _context = context;
         }
 
+
         // Método para crear una nueva contratación con servicios adicionales si los hay
-        // Método para crear una nueva contratación con servicios adicionales si los hay
-        public async Task<(bool Success, string Message)> CrearContratacionAsync(Contratacion contratacion, List<int> serviciosAdicionalesIds = null)
+        public async Task<(bool Success, string Message)> CrearContratacionAsync(Contratacion contratacion)
         {
             try
             {
-                // Si hay servicios adicionales seleccionados
-                if (serviciosAdicionalesIds != null && serviciosAdicionalesIds.Any())
-                {
-                    // Obtén los servicios adicionales que coinciden con los IDs proporcionados
-                    var serviciosAdicionales = await _context.ServicioAdicional
-                        .Where(sa => serviciosAdicionalesIds.Contains(sa.Id)) // Asegúrate de que se usa el campo correcto (Id)
-                        .ToListAsync();
-
-                    // Para cada servicio adicional, se agrega a la contratación como un ServicioAdicionalContratado
-                    foreach (var servicioAdicional in serviciosAdicionales)
-                    {
-                        contratacion.ServiciosAdicionalesContratados.Add(new ServicioAdicionalContratado
-                        {
-                            ServicioAdicional = servicioAdicional, // Asocia el servicio adicional
-                            Contratacion = contratacion // Asocia la contratación
-                                                        // Aquí puedes agregar el descuento si lo necesitas
-                        });
-                    }
-                }
-
-                // Ahora guarda la contratación con los servicios adicionales asociados
-                await _context.Contratacion.AddAsync(contratacion);
+                _context.Contratacion.Add(contratacion);
                 await _context.SaveChangesAsync();
-
                 return (true, "Contratación creada exitosamente.");
             }
             catch (Exception ex)
             {
-                return (false, $"Error al crear la contratación: {ex.Message}");
+                return (false, $"Error al guardar la contratación: {ex.Message}");
             }
         }
 
 
+
+        // Método para validar los datos del modelo de contratación
+        private bool ValidarContratacion(Contratacion contratacion)
+        {
+            // Aquí validamos que los campos obligatorios estén completos
+            if (contratacion.PlanId <= 0 || contratacion.ServicioId <= 0)
+            {
+                return false;
+            }
+
+            // Agregar más validaciones según lo necesario
+            return true;
+        }
+
+
+
+
         // Método para obtener las contrataciones activas de un usuario con detalles adicionales
-        public async Task<(bool Success, List<Contratacion> Contrataciones, string Message)> ObtenerContratacionesPorUsuarioAsync(int usuarioId)
+        public async Task<(bool Success, List<Contratacion> Contrataciones, string Message, int TotalContrataciones)> ObtenerContratacionesPorUsuarioAsync(int usuarioId)
         {
             try
             {
@@ -66,19 +61,23 @@ namespace Excembly_vAlpha.Services
                     .Include(c => c.Plan)
                     .Include(c => c.Servicio)
                     .Include(c => c.ServiciosAdicionalesContratados)
-                    .Include(c => c.Cita) // Detalles de la cita si es servicio a domicilio
-                    .ThenInclude(c => c.Tecnico) // Técnico asignado
+                    .Include(c => c.Cita)
+                    .ThenInclude(c => c.Tecnico)
                     .ToListAsync();
 
-                return (true, contrataciones, "Contrataciones obtenidas exitosamente.");
+                // Aquí calculas el total de contrataciones
+                int totalContrataciones = contrataciones.Count;
+
+                return (true, contrataciones, "Contrataciones obtenidas exitosamente.", totalContrataciones);
             }
             catch (Exception ex)
             {
-                return (false, null, $"Error al obtener las contrataciones: {ex.Message}");
+                return (false, null, $"Error al obtener las contrataciones: {ex.Message}", 0);
             }
         }
 
-        // Método para obtener los detalles completos de una contratación, con servicios y técnico asignado
+
+        // Método para obtener los detalles completos de una contratación, incluyendo el tipo de servicio
         public async Task<(bool Success, Contratacion Contratacion, string Message)> ObtenerDetalleContratacionAsync(int contratacionId)
         {
             try
@@ -89,7 +88,7 @@ namespace Excembly_vAlpha.Services
                     .Include(c => c.PlanPersonalizado)
                     .Include(c => c.ServiciosAdicionalesContratados)
                     .Include(c => c.Cita)
-                    .ThenInclude(c => c.Tecnico) // Incluye técnico si es servicio a domicilio
+                    .ThenInclude(c => c.Tecnico)
                     .FirstOrDefaultAsync(c => c.ContratacionId == contratacionId);
 
                 if (contratacion == null)
@@ -105,7 +104,7 @@ namespace Excembly_vAlpha.Services
             }
         }
 
-        // Método para editar una contratación existente
+        // Método para editar una contratación existente, incluyendo TipoServicio
         public async Task<(bool Success, string Message)> EditarContratacionAsync(Contratacion contratacion)
         {
             try
@@ -123,6 +122,7 @@ namespace Excembly_vAlpha.Services
                 contratacionExistente.ServicioId = contratacion.ServicioId;
                 contratacionExistente.Estado = contratacion.Estado;
                 contratacionExistente.FechaContratacion = contratacion.FechaContratacion;
+                contratacionExistente.TipoServicio = contratacion.TipoServicio; // Actualización del TipoServicio
                 contratacionExistente.Comentarios = contratacion.Comentarios;
 
                 // Guardamos los cambios

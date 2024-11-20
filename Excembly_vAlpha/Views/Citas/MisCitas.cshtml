@@ -1,0 +1,100 @@
+﻿@model List<Excembly_vAlpha.ViewModels.CitaViewModel>
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">Mis Citas</h2>
+
+    <!-- Mensajes de información, éxito o error -->
+    @if (TempData["InfoMessage"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <i class="bi bi-info-circle-fill"></i> @TempData["InfoMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="text-center mt-5">
+            <p class="text-muted">No tienes citas registradas. ¡Empieza creando una cita!</p>
+            <a href="@Url.Action("CrearCita", "Citas", new { usuarioId = ViewBag.UsuarioId })"
+               class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Crear una nueva cita
+            </a>
+        </div>
+    }
+    else
+    {
+        <!-- Tabla de citas -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Dirección</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col" class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cita in Model)
+                    {
+                        <tr>
+                            <td>@cita.FechaCita.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@cita.Direccion</td>
+                            <td>
+                                <span class="badge bg-@EstadoClase(cita.EstadoCita)">
+                                    @cita.EstadoCita
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <a href="@Url.Action("DetallesCita", "Citas", new { citaId = cita.CitaId })"
+                                   class="btn btn-info btn-sm">
+                                    <i class="bi bi-eye"></i> Ver detalles
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Opcional: Auto cerrar alertas después de 5 segundos
+        setTimeout(() => {
+            document.querySelectorAll('.alert-dismissible').forEach(alert => {
+                new bootstrap.Alert(alert).close();
+            });
+        }, 5000);
+    </script>
+}
+
+@functions {
+    // Clase Bootstrap según el estado de la cita
+    private string EstadoClase(string estado)
+    {
+        return estado switch
+        {
+            "Pendiente" => "warning",
+            "Confirmada" => "success",
+            "Cancelada" => "danger",
+            _ => "secondary"
+        };
+    }
+}

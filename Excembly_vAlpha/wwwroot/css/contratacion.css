@@ -1,0 +1,148 @@
+﻿/* Estilo de la alerta cuando no hay contrataciones */
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    color: #856404;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 20px;
+}
+
+/* Imagen para mostrar cuando no hay contrataciones */
+.no-contracts-image {
+    max-width: 20%;
+    height: auto;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 10px;
+}
+
+/* Botón para crear nueva contratación centrado */
+.text-center .btn {
+    display: inline-block;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+/* Estilo para el título */
+.titulo-container {
+    background-color: #007bff;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Espaciado y sombra para tarjetas */
+.card {
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    margin-bottom: 20px;
+}
+
+/* Encabezados dentro de las tarjetas */
+.card-header {
+    font-size: 1.25rem;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-bottom: 2px solid #eaeaea;
+}
+
+/* Listas dentro de las tarjetas */
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #eaeaea;
+    padding: 10px 15px;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    /* Imágenes dentro de listas */
+    .list-group-item img {
+        border-radius: 5px;
+        margin-right: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Destacar precios con descuento */
+    .list-group-item .text-success {
+        font-weight: bold;
+        color: #28a745;
+    }
+
+    .list-group-item .text-muted {
+        color: #6c757d;
+        text-decoration: line-through;
+    }
+
+/* Badges de descuento */
+.badge {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+/* Estilo para botones principales */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+
+/* Estilo para imágenes redondeadas */
+img.rounded {
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+}
+
+/* Contenedor general */
+.container {
+    max-width: 900px;
+    margin: auto;
+}
+
+/* Espaciado general para títulos */
+h3 {
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 576px) {
+    .list-group-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+        .list-group-item img {
+            margin-bottom: 10px;
+        }
+
+    .btn {
+        width: 100%;
+    }
+}

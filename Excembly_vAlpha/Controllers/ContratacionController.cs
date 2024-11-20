@@ -43,6 +43,7 @@ namespace Excembly_vAlpha.Controllers
                 return View(new List<ContratacionViewModel>());
             }
 
+            // Mapeo de las contrataciones
             var contrataciones = resultado.Contrataciones.Select(c => new ContratacionViewModel
             {
                 ContratacionId = c.ContratacionId,
@@ -72,7 +73,8 @@ namespace Excembly_vAlpha.Controllers
             return View(contrataciones);
         }
 
-        public async Task<IActionResult> Crear()
+        // Acción para crear una nueva contratación
+        public async Task<IActionResult> Crear(int? planId, int? servicioId)
         {
             var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(usuarioId))
@@ -80,6 +82,7 @@ namespace Excembly_vAlpha.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
+            // Obtenemos los planes y servicios
             var planes = await _planesService.ObtenerTodosLosPlanesAsync();
             var serviciosIndividuales = await _serviciosService.ObtenerServiciosIndividualesAsync();
 
@@ -110,11 +113,24 @@ namespace Excembly_vAlpha.Controllers
                 UsuarioId = int.Parse(usuarioId)
             };
 
+            // Si se pasó un planId o servicioId, seleccionamos automáticamente ese valor
+            if (planId.HasValue)
+            {
+                var planSeleccionado = planes.FirstOrDefault(p => p.PlanId == planId.Value);
+                viewModel.PlanId = planSeleccionado?.PlanId ?? 0;
+            }
+
+            if (servicioId.HasValue)
+            {
+                var servicioSeleccionado = serviciosIndividuales.FirstOrDefault(s => s.ServicioId == servicioId.Value);
+                viewModel.ServicioIndividualId = servicioSeleccionado?.ServicioId ?? 0;
+            }
+
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Crear(ContratacionViewModel model)
+        public async Task<IActionResult> Crear(int? planId, string servicioIds)
         {
             var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(usuarioId))
@@ -122,43 +138,11 @@ namespace Excembly_vAlpha.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
-            if (ModelState.IsValid)
-            {
-                var contratacion = new Contratacion
-                {
-                    UsuarioId = int.Parse(usuarioId),
-                    PlanId = model.PlanId,
-                    ServicioId = model.ServicioIndividualId,
-                    FechaContratacion = DateTime.Now,
-                    Estado = "Activa"
-                };
-
-                if (model.ServiciosAdicionalesIds != null && model.ServiciosAdicionalesIds.Any())
-                {
-                    var serviciosAdicionales = await _servicioAdicionalService.ObtenerServiciosAdicionalesPorIdsAsync(model.ServiciosAdicionalesIds);
-                    foreach (var servicio in serviciosAdicionales)
-                    {
-                        contratacion.ServiciosAdicionalesContratados.Add(new ServicioAdicionalContratado
-                        {
-                            ServicioAdicionalId = servicio.Id,
-                            Contratacion = contratacion
-                        });
-                    }
-                }
-
-                var resultado = await _contratacionService.CrearContratacionAsync(contratacion);
-                if (resultado.Success)
-                {
-                    return RedirectToAction("Detalle", new { contratacionId = contratacion.ContratacionId });
-                }
-
-                ModelState.AddModelError("", resultado.Message);
-            }
-
+            // Obtener los planes y servicios
             var planes = await _planesService.ObtenerTodosLosPlanesAsync();
             var serviciosIndividuales = await _serviciosService.ObtenerServiciosIndividualesAsync();
 
-            model.Planes = planes.Select(plan => new PlanViewModel
+            var planViewModels = planes.Select(plan => new PlanViewModel
             {
                 PlanId = plan.PlanId,
                 Nombre = plan.Nombre,
@@ -166,10 +150,18 @@ namespace Excembly_vAlpha.Controllers
                 Precio = plan.Precio,
                 Imagen = plan.Imagen,
                 ServiciosIncluidos = plan.PlanServicios.Select(ps => ps.Servicio.Nombre).ToList(),
-                ServiciosAdicionales = new List<ServicioAdicionalViewModel>()
+                ServiciosAdicionales = plan.ServiciosAdicionales.Select(sa => new ServicioAdicionalViewModel
+                {
+                    ServicioId = sa.Servicio.ServicioId,
+                    NombreServicio = sa.Servicio.Nombre,
+                    PrecioOriginal = sa.Servicio.Precio,
+                    PrecioConDescuento = sa.Servicio.Precio - (sa.Servicio.Precio * sa.Descuento),
+                    Descuento = sa.Descuento
+                }).ToList()
             }).ToList();
 
-            model.ServiciosIndividualesDisponibles = serviciosIndividuales.Select(s => new ServicioViewModel
+
+            var servicioViewModels = serviciosIndividuales.Select(s => new ServicioViewModel
             {
                 ServicioId = s.ServicioId,
                 Nombre = s.Nombre,
@@ -178,8 +170,30 @@ namespace Excembly_vAlpha.Controllers
                 ImagenUrl = s.Imagen
             }).ToList();
 
-            return View(model);
+            var viewModel = new ContratacionViewModel
+            {
+                Planes = planViewModels,
+                ServiciosIndividualesDisponibles = servicioViewModels,
+                UsuarioId = int.Parse(usuarioId)
+            };
+
+            // Si se pasó un planId, seleccionamos ese valor
+            if (planId.HasValue)
+            {
+                var planSeleccionado = planes.FirstOrDefault(p => p.PlanId == planId.Value);
+                viewModel.PlanId = planSeleccionado?.PlanId ?? 0;
+            }
+
+            // Si se pasó un servicioIds, los seleccionamos como servicios adicionales
+            if (!string.IsNullOrEmpty(servicioIds))
+            {
+                var servicioIdsList = servicioIds.Split(',').Select(int.Parse).ToList();
+                viewModel.ServiciosAdicionalesIds = servicioIdsList;
+            }
+
+            return View(viewModel);
         }
+
 
         public async Task<IActionResult> Detalle(int contratacionId)
         {

@@ -1,8 +1,5 @@
 ﻿$(document).ready(function () {
-    // Manejar el envío del formulario
     $('#registroForm').on('submit', function (e) {
-        e.preventDefault(); // Evitar el envío normal del formulario
-
         // Limpiar mensajes de error anteriores y el mensaje de carga
         $('.error-message').remove();
         $('.loading-message').remove();
@@ -42,8 +39,8 @@
         if (!contrasena) {
             showError('#Contraseña', 'La contraseña es obligatoria.');
             valid = false;
-        } else if (contrasena.length < 6) {
-            showError('#Contraseña', 'La contraseña debe tener al menos 6 caracteres.');
+        } else if (contrasena.length < 8) {
+            showError('#Contraseña', 'La contraseña debe tener al menos 8 caracteres.');
             valid = false;
         }
 
@@ -65,11 +62,12 @@
             valid = false;
         }
 
-        // Si el formulario es válido, enviar el formulario
-        if (valid) {
+        // Si el formulario no es válido, detener el envío
+        if (!valid) {
+            e.preventDefault();
+        } else {
             // Mostrar mensaje de carga
             $('#registroForm').append('<div class="loading-message text-info">Enviando...</div>');
-            this.submit(); // Enviar el formulario
         }
     });
 
@@ -84,13 +82,12 @@
         return re.test(String(email).toLowerCase());
     }
 
-    // Función para validar el formato del número de teléfono (ejemplo simple, adaptar según sea necesario)
-    function validatePhone(phone) {
+    // Función para validar el formato del número de teléfono 
         const phoneRe = /^\d{10}$/; // Acepta solo números de 10 dígitos
         return phoneRe.test(phone);
     }
 
-    // Función para validar URLs (opcional)
+    // Función para validar URLs 
     function validateUrl(url) {
         const urlRe = /^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/;
         return urlRe.test(url);

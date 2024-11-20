@@ -1,0 +1,87 @@
+﻿@model Excembly_vAlpha.ViewModels.EditarTarjetaViewModel
+
+@{
+    ViewData["Title"] = "Editar Tarjeta";
+}
+
+<!-- Estilos de Bootstrap y jQuery -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<div class="container mt-5">
+    <h2>Editar Tarjeta</h2>
+
+    <!-- Mensajes de éxito y error -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <!-- Formulario para editar tarjeta -->
+    <form asp-action="Editar" method="post">
+        <input type="hidden" asp-for="TarjetaId" />
+
+        <!-- Nombre del titular -->
+        <div class="mb-3">
+            <label for="NombreTitular" class="form-label">Nombre del Titular</label>
+            <input type="text" class="form-control" id="NombreTitular" asp-for="NombreTitular" required />
+        </div>
+
+        <!-- Número de tarjeta -->
+        <div class="mb-3">
+            <label for="NumeroTarjeta" class="form-label">Número de Tarjeta</label>
+            <input type="text" class="form-control" id="NumeroTarjeta" asp-for="NumeroTarjeta" required />
+        </div>
+
+        <!-- Mes de expiración -->
+        <div class="mb-3">
+            <label for="MesExpiracion" class="form-label">Mes de Expiración</label>
+            <input type="number" class="form-control" id="MesExpiracion" asp-for="MesExpiracion" min="1" max="12" required />
+        </div>
+
+        <!-- Año de expiración -->
+        <div class="mb-3">
+            <label for="AñoExpiracion" class="form-label">Año de Expiración</label>
+            <input type="number" class="form-control" id="AñoExpiracion" asp-for="AñoExpiracion" min="2024" required />
+        </div>
+
+        <!-- CVV -->
+        <div class="mb-3">
+            <label for="CVV" class="form-label">CVV</label>
+            <input type="text" class="form-control" id="CVV" asp-for="CVV" required />
+        </div>
+
+        <!-- Banco -->
+        <div class="mb-3">
+            <label for="Banco" class="form-label">Banco</label>
+            <input type="text" class="form-control" id="Banco" asp-for="Banco" />
+        </div>
+
+        <!-- Marca de tarjeta -->
+        <div class="mb-3">
+            <label for="Marca" class="form-label">Marca de la Tarjeta</label>
+            <input type="text" class="form-control" id="Marca" asp-for="Marca" />
+        </div>
+
+        <!-- Tipo de tarjeta -->
+        <div class="mb-3">
+            <label for="TipoTarjeta" class="form-label">Tipo de Tarjeta</label>
+            <input type="text" class="form-control" id="TipoTarjeta" asp-for="TipoTarjeta" />
+        </div>
+
+        <!-- Botón para guardar cambios -->
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    </form>
+</div>
+
+<!-- Scripts de Bootstrap y jQuery -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

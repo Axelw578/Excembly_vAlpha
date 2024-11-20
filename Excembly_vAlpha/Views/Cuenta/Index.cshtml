@@ -1,0 +1,119 @@
+﻿@model Excembly_vAlpha.ViewModels.CuentaViewModel
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario</title>
+    <link href="~/css/Cuenta.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.7.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="seccion-perfil-usuario">
+        <!-- Encabezado del perfil -->
+        <div class="perfil-usuario-portada">
+            <div class="perfil-usuario-avatar">
+                <!-- Imagen principal del usuario -->
+                <img src="@Url.Action("ObtenerFotoPerfilUrl", "Cuenta", new { id = Model.UsuarioId })" alt=" " />
+                <!-- Imagen adicional desde la URL -->
+                <div class="foto-url">
+                    <img src="@Model.FotoPerfilUrl" alt="Foto desde URL" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Cuerpo del perfil -->
+        <div class="perfil-usuario-body">
+            <div class="perfil-usuario-bio">
+                <h3 class="titulo">@Model.Nombre</h3>
+                <p class="texto">@Model.CorreoElectronico</p>
+            </div>
+
+            <div class="perfil-usuario-footer">
+                <ul class="lista-datos">
+                    <li><i class="fas fa-phone"></i> Teléfono: @Model.Telefono</li>
+                    <li><i class="fas fa-home"></i> Colonia: @Model.Direccion?.Colonia</li>
+                    <li><i class="fas fa-road"></i> Calle: @Model.Direccion?.Calle</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Número: @Model.Direccion?.NumeroEdificio</li>
+                    <li><i class="fas fa-sticky-note"></i> Descripción: @Model.Direccion?.DescripcionEdificio</li>
+                    <li><i class="fas fa-signs-post"></i> Referencia: @Model.Direccion?.ReferenciaEdificio</li>
+                </ul>
+                <button class="boton boton-editar" onclick="toggleEditForm()">Editar</button>
+            </div>
+        </div>
+
+        <!-- Formulario de edición con campo para FotoPerfilUrl -->
+        <form asp-action="Editar" method="post" enctype="multipart/form-data" id="edit-form" style="display:none;">
+            <div class="perfil-usuario-bio">
+                <h2 class="titulo">Editar Perfil</h2>
+                <input type="hidden" asp-for="UsuarioId" />
+
+                <div class="form-group">
+                    <label>Foto de Perfil</label>
+                    <textarea asp-for="FotoPerfilUrl" readonly style="width: 100%; height: 100px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input asp-for="Nombre" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Correo</label>
+                    <input asp-for="CorreoElectronico" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input asp-for="Telefono" required pattern="[0-9]{10}" />
+                </div>
+
+                <h3 class="titulo">Domicilio</h3>
+                <div class="form-group">
+                    <label>Colonia</label>
+                    <input asp-for="Direccion.Colonia" required />
+                </div>
+                <div class="form-group">
+                    <label>Calle</label>
+                    <input asp-for="Direccion.Calle" required />
+                </div>
+                <div class="form-group">
+                    <label>Número</label>
+                    <input asp-for="Direccion.NumeroEdificio" />
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <input asp-for="Direccion.DescripcionEdificio" />
+                </div>
+                <div class="form-group">
+                    <label>Referencia</label>
+                    <input asp-for="Direccion.ReferenciaEdificio" />
+                </div>
+
+                <!-- Botones para guardar o cancelar -->
+                <button class="boton boton-guardar" type="submit">Guardar</button>
+                <button class="boton boton-cancelar" type="button" onclick="cancelEditForm()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function toggleEditForm() {
+            const profileView = document.querySelector(".perfil-usuario-body");
+            const editForm = document.getElementById("edit-form");
+            profileView.style.display = "none";
+            editForm.style.display = "block";
+        }
+
+        function cancelEditForm() {
+            const profileView = document.querySelector(".perfil-usuario-body");
+            const editForm = document.getElementById("edit-form");
+            profileView.style.display = "block";
+            editForm.style.display = "none";
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.7.1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

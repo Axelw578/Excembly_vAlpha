@@ -5,26 +5,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"]</title>
+    <title>Agregar Tarjeta</title>
     <link rel="stylesheet" href="~/css/agregarTarjeta.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
 <body>
     <div class="container">
+        <!-- Contenedor principal -->
         <div class="tarjeta-form">
             <div class="header">
-                <h2>@(Model.TarjetaId != null ? "Editar Tarjeta" : "Agregar una Tarjeta de Crédito o Débito")</h2>
+                <h2>Agregar una tarjeta de crédito o débito</h2>
             </div>
 
             <div class="form-preview-container">
                 <!-- FORMULARIO -->
-                <form asp-action="@(Model.TarjetaId != null ? "EditarTarjeta" : "AgregarTarjeta")" method="post" class="form-section">
-                    <!-- Campo oculto para ID de la tarjeta (solo para edición) -->
-                    @if (Model.TarjetaId != null)
-                    {
-                        <input type="hidden" asp-for="TarjetaId" />
-                    }
-
+                <form asp-action="AgregarTarjeta" method="post" class="form-section">
                     <div class="form-group">
                         <label for="NombreTitular">Nombre del Titular</label>
                         <input asp-for="NombreTitular" class="input-field" id="nombreTitular" placeholder="e.g. Pedro Ramirez" required>
@@ -79,9 +74,7 @@
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn-save">
-                            @(Model.TarjetaId != null ? "Guardar Cambios" : "Guardar Tarjeta")
-                        </button>
+                        <button type="submit" class="btn-save">Guardar tarjeta</button>
                         <button type="button" class="btn-back" onclick="window.location.href='/TarjetasGuardadas/Index';">Volver</button>
                     </div>
                 </form>
@@ -91,15 +84,9 @@
                     <div class="icono-tarjeta">
                         <i class="fas fa-credit-card"></i>
                     </div>
-                    <div class="tarjeta-numero" id="preview-numeroTarjeta">
-                        @(Model.NumeroTarjeta != null ? Model.NumeroTarjeta : "0000 0000 0000 0000")
-                    </div>
-                    <div class="tarjeta-nombre" id="preview-nombreTitular">
-                        @(Model.NombreTitular != null ? Model.NombreTitular : "NOMBRE TITULAR")
-                    </div>
-                    <div class="tarjeta-fecha" id="preview-fechaExpiracion">
-                        @(Model.MesExpiracion.ToString("D2") + "/" + Model.AñoExpiracion.ToString("D2"))
-                    </div>
+                    <div class="tarjeta-numero" id="preview-numeroTarjeta">0000 0000 0000 0000</div>
+                    <div class="tarjeta-nombre" id="preview-nombreTitular">NOMBRE TITULAR</div>
+                    <div class="tarjeta-fecha" id="preview-fechaExpiracion">MM/AA</div>
                 </div>
             </div>
         </div>
