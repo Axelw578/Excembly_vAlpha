@@ -1,0 +1,79 @@
+﻿/* Estilos para la página de edición de tarjeta */
+.editar-tarjeta-container {
+    max-width: 600px;
+    background-color: #333333;
+    color: #f1f1f1;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    margin: 50px auto;
+}
+
+    .editar-tarjeta-container h2 {
+        color: #feca1b;
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 25px;
+    }
+
+    .editar-tarjeta-container .form-label {
+        font-weight: bold;
+        color: #f1f1f1;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .editar-tarjeta-container .form-control {
+        background-color: #444444;
+        color: #f1f1f1;
+        border: 1px solid #555555;
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+        .editar-tarjeta-container .form-control::placeholder {
+            color: #bbbbbb;
+        }
+
+        .editar-tarjeta-container .form-control:focus {
+            border-color: #feca1b;
+            outline: none;
+            box-shadow: 0 0 5px rgba(254, 202, 27, 0.5);
+        }
+
+    .editar-tarjeta-container .btn-primary {
+        background-color: #feca1b;
+        color: #333333;
+        border: none;
+        border-radius: 10px;
+        font-weight: bold;
+        padding: 12px;
+        width: 100%;
+        font-size: 16px;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+    }
+
+        .editar-tarjeta-container .btn-primary:hover {
+            background-color: #e5b917;
+            color: #ffffff;
+            box-shadow: 0 5px 10px rgba(254, 202, 27, 0.4);
+        }
+
+    .editar-tarjeta-container .alert {
+        border-radius: 10px;
+        font-weight: bold;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .editar-tarjeta-container .alert-success {
+        background-color: #28a745;
+        color: #ffffff;
+    }
+
+    .editar-tarjeta-container .alert-danger {
+        background-color: #dc3545;
+        color: #ffffff;
+    }
