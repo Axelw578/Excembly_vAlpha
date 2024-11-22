@@ -1,95 +1,53 @@
-﻿@model List<Excembly_vAlpha.ViewModels.ContratacionViewModel>
+﻿@model IEnumerable<Excembly_vAlpha.ViewModels.ContratacionViewModel>
 
 @{
     ViewData["Title"] = "Mis Contrataciones";
 }
 
-<!-- Incluir Bootstrap -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
-<link href="~/css/contratacion.css" rel="stylesheet" />
+<h1 class="mb-4">Mis Contrataciones</h1>
 
-<!-- Contenedor principal de contrataciones -->
-<div class="container mt-5">
-
-    <!-- Título dentro de un contenedor con color personalizado -->
-    <div class="row">
-        <div class="col-12">
-            <div class="titulo-container p-3 text-center">
-                <h2>@ViewData["Title"]</h2>
-            </div>
-        </div>
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning" role="alert">
+        No tienes contrataciones activas.
+        <a href="@Url.Action("Crear", "Contratacion")" class="btn btn-primary mt-3">Agregar Nueva Contratación</a>
     </div>
-
-    <!-- Verifica si no hay contrataciones -->
-    @if (ViewBag.SinContrataciones != null)
-
-    {
-        <div class="alert alert-warning">
-            <h4 class="alert-heading">¡No tienes contrataciones activas!</h4>
-            <p>No tienes servicios contratados en este momento. Por favor, crea una nueva contratación para acceder a nuestros servicios.</p>
-        </div>
-
-        <!-- Imagen ilustrativa -->
-        <img src="https://cdn-icons-png.flaticon.com/512/5385/5385567.png" alt="Sin Contrataciones" class="no-contracts-image" />
-
-        <!-- Botón para crear nueva contratación -->
-        <div class="text-center">
-            <a href="@Url.Action("Crear", "Contratacion")" class="btn btn-success mb-3">Crear Nueva Contratación</a>
-        </div>
-    }
-
-    <!-- Listado de contrataciones -->
-    @foreach (var contratacion in Model)
-
-    {
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">@contratacion.NombrePlan</h5>
-                <p class="card-text"><strong>Estado:</strong> @contratacion.Estado</p>
-                <p class="card-text"><strong>Fecha de Contratación:</strong> @contratacion.FechaContratacion.ToString("dd/MM/yyyy")</p>
-
-                <!-- Información del técnico asignado -->
-                <div class="row">
-                    <div class="col-md-2">
-                        <img src="@contratacion.FotoTecnicoUrl" class="img-fluid rounded-circle" alt="Foto Técnico">
-                    </div>
-                    <div class="col-md-10">
-                        <p><strong>Técnico Asignado:</strong> @contratacion.NombreTecnico</p>
-                    </div>
-                </div>
-
-                <!-- Dirección del domicilio -->
-                <div class="mb-3">
-                    <p><strong>Dirección del Domicilio:</strong> @contratacion.DireccionDomicilio</p>
-                </div>
-
-                <!-- Servicios adicionales contratados -->
-                <h6>Servicios Adicionales Contratados:</h6>
-                <ul>
-                    @foreach (var servicio in contratacion.ServiciosAdicionalesContratados)
-                    {
-                        <li>@servicio.NombreServicio - $@servicio.PrecioConDescuento</li>
-                    }
-                </ul>
-
-                <!-- Botones de acción -->
-                <a href="@Url.Action("CancelarContratacion", "Contratacion", new { contratacionId = contratacion.ContratacionId })" class="btn btn-danger">Cancelar Contratación</a>
-                <a href="@Url.Action("DetallesContratacion", "Contratacion", new { contratacionId = contratacion.ContratacionId })" class="btn btn-primary">Ver Detalles</a>
-            </div>
-        </div>
-    }
-</div>
-
-<!-- Incluir jQuery y Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-    // Aquí puedes agregar cualquier script jQuery adicional si lo necesitas
-    $(document).ready(function () {
-        // Por ejemplo, un script para manejar la interacción de los botones
-        $('.btn-danger').on('click', function () {
-            return confirm("¿Estás seguro de que deseas cancelar esta contratación?");
-        });
-    });
-</script>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Plan</th>
+                    <th>Servicio</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var contratacion in Model)
+                {
+                    <tr>
+                        <td>@contratacion.NombrePlan</td>
+                        <td>@contratacion.NombreServicio</td>
+                        <td>@contratacion.Estado</td>
+                        <td>@contratacion.FechaContratacion.ToShortDateString()</td>
+                        <td>
+                            <a href="@Url.Action("Detalles", "Contratacion", new { contratacionId = contratacion.ContratacionId })"
+                               class="btn btn-info btn-sm me-1">Detalles</a>
+                            <a href="@Url.Action("Editar", "Contratacion", new { contratacionId = contratacion.ContratacionId })"
+                               class="btn btn-warning btn-sm me-1">Editar</a>
+                            <form asp-action="Cancelar" asp-controller="Contratacion" method="post" style="display:inline;">
+                                <input type="hidden" name="contratacionId" value="@contratacion.ContratacionId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Cancelar</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <a href="@Url.Action("Crear", "Contratacion")" class="btn btn-success mt-3">Agregar Nueva Contratación</a>
+}

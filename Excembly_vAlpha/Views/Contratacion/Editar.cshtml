@@ -1,0 +1,41 @@
+﻿@model Excembly_vAlpha.ViewModels.ContratacionViewModel
+
+@{
+    ViewData["Title"] = "Editar Contratación";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+
+    <form method="post" asp-action="Editar" asp-controller="Contratacion">
+        <input type="hidden" name="ContratacionId" value="@Model.ContratacionId" />
+
+        <div class="mb-3">
+            <label for="nombreUsuario" class="form-label">Nombre de Usuario</label>
+            <input type="text" class="form-control" id="nombreUsuario" value="@Model.NombreUsuario" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label for="nombrePlan" class="form-label">Plan</label>
+            <input type="text" class="form-control" id="nombrePlan" value="@Model.NombrePlan" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label for="nombreServicio" class="form-label">Servicio</label>
+            <input type="text" class="form-control" id="nombreServicio" value="@Model.NombreServicio" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label for="serviciosAdicionales" class="form-label">Servicios Adicionales</label>
+            <select class="form-control" id="serviciosAdicionales" multiple>
+                @foreach (var servicio in Model.ServiciosAdicionalesContratados)
+                {
+                    <option value="@servicio.ServicioId">@servicio.NombreServicio - @servicio.PrecioConDescuento.ToString("C")</option>
+                }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">Actualizar Contratación</button>
+        <a href="@Url.Action("ListarContrataciones", "Contratacion")" class="btn btn-secondary">Volver</a>
+    </form>
+</div>

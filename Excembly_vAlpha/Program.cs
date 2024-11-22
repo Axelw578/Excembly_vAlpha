@@ -1,4 +1,5 @@
 using Excembly_vAlpha.Data;
+using Excembly_vAlpha.Mapping;
 using Excembly_vAlpha.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,16 @@ builder.Services.AddDbContext<ExcemblyDbContext>(options =>
         mysqlOptions => mysqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
     )
 );
+// Configurar AutoMapper para los perfiles de mapeo
+// Configurar AutoMapper para los perfiles de mapeo
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<ContratacionProfile>();
+    cfg.AddProfile<UsuarioProfile>();
+    // Agregar aquí cualquier otro perfil que sea necesario
+});
+
+
 
 
 builder.Services.AddHttpContextAccessor();
@@ -28,10 +39,12 @@ builder.Services.AddScoped<TecnicosService, TecnicosService>();
 builder.Services.AddScoped<DireccionService, DireccionService>();
 builder.Services.AddScoped<TarjetaService, TarjetaService>();
 builder.Services.AddScoped<PoliticaService, PoliticaService>();
-builder.Services.AddScoped<ContratacionService, ContratacionService>();
+builder.Services.AddScoped<IContratacionService, ContratacionService>();
 builder.Services.AddScoped<ServicioAdicionalService, ServicioAdicionalService>();
 builder.Services.AddScoped<CitasService, CitasService>();
 builder.Services.AddScoped<CuentaService, CuentaService>();
+
+
 
 
 // Configuración de autenticación de cookies

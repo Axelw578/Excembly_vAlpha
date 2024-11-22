@@ -4,169 +4,70 @@
     ViewData["Title"] = "Crear Contratación";
 }
 
-<link href="~/css/CrearContratacion.css" rel="stylesheet" />
-<script src="~/js/CrearContratacion.js"></script>
+<div class="container mt-4">
+    <h2>Crear Contratación</h2>
 
-<div class="container mt-5">
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="titulo-container text-center p-3">
-                <h2>@ViewData["Title"]</h2>
+    <form method="post">
+        <!-- Información del Usuario -->
+        <input type="hidden" asp-for="UsuarioId" />
+        <div class="mb-3">
+            <label for="NombreUsuario" class="form-label">Nombre del Usuario</label>
+            <input type="text" id="NombreUsuario" name="NombreUsuario" value="@Model.NombreUsuario" class="form-control" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label for="CorreoUsuario" class="form-label">Correo del Usuario</label>
+            <input type="email" id="CorreoUsuario" name="CorreoUsuario" value="@Model.CorreoUsuario" class="form-control" readonly />
+        </div>
+
+        <!-- Selección del Plan -->
+        <div class="mb-3">
+            <label for="PlanId" class="form-label">Seleccionar Plan</label>
+            <select id="PlanId" asp-for="PlanId" class="form-select">
+                <option value="">Seleccione un plan</option>
+                @foreach (var plan in Model.PlanesDisponibles)
+                {
+                    <option value="@plan.PlanId">@plan.Nombre - @plan.Precio.ToString("C")</option>
+                }
+            </select>
+        </div>
+
+        <!-- Selección de Servicios Adicionales -->
+        <div class="mb-3">
+            <label class="form-label">Servicios Adicionales</label>
+            <div id="serviciosAdicionales">
+                @foreach (var servicioAdicional in Model.ServiciosAdicionalesDisponibles)
+                {
+                    <div class="form-check">
+                        <input type="checkbox" id="ServicioAdicional_@servicioAdicional.ServicioId" name="ServiciosAdicionalesContratados" value="@servicioAdicional.ServicioId" class="form-check-input" />
+                        <label for="ServicioAdicional_@servicioAdicional.ServicioId" class="form-check-label">@servicioAdicional.NombreServicio</label>
+                        <span class="badge bg-secondary ms-2">@servicioAdicional.PrecioConDescuento.ToString("C")</span>
+                    </div>
+                }
             </div>
         </div>
-    </div>
 
-    <form asp-action="Crear" method="post">
-        @if (Model.EsPlanSeleccionado)
-
-        {
-            <!-- Planes Disponibles -->
-            <div class="card mb-4" id="planSection">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">Planes Disponibles</h3>
-                </div>
-                <div class="card-body">
-                    @if (Model.Planes != null && Model.Planes.Any())
-                    {
-                        <ul class="list-group">
-                            @foreach (var plan in Model.Planes)
-                            {
-                                <li class="list-group-item selectable-card" data-plan-id="@plan.PlanId">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="d-flex align-items-center">
-                                            <img src="@plan.Imagen" alt="@plan.Nombre" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" />
-                                            <div>
-                                                <strong>@plan.Nombre</strong> - @plan.Precio.ToString("C")
-                                                <p class="text-muted mb-0">@plan.Descripcion</p>
-                                            </div>
-                                        </div>
-                                        <input type="radio" name="PlanId" value="@plan.PlanId" class="plan-selector" data-plan-id="@plan.PlanId" />
-                                    </div>
-                                </li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <p>No hay planes disponibles.</p>
-                    }
-                </div>
-            </div>
-
-            <!-- Servicios Adicionales -->
-            <div class="card mb-4" id="serviciosAdicionalesSection">
-                <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">Servicios Adicionales del Plan Seleccionado</h3>
-                </div>
-                <div class="card-body">
-                    @if (Model.ServiciosAdicionalesDisponibles != null && Model.ServiciosAdicionalesDisponibles.Any())
-                    {
-                        <ul class="list-group">
-                            @foreach (var adicional in Model.ServiciosAdicionalesDisponibles)
-                            {
-                                <li class="list-group-item">
-                                    <input type="checkbox" name="ServiciosAdicionalesIds" value="@adicional.ServicioId" />
-                                    <strong>@adicional.NombreServicio</strong> -
-                                    <span class="precio-original text-decoration-line-through">@adicional.PrecioOriginal.ToString("C")</span>
-                                    <span class="precio-con-descuento">@adicional.PrecioConDescuento.ToString("C")</span>
-                                    (Descuento: @adicional.Descuento.ToString("P"))
-                                </li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <p>No hay servicios adicionales disponibles para este plan.</p>
-                    }
-                </div>
-            </div>
-
-
-        }
-
-        else
-
-        {
-            <!-- Servicios Individuales -->
-            <div class="card mb-4" id="serviciosIndividualesSection">
-                <div class="card-header bg-info text-white">
-                    <h3 class="mb-0">Servicios Individuales</h3>
-                </div>
-                <div class="card-body">
-                    @if (Model.ServiciosIndividualesDisponibles != null && Model.ServiciosIndividualesDisponibles.Any())
-                    {
-                        <ul class="list-group">
-                            @foreach (var servicio in Model.ServiciosIndividualesDisponibles)
-                            {
-                                <li class="list-group-item individual-service selectable-card" data-service-id="@servicio.ServicioId">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="d-flex align-items-center">
-                                            <img src="@servicio.ImagenUrl" alt="@servicio.Nombre" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" />
-                                            <div>
-                                                <strong>@servicio.Nombre</strong> - @servicio.Precio.ToString("C")
-                                                <p class="text-muted mb-0">@servicio.Descripcion</p>
-                                            </div>
-                                        </div>
-                                        <input type="checkbox" name="ServiciosIndividualesIds" value="@servicio.ServicioId" class="service-checkbox" />
-                                    </div>
-                                </li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <p>No hay servicios individuales disponibles.</p>
-                    }
-                </div>
-            </div>
-
-            <!-- Datos del Técnico -->
-            <div class="card mb-4" id="datosTecnicoSection">
-                <div class="card-header bg-warning text-dark">
-                    <h3 class="mb-0">Datos del Técnico y Domicilio</h3>
-                </div>
-                <div class="card-body">
-                    <p>
-                        <strong>Técnico Asignado:</strong> @Model.NombreTecnico <br />
-                        <img src="@Model.FotoTecnicoUrl" alt="Foto del Técnico" class="rounded" style="width: 100px; height: 100px; object-fit: cover;" />
-                    </p>
-                    <p>
-                        <strong>Dirección:</strong> @Model.DireccionDomicilio
-                    </p>
-                </div>
-            </div>
-        }
-
-        <!-- Botones de acción -->
-        <div class="text-center">
-            <button type="submit" class="btn btn-primary">Contratar</button>
-            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        <!-- Selección del Servicio -->
+        <div class="mb-3">
+            <label for="ServicioId" class="form-label">Seleccionar Servicio</label>
+            <select id="ServicioId" asp-for="ServicioId" class="form-select">
+                <option value="">Seleccione un servicio</option>
+                @foreach (var servicio in Model.ServiciosDisponibles)
+                {
+                    <option value="@servicio.ServicioId">@servicio.Nombre - @servicio.Precio.ToString("C")</option>
+                }
+            </select>
         </div>
+
+        <!-- Selección de Tipo de Servicio -->
+        <div class="mb-3">
+            <label for="TipoServicio" class="form-label">Tipo de Servicio</label>
+            <select id="TipoServicio" asp-for="TipoServicio" class="form-select">
+                <option value="Sucursal">Sucursal</option>
+                <option value="Domicilio">Domicilio</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Crear Contratación</button>
     </form>
 </div>
-
-<!-- Datos de servicios adicionales en un contenedor oculto -->
-<div id="serviciosAdicionalesData" style="display: none;">
-    @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
-            Model.Planes.ToDictionary(p => p.PlanId, p => p.ServiciosAdicionales)
-            ))
-</div>
-
-<script>
-    $(document).ready(function () {
-        // Mostrar la sección correspondiente dependiendo del botón presionado
-        $(".plan-selector").click(function () {
-            $("#planSection").show();
-            $("#serviciosAdicionalesSection").show();
-            $("#serviciosIndividualesSection").hide();
-            $("#datosTecnicoSection").hide();
-        });
-
-        $(".individual-service").click(function () {
-            $("#planSection").hide();
-            $("#serviciosAdicionalesSection").hide();
-            $("#serviciosIndividualesSection").show();
-            $("#datosTecnicoSection").show();
-        });
-    });
-</script>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Excembly_vAlpha.Models
 {
@@ -30,5 +31,8 @@ namespace Excembly_vAlpha.Models
         public Cita Cita { get; set; }
         public ICollection<ServicioAdicionalContratado> ServiciosAdicionalesContratados { get; set; }
         public ICollection<Comentario> Comentarios { get; set; }  // Relación con Comentarios
+                                                                  // Relación con los servicios adicionales seleccionados
+        [NotMapped]
+        public ICollection<int> ServiciosAdicionales { get; set; } = new List<int>();
     }
 }

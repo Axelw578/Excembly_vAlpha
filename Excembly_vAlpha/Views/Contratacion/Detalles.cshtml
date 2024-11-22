@@ -1,0 +1,41 @@
+﻿@model Excembly_vAlpha.ViewModels.ContratacionViewModel
+
+@{
+    ViewData["Title"] = "Detalles de Contratación";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+
+    <div class="mb-3">
+        <label class="form-label">Usuario:</label>
+        <p>@Model.NombreUsuario</p>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Plan:</label>
+        <p>@Model.NombrePlan</p>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Servicio:</label>
+        <p>@Model.NombreServicio</p>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Estado:</label>
+        <p>@Model.Estado</p>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Servicios Adicionales:</label>
+        <ul>
+            @foreach (var servicio in Model.ServiciosAdicionalesContratados)
+            {
+                <li>@servicio.NombreServicio - @servicio.PrecioConDescuento.ToString("C")</li>
+            }
+        </ul>
+    </div>
+
+    <a href="@Url.Action("Index", "Contratacion")" class="btn btn-secondary">Volver a la lista</a>
+</div>

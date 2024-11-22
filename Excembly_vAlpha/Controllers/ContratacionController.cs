@@ -1,236 +1,242 @@
-﻿using Excembly_vAlpha.Models;
+﻿using AutoMapper;
+using Excembly_vAlpha.Models;
 using Excembly_vAlpha.Services;
 using Excembly_vAlpha.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Excembly_vAlpha.Controllers
 {
     public class ContratacionController : Controller
     {
-        private readonly ContratacionService _contratacionService;
-        private readonly PlanesService _planesService;
-        private readonly ServicioAdicionalService _servicioAdicionalService;
-        private readonly ServiciosService _serviciosService;
+        private readonly IContratacionService _contratacionService;
+        private readonly IMapper _mapper;
+        private readonly ILogger<ContratacionController> _logger;
 
-        public ContratacionController(
-            ContratacionService contratacionService,
-            PlanesService planesService,
-            ServicioAdicionalService servicioAdicionalService,
-            ServiciosService serviciosService)
+        public ContratacionController(IContratacionService contratacionService, IMapper mapper, ILogger<ContratacionController> logger)
         {
             _contratacionService = contratacionService;
-            _planesService = planesService;
-            _servicioAdicionalService = servicioAdicionalService;
-            _serviciosService = serviciosService;
+            _mapper = mapper;
+            _logger = logger;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(usuarioId))
+            try
             {
-                return RedirectToAction("Index", "Login");
-            }
+                var usuarioId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var contrataciones = await _contratacionService.ObtenerContratacionesDelUsuario(usuarioId);
 
-            var resultado = await _contratacionService.ObtenerContratacionesPorUsuarioAsync(int.Parse(usuarioId));
-            if (!resultado.Success)
-            {
-                ViewBag.Error = resultado.Message;
-                return View(new List<ContratacionViewModel>());
-            }
-
-            // Mapeo de las contrataciones
-            var contrataciones = resultado.Contrataciones.Select(c => new ContratacionViewModel
-            {
-                ContratacionId = c.ContratacionId,
-                PlanId = c.Plan?.PlanId ?? 0,
-                NombrePlan = c.Plan?.Nombre,
-                PrecioPlan = c.Plan?.Precio ?? 0,
-                Estado = c.Estado,
-                FechaContratacion = c.FechaContratacion,
-                ServiciosAdicionalesContratados = c.ServiciosAdicionalesContratados?.Select(sa => new ServicioAdicionalViewModel
+                if (contrataciones == null)
                 {
-                    NombreServicio = sa.ServicioAdicional.Servicio.Nombre,
-                    PrecioOriginal = sa.ServicioAdicional.Servicio.Precio,
-                    PrecioConDescuento = sa.ServicioAdicional.Servicio.Precio - (sa.ServicioAdicional.Servicio.Precio * sa.ServicioAdicional.Descuento),
-                    Descuento = sa.ServicioAdicional.Descuento
-                }).ToList(),
-                NombreTecnico = c.Cita?.Tecnico?.Nombre,
-                FotoTecnicoUrl = c.Cita?.Tecnico?.Foto,
-                DireccionDomicilio = c.Cita?.Direccion?.Colonia
-            }).ToList();
+                    _logger.LogWarning($"No se encontraron contrataciones para el usuario con ID {usuarioId}");
+                    return View(new List<ContratacionViewModel>());
+                }
 
-            if (contrataciones == null || !contrataciones.Any())
-            {
-                ViewBag.SinContrataciones = "SIN CONTRATACIONES";
-                return View(new List<ContratacionViewModel>());
+                var contratacionesViewModel = _mapper.Map<IEnumerable<ContratacionViewModel>>(contrataciones);
+                return View(contratacionesViewModel);
             }
-
-            return View(contrataciones);
+            catch (Exception ex)
+            {
+                LogJsonError(ex, "Error al obtener contrataciones para el usuario.");
+                return View("Error");
+            }
         }
 
-        // Acción para crear una nueva contratación
-        public async Task<IActionResult> Crear(int? planId, int? servicioId)
+        [HttpGet]
+        public async Task<IActionResult> Detalles(int contratacionId)
         {
-            var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(usuarioId))
+            try
             {
-                return RedirectToAction("Index", "Login");
+                var contratacion = await _contratacionService.ObtenerContratacionPorId(contratacionId);
+                if (contratacion == null)
+                {
+                    _logger.LogWarning($"Contratación con ID {contratacionId} no encontrada");
+                    return NotFound();
+                }
+
+                var contratacionViewModel = _mapper.Map<ContratacionViewModel>(contratacion);
+                return View(contratacionViewModel);
             }
-
-            // Obtenemos los planes y servicios
-            var planes = await _planesService.ObtenerTodosLosPlanesAsync();
-            var serviciosIndividuales = await _serviciosService.ObtenerServiciosIndividualesAsync();
-
-            var planViewModels = planes.Select(plan => new PlanViewModel
+            catch (Exception ex)
             {
-                PlanId = plan.PlanId,
-                Nombre = plan.Nombre,
-                Descripcion = plan.Descripcion,
-                Precio = plan.Precio,
-                Imagen = plan.Imagen,
-                ServiciosIncluidos = plan.PlanServicios.Select(ps => ps.Servicio.Nombre).ToList(),
-                ServiciosAdicionales = new List<ServicioAdicionalViewModel>()
-            }).ToList();
-
-            var servicioViewModels = serviciosIndividuales.Select(s => new ServicioViewModel
-            {
-                ServicioId = s.ServicioId,
-                Nombre = s.Nombre,
-                Descripcion = s.Descripcion,
-                Precio = s.Precio,
-                ImagenUrl = s.Imagen
-            }).ToList();
-
-            var viewModel = new ContratacionViewModel
-            {
-                Planes = planViewModels,
-                ServiciosIndividualesDisponibles = servicioViewModels,
-                UsuarioId = int.Parse(usuarioId)
-            };
-
-            // Si se pasó un planId o servicioId, seleccionamos automáticamente ese valor
-            if (planId.HasValue)
-            {
-                var planSeleccionado = planes.FirstOrDefault(p => p.PlanId == planId.Value);
-                viewModel.PlanId = planSeleccionado?.PlanId ?? 0;
+                LogJsonError(ex, "Error al obtener detalles de la contratación.");
+                return View("Error");
             }
-
-            if (servicioId.HasValue)
-            {
-                var servicioSeleccionado = serviciosIndividuales.FirstOrDefault(s => s.ServicioId == servicioId.Value);
-                viewModel.ServicioIndividualId = servicioSeleccionado?.ServicioId ?? 0;
-            }
-
-            return View(viewModel);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Crear(int? planId, string servicioIds)
+        [HttpGet]
+        public async Task<IActionResult> Crear()
         {
-            var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(usuarioId))
+            try
             {
-                return RedirectToAction("Index", "Login");
-            }
+                var usuarioId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var nombreUsuario = User.FindFirstValue(ClaimTypes.Name);
+                var correoUsuario = User.FindFirstValue(ClaimTypes.Email);
 
-            // Obtener los planes y servicios
-            var planes = await _planesService.ObtenerTodosLosPlanesAsync();
-            var serviciosIndividuales = await _serviciosService.ObtenerServiciosIndividualesAsync();
-
-            var planViewModels = planes.Select(plan => new PlanViewModel
-            {
-                PlanId = plan.PlanId,
-                Nombre = plan.Nombre,
-                Descripcion = plan.Descripcion,
-                Precio = plan.Precio,
-                Imagen = plan.Imagen,
-                ServiciosIncluidos = plan.PlanServicios.Select(ps => ps.Servicio.Nombre).ToList(),
-                ServiciosAdicionales = plan.ServiciosAdicionales.Select(sa => new ServicioAdicionalViewModel
+                if (usuarioId <= 0 || string.IsNullOrEmpty(nombreUsuario) || string.IsNullOrEmpty(correoUsuario))
                 {
-                    ServicioId = sa.Servicio.ServicioId,
-                    NombreServicio = sa.Servicio.Nombre,
-                    PrecioOriginal = sa.Servicio.Precio,
-                    PrecioConDescuento = sa.Servicio.Precio - (sa.Servicio.Precio * sa.Descuento),
-                    Descuento = sa.Descuento
-                }).ToList()
-            }).ToList();
+                    _logger.LogWarning("No se pudieron obtener los datos del usuario autenticado.");
+                    return View("Error");
+                }
 
-
-            var servicioViewModels = serviciosIndividuales.Select(s => new ServicioViewModel
-            {
-                ServicioId = s.ServicioId,
-                Nombre = s.Nombre,
-                Descripcion = s.Descripcion,
-                Precio = s.Precio,
-                ImagenUrl = s.Imagen
-            }).ToList();
-
-            var viewModel = new ContratacionViewModel
-            {
-                Planes = planViewModels,
-                ServiciosIndividualesDisponibles = servicioViewModels,
-                UsuarioId = int.Parse(usuarioId)
-            };
-
-            // Si se pasó un planId, seleccionamos ese valor
-            if (planId.HasValue)
-            {
-                var planSeleccionado = planes.FirstOrDefault(p => p.PlanId == planId.Value);
-                viewModel.PlanId = planSeleccionado?.PlanId ?? 0;
-            }
-
-            // Si se pasó un servicioIds, los seleccionamos como servicios adicionales
-            if (!string.IsNullOrEmpty(servicioIds))
-            {
-                var servicioIdsList = servicioIds.Split(',').Select(int.Parse).ToList();
-                viewModel.ServiciosAdicionalesIds = servicioIdsList;
-            }
-
-            return View(viewModel);
-        }
-
-
-        public async Task<IActionResult> Detalle(int contratacionId)
-        {
-            var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(usuarioId))
-            {
-                return RedirectToAction("Index", "Login");
-            }
-
-            var resultado = await _contratacionService.ObtenerDetalleContratacionAsync(contratacionId);
-            if (resultado.Success)
-            {
-                var viewModel = new DetalleContratacionViewModel
-                {
-                    ContratacionId = resultado.Contratacion.ContratacionId,
-                    Estado = resultado.Contratacion.Estado,
-                    FechaContratacion = resultado.Contratacion.FechaContratacion,
-                    NombrePlan = resultado.Contratacion.Plan?.Nombre,
-                    PrecioPlan = resultado.Contratacion.Plan?.Precio ?? 0,
-                    ServiciosAdicionalesContratados = resultado.Contratacion.ServiciosAdicionalesContratados.Select(sa => new ServicioAdicionalViewModel
-                    {
-                        NombreServicio = sa.ServicioAdicional.Servicio.Nombre,
-                        PrecioOriginal = sa.ServicioAdicional.Servicio.Precio,
-                        PrecioConDescuento = sa.ServicioAdicional.Servicio.Precio - (sa.ServicioAdicional.Servicio.Precio * sa.ServicioAdicional.Descuento),
-                        Descuento = sa.ServicioAdicional.Descuento
-                    }).ToList(),
-                    NombreTecnico = resultado.Contratacion.Cita?.Tecnico?.Nombre,
-                    FotoTecnicoUrl = resultado.Contratacion.Cita?.Tecnico?.Foto,
-                    DireccionDomicilioCompleta = resultado.Contratacion.Cita?.Direccion?.Colonia,
-                    PoliticaCancelacion = "Política de cancelación detallada"
-                };
+                var viewModel = await CrearContratacionViewModel();
+                viewModel.UsuarioId = usuarioId;
+                viewModel.NombreUsuario = nombreUsuario;
+                viewModel.CorreoUsuario = correoUsuario;
 
                 return View(viewModel);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(JsonConvert.SerializeObject(new
+                {
+                    Error = "Error al cargar la página de creación",
+                    Detalle = ex.Message,
+                    StackTrace = ex.StackTrace
+                }));
+                return View("Error");
+            }
+        }
 
-            ModelState.AddModelError("", "No se encontró la contratación solicitada.");
-            return RedirectToAction("Index");
+
+        [HttpPost]
+        public async Task<IActionResult> Crear(ContratacionViewModel contratacionViewModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var contratacion = _mapper.Map<Contratacion>(contratacionViewModel);
+                    var resultado = await _contratacionService.AgregarContratacion(contratacion);
+
+                    if (resultado) return RedirectToAction("Index");
+                }
+
+                _logger.LogWarning("Problema con el formulario de creación. Reintentando...");
+                var viewModel = await CrearContratacionViewModel();
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                LogJsonError(ex, "Error al crear contratación.");
+                return View("Error");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Editar(int contratacionId)
+        {
+            try
+            {
+                var contratacion = await _contratacionService.ObtenerContratacionPorId(contratacionId);
+                if (contratacion == null)
+                {
+                    _logger.LogWarning($"Contratación con ID {contratacionId} no encontrada");
+                    return NotFound();
+                }
+
+                var viewModel = await CrearContratacionViewModel();
+                var contratacionViewModel = _mapper.Map(contratacion, viewModel);
+                return View(contratacionViewModel);
+            }
+            catch (Exception ex)
+            {
+                LogJsonError(ex, "Error al cargar página de edición.");
+                return View("Error");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Editar(ContratacionViewModel contratacionViewModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var contratacion = _mapper.Map<Contratacion>(contratacionViewModel);
+                    var resultado = await _contratacionService.EditarContratacion(contratacion);
+
+                    if (resultado) return RedirectToAction("Detalles", new { contratacionId = contratacion.ContratacionId });
+                }
+
+                _logger.LogWarning($"Problema al editar contratación con ID {contratacionViewModel.ContratacionId}. Reintentando...");
+                return View(await CrearContratacionViewModel());
+            }
+            catch (Exception ex)
+            {
+                LogJsonError(ex, "Error al editar contratación.");
+                return View("Error");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Cancelar(int contratacionId)
+        {
+            try
+            {
+                var resultado = await _contratacionService.CancelarContratacion(contratacionId);
+                if (resultado) return RedirectToAction("Index");
+
+                _logger.LogWarning($"Problema al cancelar la contratación con ID {contratacionId}");
+                return View("Error");
+            }
+            catch (Exception ex)
+            {
+                LogJsonError(ex, "Error al cancelar contratación.");
+                return View("Error");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SeleccionarPlanOServicio(int contratacionId, int? planId, int? servicioId, List<int>? serviciosAdicionalesIds)
+        {
+            try
+            {
+                var resultado = await _contratacionService.SeleccionarPlanOServicio(contratacionId, planId, servicioId, serviciosAdicionalesIds);
+                if (resultado) return RedirectToAction("Detalles", new { contratacionId });
+
+                _logger.LogWarning($"Problema al seleccionar plan o servicio para contratación con ID {contratacionId}");
+                return View("Error");
+            }
+            catch (Exception ex)
+            {
+                LogJsonError(ex, "Error al seleccionar plan o servicio.");
+                return View("Error");
+            }
+        }
+
+        private async Task<ContratacionViewModel> CrearContratacionViewModel()
+        {
+            var planesDisponibles = await _contratacionService.ObtenerPlanesDisponibles();
+            var serviciosDisponibles = await _contratacionService.ObtenerServiciosDisponibles();
+            var serviciosAdicionalesDisponibles = await _contratacionService.ObtenerServiciosAdicionalesDisponibles();
+
+            return new ContratacionViewModel
+            {
+                PlanesDisponibles = _mapper.Map<IEnumerable<PlanViewModel>>(planesDisponibles),
+                ServiciosDisponibles = _mapper.Map<IEnumerable<ServicioViewModel>>(serviciosDisponibles),
+                ServiciosAdicionalesDisponibles = _mapper.Map<IEnumerable<ServicioAdicionalViewModel>>(serviciosAdicionalesDisponibles)
+            };
+        }
+
+        private void LogJsonError(Exception ex, string customMessage)
+        {
+            var errorDetails = new
+            {
+                Message = customMessage,
+                Exception = ex.Message,
+                StackTrace = ex.StackTrace,
+                InnerException = ex.InnerException?.Message
+            };
+
+            _logger.LogError(JsonConvert.SerializeObject(errorDetails, Formatting.Indented));
         }
     }
 }

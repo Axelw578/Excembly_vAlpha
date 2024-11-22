@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Cancelar Contratación";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+
+    <div class="alert alert-warning" role="alert">
+        ¿Estás seguro de que deseas cancelar esta contratación?
+    </div>
+
+    <form method="post" asp-action="Cancelar" asp-controller="Contratacion">
+        <input type="hidden" name="ContratacionId" value="@Model.ContratacionId" />
+        <button type="submit" class="btn btn-danger">Confirmar Cancelación</button>
+        <a href="@Url.Action("Index", "Contratacion")" class="btn btn-secondary">Volver</a>
+    </form>
+</div>
