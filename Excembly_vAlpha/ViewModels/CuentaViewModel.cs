@@ -9,7 +9,6 @@
         public string Telefono { get; set; }
         public string FotoPerfilUrl { get; set; }
 
-        public DireccionViewModel Direccion { get; set; }
     }
 
 }

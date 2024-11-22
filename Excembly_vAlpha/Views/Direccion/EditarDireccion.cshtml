@@ -1,7 +1,7 @@
 ﻿@model Excembly_vAlpha.ViewModels.DireccionViewModel
 
 @{
-    ViewData["Title"] = "Registrar Dirección";
+    ViewData["Title"] = "Editar Dirección";
 }
 
 <!DOCTYPE html>
@@ -16,10 +16,10 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center">Registrar Dirección</h1>
+        <h1 class="text-center">Editar Dirección</h1>
         <hr />
 
-        <form asp-action="GuardarDireccion" asp-controller="Direccion" method="post" class="needs-validation" novalidate>
+        <form asp-action="ActualizarDireccion" asp-controller="Direccion" method="post" class="needs-validation" novalidate>
             @Html.HiddenFor(model => model.UsuarioId)
             @Html.HiddenFor(model => model.DireccionId)
 
@@ -51,7 +51,7 @@
                 @Html.TextBoxFor(model => model.ReferenciaEdificio, new { @class = "form-control", @placeholder = "Referencias del edificio (opcional)" })
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Guardar Dirección</button>
+            <button type="submit" class="btn btn-success w-100">Actualizar Dirección</button>
         </form>
     </div>
 

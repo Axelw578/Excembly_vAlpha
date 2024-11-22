@@ -1,105 +1,119 @@
-﻿@model Excembly_vAlpha.ViewModels.CuentaViewModel
+﻿@using Newtonsoft.Json
+@model Excembly_vAlpha.ViewModels.CuentaViewModel
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil de Usuario</title>
+    <title>Editar Perfil</title>
     <link href="~/css/Cuenta.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.7.1/dist/css/bootstrap.min.css" rel="stylesheet">
-
 </head>
 <body>
     <div class="seccion-perfil-usuario">
         <!-- Encabezado del perfil -->
         <div class="perfil-usuario-portada">
             <div class="perfil-usuario-avatar">
-                <!-- Imagen principal del usuario -->
-                <img src="@Url.Action("ObtenerFotoPerfilUrl", "Cuenta", new { id = Model.UsuarioId })" alt=" " />
-                <!-- Imagen adicional desde la URL -->
-                <div class="foto-url">
-                    <img src="@Model.FotoPerfilUrl" alt="Foto desde URL" />
-                </div>
+                <!-- Imagen de perfil en vista previa -->
+                @if (!string.IsNullOrEmpty(Model.FotoPerfilUrl))
+                {
+                    <img src="@Model.FotoPerfilUrl" alt="Foto de perfil" />
+                }
+                else
+                {
+                    <img src="/imagenes/default-user.png" alt="Imagen predeterminada" />
+                }
             </div>
         </div>
 
         <!-- Cuerpo del perfil -->
         <div class="perfil-usuario-body">
             <div class="perfil-usuario-bio">
-                <h3 class="titulo">@Model.Nombre</h3>
-                <p class="texto">@Model.CorreoElectronico</p>
+                <h3 class="titulo">@Model.Nombre @Model.Apellidos</h3>
+                <p class="texto"><strong>Correo:</strong> @Model.CorreoElectronico</p>
+                <p class="texto"><strong>Teléfono:</strong> @Model.Telefono</p>
             </div>
 
+            <!-- Mostrar mensajes de éxito o error -->
+            @if (TempData["Exito"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["Exito"]
+                </div>
+            }
+
+            @if (TempData["Errores"] != null)
+            {
+                var errores = JsonConvert.DeserializeObject<List<string>>(TempData["Errores"].ToString());
+                foreach (var error in errores)
+                {
+                    <div class="alert alert-danger">@error</div>
+                }
+            }
+
             <div class="perfil-usuario-footer">
-                <ul class="lista-datos">
-                    <li><i class="fas fa-phone"></i> Teléfono: @Model.Telefono</li>
-                    <li><i class="fas fa-home"></i> Colonia: @Model.Direccion?.Colonia</li>
-                    <li><i class="fas fa-road"></i> Calle: @Model.Direccion?.Calle</li>
-                    <li><i class="fas fa-map-marker-alt"></i> Número: @Model.Direccion?.NumeroEdificio</li>
-                    <li><i class="fas fa-sticky-note"></i> Descripción: @Model.Direccion?.DescripcionEdificio</li>
-                    <li><i class="fas fa-signs-post"></i> Referencia: @Model.Direccion?.ReferenciaEdificio</li>
-                </ul>
+                <!-- Botón de editar -->
                 <button class="boton boton-editar" onclick="toggleEditForm()">Editar</button>
             </div>
         </div>
 
-        <!-- Formulario de edición con campo para FotoPerfilUrl -->
+        <!-- Formulario de edición -->
         <form asp-action="Editar" method="post" enctype="multipart/form-data" id="edit-form" style="display:none;">
             <div class="perfil-usuario-bio">
                 <h2 class="titulo">Editar Perfil</h2>
                 <input type="hidden" asp-for="UsuarioId" />
 
                 <div class="form-group">
-                    <label>Foto de Perfil</label>
-                    <textarea asp-for="FotoPerfilUrl" readonly style="width: 100%; height: 100px;"></textarea>
+                    <label for="FotoPerfilUrl">Foto de Perfil (URL)</label>
+                    <input type="text" asp-for="FotoPerfilUrl" class="form-control" value="@Model.FotoPerfilUrl" placeholder="URL de la foto de perfil" />
                 </div>
 
                 <div class="form-group">
-                    <label>Nombre</label>
-                    <input asp-for="Nombre" required />
+                    <label for="Nombre">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" required />
+                    @if (ViewData.ModelState["Nombre"]?.Errors.Count > 0)
+                    {
+                        <span class="text-danger">@ViewData.ModelState["Nombre"]?.Errors[0]?.ErrorMessage</span>
+                    }
                 </div>
 
                 <div class="form-group">
-                    <label>Correo</label>
-                    <input asp-for="CorreoElectronico" readonly />
+                    <label for="Apellidos">Apellidos</label>
+                    <input asp-for="Apellidos" class="form-control" required />
+                    @if (ViewData.ModelState["Apellidos"]?.Errors.Count > 0)
+                    {
+                        <span class="text-danger">@ViewData.ModelState["Apellidos"]?.Errors[0]?.ErrorMessage</span>
+                    }
                 </div>
 
                 <div class="form-group">
-                    <label>Teléfono</label>
-                    <input asp-for="Telefono" required pattern="[0-9]{10}" />
+                    <label for="CorreoElectronico">Correo</label>
+                    <input asp-for="CorreoElectronico" class="form-control" readonly />
                 </div>
 
-                <h3 class="titulo">Domicilio</h3>
                 <div class="form-group">
-                    <label>Colonia</label>
-                    <input asp-for="Direccion.Colonia" required />
-                </div>
-                <div class="form-group">
-                    <label>Calle</label>
-                    <input asp-for="Direccion.Calle" required />
-                </div>
-                <div class="form-group">
-                    <label>Número</label>
-                    <input asp-for="Direccion.NumeroEdificio" />
-                </div>
-                <div class="form-group">
-                    <label>Descripción</label>
-                    <input asp-for="Direccion.DescripcionEdificio" />
-                </div>
-                <div class="form-group">
-                    <label>Referencia</label>
-                    <input asp-for="Direccion.ReferenciaEdificio" />
+                    <label for="Telefono">Teléfono</label>
+                    <input asp-for="Telefono" class="form-control" required pattern="[0-9]{10}" />
+                    @if (ViewData.ModelState["Telefono"]?.Errors.Count > 0)
+                    {
+                        <span class="text-danger">@ViewData.ModelState["Telefono"]?.Errors[0]?.ErrorMessage</span>
+                    }
                 </div>
 
                 <!-- Botones para guardar o cancelar -->
-                <button class="boton boton-guardar" type="submit">Guardar</button>
-                <button class="boton boton-cancelar" type="button" onclick="cancelEditForm()">Cancelar</button>
+                <button class="btn btn-primary" type="submit">Guardar</button>
+                <button class="btn btn-secondary" type="button" onclick="cancelEditForm()">Cancelar</button>
             </div>
         </form>
     </div>
 
     <script>
+        document.getElementById('edit-form').onsubmit = function (event) {
+            // Muestra en consola los datos antes de enviarlos
+            console.log("Datos del formulario:", new FormData(event.target));
+        };
+
         function toggleEditForm() {
             const profileView = document.querySelector(".perfil-usuario-body");
             const editForm = document.getElementById("edit-form");
@@ -114,6 +128,7 @@
             editForm.style.display = "none";
         }
     </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.7.1/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

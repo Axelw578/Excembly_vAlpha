@@ -4,16 +4,9 @@ namespace Excembly_vAlpha.ViewModels
 {
     public class DireccionViewModel
     {
-        // Propiedades del Usuario
-        public int UsuarioId { get; set; }
-        public string Nombre { get; set; }
-        public string Apellidos { get; set; }
-        public string CorreoElectronico { get; set; }
-        public string Telefono { get; set; }
-        public string FotoPerfilUrl { get; set; }
+        public int UsuarioId { get; set; } // ID del usuario asociado
 
-        // Propiedades de la Dirección
-        public int? DireccionId { get; set; }
+        public int? DireccionId { get; set; } // ID de la dirección si existe
 
         [Required(ErrorMessage = "La colonia es obligatoria.")]
         public string Colonia { get; set; }
@@ -27,7 +20,6 @@ namespace Excembly_vAlpha.ViewModels
         public string DescripcionEdificio { get; set; }
         public string ReferenciaEdificio { get; set; }
 
-        // Propiedad para indicar si la dirección ya está registrada
-        public bool TieneDireccion { get; set; }
+        public bool TieneDireccion { get; set; } // Propiedad para control interno
     }
 }

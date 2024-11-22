@@ -1,127 +1,46 @@
 ﻿using System;
-using System.IO;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
 using Excembly_vAlpha.Models;
 using Excembly_vAlpha.Services;
 using Excembly_vAlpha.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Excembly_vAlpha.Controllers
 {
     public class CuentaController : Controller
     {
         private readonly CuentaService _cuentaService;
+        private readonly ILogger<CuentaController> _logger;
+        private readonly string _rutaImagenGenerica = "/imagenes/perfil/default-profile.png";
 
-        public CuentaController(CuentaService cuentaService)
+        public CuentaController(CuentaService cuentaService, ILogger<CuentaController> logger)
         {
             _cuentaService = cuentaService;
+            _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var usuarioId = ObtenerUsuarioIdDesdeClaims();
             if (usuarioId == null)
+            {
+                _logger.LogWarning("Usuario no autenticado, redirigiendo al login.");
                 return RedirectToAction("Login", "Auth");
+            }
 
             var cuenta = _cuentaService.ObtenerCuentaPorId(usuarioId.Value);
             if (cuenta == null)
+            {
+                _logger.LogWarning("No se encontró la cuenta para el usuario con ID {UsuarioId}.", usuarioId);
                 return NotFound("La cuenta no fue encontrada.");
+            }
 
             var viewModel = MapearCuentaAVista(cuenta);
+            _logger.LogInformation("Cuenta cargada correctamente para el usuario con ID {UsuarioId}.", usuarioId);
             return View(viewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Editar(CuentaViewModel cuentaViewModel, IFormFile nuevaFotoPerfil)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View("Index", cuentaViewModel);
-            }
-
-            try
-            {
-                // Manejar nueva foto de perfil
-                if (nuevaFotoPerfil != null && nuevaFotoPerfil.Length > 0)
-                {
-                    // Ruta para guardar las fotos de perfil en el servidor
-                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "imagenes", "perfil");
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(nuevaFotoPerfil.FileName);
-                    var filePath = Path.Combine(uploadsFolder, fileName);
-
-                    // Crear el directorio si no existe
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-
-                    // Guardar la foto en el servidor
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await nuevaFotoPerfil.CopyToAsync(fileStream);
-                    }
-
-                    // Asignar la URL de la foto
-                    cuentaViewModel.FotoPerfilUrl = "/imagenes/perfil/" + fileName;
-                }
-
-                // Mapear ViewModel a modelo
-                var cuentaModelo = new Usuario
-                {
-                    UsuarioId = cuentaViewModel.UsuarioId,
-                    Nombre = cuentaViewModel.Nombre,
-                    Apellidos = cuentaViewModel.Apellidos,
-                    Telefono = cuentaViewModel.Telefono,
-                    FotoPerfilUrl = cuentaViewModel.FotoPerfilUrl,
-                    Direccion = cuentaViewModel.Direccion != null ? new Direccion
-                    {
-                        Colonia = cuentaViewModel.Direccion.Colonia,
-                        Calle = cuentaViewModel.Direccion.Calle,
-                        NumeroEdificio = cuentaViewModel.Direccion.NumeroEdificio,
-                        DescripcionEdificio = cuentaViewModel.Direccion.DescripcionEdificio,
-                        ReferenciaEdificio = cuentaViewModel.Direccion.ReferenciaEdificio
-                    } : null
-                };
-
-                // Validación del teléfono (ejemplo: asegurarse de que sea numérico y tenga 10 dígitos)
-                if (!Regex.IsMatch(cuentaViewModel.Telefono, @"^\d{10}$"))
-                {
-                    ModelState.AddModelError("Telefono", "El teléfono debe tener 10 dígitos.");
-                    return View("Index", cuentaViewModel);
-                }
-
-                // Actualizar cuenta
-                _cuentaService.ActualizarCuenta(cuentaModelo);
-
-                TempData["Mensaje"] = "Perfil actualizado correctamente.";
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", $"Error al actualizar la cuenta: {ex.Message}");
-                return View("Index", cuentaViewModel);
-            }
-
-            return RedirectToAction("Index");
-        }
-
-        public IActionResult ObtenerFotoPerfilUrl(int id)
-        {
-            var cuenta = _cuentaService.ObtenerCuentaPorId(id);
-            if (cuenta?.FotoPerfilUrl == null)
-                return NotFound("Foto de perfil no encontrada.");
-
-            var fotoBytes = System.IO.File.ReadAllBytes(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", cuenta.FotoPerfilUrl.TrimStart('/')));
-            return File(fotoBytes, "image/jpeg");
-        }
-
-        private int? ObtenerUsuarioIdDesdeClaims()
-        {
-            var claim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-            return claim != null && int.TryParse(claim.Value, out int usuarioId) ? usuarioId : null;
         }
 
         private CuentaViewModel MapearCuentaAVista(Usuario cuenta)
@@ -133,18 +52,84 @@ namespace Excembly_vAlpha.Controllers
                 Apellidos = cuenta.Apellidos,
                 CorreoElectronico = cuenta.CorreoElectronico,
                 Telefono = cuenta.Telefono,
-                FotoPerfilUrl = cuenta.FotoPerfilUrl,
-                Direccion = cuenta.Direccion != null
-                    ? new DireccionViewModel
-                    {
-                        Colonia = cuenta.Direccion.Colonia,
-                        Calle = cuenta.Direccion.Calle,
-                        NumeroEdificio = cuenta.Direccion.NumeroEdificio,
-                        DescripcionEdificio = cuenta.Direccion.DescripcionEdificio,
-                        ReferenciaEdificio = cuenta.Direccion.ReferenciaEdificio
-                    }
-                    : null
+                FotoPerfilUrl = string.IsNullOrEmpty(cuenta.FotoPerfilUrl) ? _rutaImagenGenerica : cuenta.FotoPerfilUrl
             };
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Editar(CuentaViewModel cuentaViewModel)
+        {
+            // Validar el modelo
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("El modelo no es válido para la actualización del perfil.");
+
+                // Mostrar errores de validación en TempData
+                TempData["Errores"] = Newtonsoft.Json.JsonConvert.SerializeObject(ModelState.Values
+                    .Where(x => x.Errors.Count > 0)
+                    .SelectMany(x => x.Errors)
+                    .Select(x => x.ErrorMessage));
+
+                return View("Index", cuentaViewModel);
+            }
+
+            try
+            {
+                // Validar el teléfono: debe tener exactamente 10 dígitos
+                if (!System.Text.RegularExpressions.Regex.IsMatch(cuentaViewModel.Telefono, @"^\d{10}$"))
+                {
+                    ModelState.AddModelError("Telefono", "El teléfono debe tener 10 dígitos.");
+                    _logger.LogWarning("Teléfono inválido para el usuario con ID {UsuarioId}.", cuentaViewModel.UsuarioId);
+
+                    // Mostrar el error y regresar a la vista
+                    TempData["Errores"] = Newtonsoft.Json.JsonConvert.SerializeObject(ModelState.Values
+                        .Where(x => x.Errors.Count > 0)
+                        .SelectMany(x => x.Errors)
+                        .Select(x => x.ErrorMessage));
+                    return View("Index", cuentaViewModel);
+                }
+
+                // Validar que la URL de la imagen no esté vacía
+                if (string.IsNullOrEmpty(cuentaViewModel.FotoPerfilUrl))
+                {
+                    cuentaViewModel.FotoPerfilUrl = _rutaImagenGenerica;
+                    _logger.LogInformation("Se ha asignado la foto de perfil genérica para el usuario con ID {UsuarioId}.", cuentaViewModel.UsuarioId);
+                }
+
+                // Mapear el ViewModel a la entidad Usuario
+                var cuentaModelo = new Usuario
+                {
+                    UsuarioId = cuentaViewModel.UsuarioId,
+                    Nombre = cuentaViewModel.Nombre,
+                    Apellidos = cuentaViewModel.Apellidos,
+                    Telefono = cuentaViewModel.Telefono,
+                    FotoPerfilUrl = cuentaViewModel.FotoPerfilUrl
+                };
+
+                // Actualizar la cuenta a través del servicio
+                _cuentaService.ActualizarCuenta(cuentaModelo);
+
+                // Mensaje de éxito y redirigir
+                TempData["Exito"] = "Perfil actualizado correctamente.";
+                _logger.LogInformation("Perfil actualizado exitosamente para el usuario con ID {UsuarioId}.", cuentaViewModel.UsuarioId);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                // Capturar cualquier excepción y mostrar el error
+                _logger.LogError(ex, "Error al intentar actualizar el perfil del usuario con ID {UsuarioId}.", cuentaViewModel.UsuarioId);
+
+                // Guardar el error en TempData
+                TempData["Errores"] = Newtonsoft.Json.JsonConvert.SerializeObject(new { mensaje = ex.Message, stackTrace = ex.StackTrace });
+                return View("Index", cuentaViewModel);
+            }
+        }
+
+        private int? ObtenerUsuarioIdDesdeClaims()
+        {
+            var usuarioIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return int.TryParse(usuarioIdStr, out var usuarioId) ? usuarioId : (int?)null;
         }
     }
 }
