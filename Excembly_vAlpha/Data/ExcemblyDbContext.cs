@@ -22,7 +22,6 @@ namespace Excembly_vAlpha.Data
         public DbSet<Plan> Planes { get; set; }
         public DbSet<PlanServicio> PlanesServicios { get; set; }
         public DbSet<ServicioAdicional> ServiciosAdicionales { get; set; }
-        public DbSet<PlanPersonalizado> PlanesPersonalizados { get; set; }
         public DbSet<Tecnico> Tecnicos { get; set; }
         public DbSet<Trabajo> Trabajos { get; set; }
         public DbSet<Cita> Citas { get; set; }
@@ -42,6 +41,31 @@ namespace Excembly_vAlpha.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            // Configuración de relaciones en Contratacion
+            modelBuilder.Entity<Contratacion>()
+                .HasOne(c => c.Usuario)
+                .WithMany(u => u.Contrataciones)
+                .HasForeignKey(c => c.UsuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Contratacion>()
+                .HasOne(c => c.Plan)
+                .WithMany(p => p.Contrataciones)
+                .HasForeignKey(c => c.PlanId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Contratacion>()
+                .HasOne(c => c.Servicio)
+                .WithMany(s => s.Contrataciones)
+                .HasForeignKey(c => c.ServicioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Contratacion>()
+                .HasOne(c => c.Cita)
+                .WithOne(c => c.Contratacion)
+                .HasForeignKey<Contratacion>(c => c.CitaId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
             modelBuilder.Entity<PlanServicio>()
@@ -144,24 +168,7 @@ namespace Excembly_vAlpha.Data
                 .HasForeignKey(sa => sa.ServicioId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configuración de PlanPersonalizado (Llave Compuesta)
-            modelBuilder.Entity<PlanPersonalizado>()
-                .HasKey(pp => new { pp.UsuarioId, pp.CitaId, pp.ServicioId });
-            modelBuilder.Entity<PlanPersonalizado>()
-                .HasOne(pp => pp.Usuario)
-                .WithMany(u => u.PlanesPersonalizados)
-                .HasForeignKey(pp => pp.UsuarioId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<PlanPersonalizado>()
-                .HasOne(pp => pp.Cita)
-                .WithMany(c => c.PlanesPersonalizados)
-                .HasForeignKey(pp => pp.CitaId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<PlanPersonalizado>()
-                .HasOne(pp => pp.Servicio)
-                .WithMany(s => s.PlanesPersonalizados)
-                .HasForeignKey(pp => pp.ServicioId)
-                .OnDelete(DeleteBehavior.Cascade);
+
 
             // Configuración de Técnico
             modelBuilder.Entity<Tecnico>()

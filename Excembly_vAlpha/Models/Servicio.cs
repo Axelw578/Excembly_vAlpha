@@ -19,6 +19,7 @@ namespace Excembly_vAlpha.Models
         public ICollection<AsignacionTecnico> AsignacionesTecnicos { get; set; }
         public ICollection<Trabajo> Trabajos { get; set; }
         public bool EsIndividual => !ExclusivoPaquete; // Ejemplo: si no es exclusivo de un paquete, es individual
+        public ICollection<Contratacion> Contrataciones { get; set; }
 
 
     }

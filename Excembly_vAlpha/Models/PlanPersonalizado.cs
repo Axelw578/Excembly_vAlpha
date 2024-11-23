@@ -14,5 +14,7 @@
         public Usuario Usuario { get; set; }
         public Cita Cita { get; set; }
         public Servicio Servicio { get; set; }
+
+        public ICollection<Contratacion> Contrataciones { get; set; }
     }
 }

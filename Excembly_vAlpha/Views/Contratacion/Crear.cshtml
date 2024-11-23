@@ -7,7 +7,10 @@
 <div class="container mt-4">
     <h2>Crear Contratación</h2>
 
-    <form method="post">
+    <form method="post" asp-action="Crear">
+        <!-- Campo oculto para ID de contratación -->
+        <input type="hidden" id="ContratacionId" name="ContratacionId" value="@Model.ContratacionId" />
+
         <!-- Información del Usuario -->
         <input type="hidden" asp-for="UsuarioId" />
         <div class="mb-3">
@@ -23,7 +26,7 @@
         <!-- Selección del Plan -->
         <div class="mb-3">
             <label for="PlanId" class="form-label">Seleccionar Plan</label>
-            <select id="PlanId" asp-for="PlanId" class="form-select">
+            <select id="PlanId" name="PlanId" class="form-select">
                 <option value="">Seleccione un plan</option>
                 @foreach (var plan in Model.PlanesDisponibles)
                 {
@@ -32,14 +35,14 @@
             </select>
         </div>
 
-        <!-- Selección de Servicios Adicionales -->
-        <div class="mb-3">
+        <!-- Servicios Adicionales (solo si se selecciona un Plan) -->
+        <div class="mb-3" id="serviciosAdicionalesSection" style="display: none;">
             <label class="form-label">Servicios Adicionales</label>
             <div id="serviciosAdicionales">
                 @foreach (var servicioAdicional in Model.ServiciosAdicionalesDisponibles)
                 {
                     <div class="form-check">
-                        <input type="checkbox" id="ServicioAdicional_@servicioAdicional.ServicioId" name="ServiciosAdicionalesContratados" value="@servicioAdicional.ServicioId" class="form-check-input" />
+                        <input type="checkbox" id="ServicioAdicional_@servicioAdicional.ServicioId" name="ServiciosAdicionalesIds" value="@servicioAdicional.ServicioId" class="form-check-input" />
                         <label for="ServicioAdicional_@servicioAdicional.ServicioId" class="form-check-label">@servicioAdicional.NombreServicio</label>
                         <span class="badge bg-secondary ms-2">@servicioAdicional.PrecioConDescuento.ToString("C")</span>
                     </div>
@@ -47,10 +50,10 @@
             </div>
         </div>
 
-        <!-- Selección del Servicio -->
+        <!-- Selección de Servicios Independientes -->
         <div class="mb-3">
-            <label for="ServicioId" class="form-label">Seleccionar Servicio</label>
-            <select id="ServicioId" asp-for="ServicioId" class="form-select">
+            <label for="ServicioId" class="form-label">Seleccionar Servicio Independiente</label>
+            <select id="ServicioId" name="ServicioId" class="form-select">
                 <option value="">Seleccione un servicio</option>
                 @foreach (var servicio in Model.ServiciosDisponibles)
                 {
@@ -62,12 +65,30 @@
         <!-- Selección de Tipo de Servicio -->
         <div class="mb-3">
             <label for="TipoServicio" class="form-label">Tipo de Servicio</label>
-            <select id="TipoServicio" asp-for="TipoServicio" class="form-select">
+            <select id="TipoServicio" name="TipoServicio" class="form-select">
                 <option value="Sucursal">Sucursal</option>
                 <option value="Domicilio">Domicilio</option>
             </select>
         </div>
 
-        <button type="submit" class="btn btn-primary">Crear Contratación</button>
+        <!-- Botón de Envío -->
+        <button type="submit" class="btn btn-primary">Guardar Contratación</button>
     </form>
 </div>
+
+@section Scripts {
+    <script>
+        // Mostrar/ocultar los servicios adicionales según el plan seleccionado
+        document.getElementById("PlanId").addEventListener("change", function () {
+            var planId = this.value;
+            var serviciosAdicionalesSection = document.getElementById("serviciosAdicionalesSection");
+
+            // Si se selecciona un plan, mostrar los servicios adicionales
+            if (planId) {
+                serviciosAdicionalesSection.style.display = "block";
+            } else {
+                serviciosAdicionalesSection.style.display = "none";
+            }
+        });
+    </script>
+}

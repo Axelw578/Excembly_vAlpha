@@ -5,6 +5,7 @@
     align-items: center;
     padding: 30px;
 }
+
 /* Grupo de fecha (Mes y Año) alineado en una fila */
 .date-group {
     display: flex;
@@ -65,8 +66,8 @@ label {
 .tarjeta-preview {
     flex: 1;
     perspective: 1000px; /* Necesario para el efecto 3D */
-    height: 250px; /* Más grande */
-    width: 250px; /* Más ancho */
+    height: 250px;
+    width: 250px;
     position: relative;
 }
 
@@ -84,7 +85,7 @@ label {
     transform: rotateY(180deg);
 }
 
-/* Frente y reverso de la tarjeta con nuevo tamaño */
+/* Frente y reverso de la tarjeta */
 .tarjeta-frente, .tarjeta-reverso {
     position: absolute;
     width: 100%;
@@ -102,12 +103,11 @@ label {
     /* Ícono de tarjeta en la esquina superior izquierda */
     .tarjeta-frente .icono-tarjeta {
         position: absolute;
-        top: 10px; /* Separación superior */
-        left: 10px; /* Separación izquierda */
-        font-size: 2em; /* Tamaño más grande */
+        top: 10px;
+        left: 10px;
+        font-size: 2em;
         color: #ffc107;
     }
-
 
 /* Estilo del frente de la tarjeta */
 .tarjeta-frente {
@@ -117,39 +117,38 @@ label {
 
 /* Estilo del reverso de la tarjeta */
 .tarjeta-reverso {
-    background-color: #212121; /* Fondo oscuro realista */
+    background-color: #212121;
     transform: rotateY(180deg);
     z-index: 1;
     padding-top: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centrar el contenido */
+    align-items: center;
     position: relative;
 }
 
 /* Barra negra superior */
 .barra-negra {
     width: 95%;
-    height: 40px; /* Más gruesa */
-    background-color: #ffc107; /* Un negro menos intenso */
+    height: 40px;
+    background-color: #ffc107;
     margin-bottom: 15px;
     border-radius: 5px;
     position: relative;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); /* Efecto de profundidad */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
 /* Estilo del CVV en el reverso */
 .cvv-container {
     width: 80%;
-    background: linear-gradient(90deg, #fff, #f0f0f0); /* Gradiente para 
-realismo */
+    background: linear-gradient(90deg, #fff, #f0f0f0);
     padding: 10px;
     font-size: 1.3em;
     font-weight: bold;
     color: #333;
     text-align: center;
     border-radius: 5px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); /* Efecto hundido */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Texto del CVV */
@@ -193,15 +192,15 @@ realismo */
     text-align: left;
 }
 
-/* Fecha de expiración: Mes y Año en la misma línea */
+/* Fecha de expiración: Mes y Año */
 .tarjeta-fecha {
     position: absolute;
     bottom: 20px;
     right: 20px;
     font-size: 1em;
     font-weight: bold;
-    display: flex; /* Para alinear */
-    gap: 5px; /* Espacio entre Mes y Año */
+    display: flex;
+    gap: 5px;
 }
 
 /* Inputs */

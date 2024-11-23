@@ -1,5 +1,4 @@
 ﻿@model Excembly_vAlpha.ViewModels.TarjetaViewModel
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agregar Tarjeta</title>
     <link rel="stylesheet" href="~/css/agregarTarjeta.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font
-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fontawesome/6.1.1/css/all.min.css">
 </head>
 <body>
     <div class="container">
@@ -17,94 +15,60 @@ awesome/6.1.1/css/all.min.css">
             <div class="header">
                 <h2>Agregar una tarjeta de crédito o débito</h2>
             </div>
-
             <div class="form-preview-container">
                 <!-- FORMULARIO -->
-                <form asp-action="AgregarTarjeta" method="post" class="form
-section">
+                <form asp-action="AgregarTarjeta" method="post" class="formsection">
                     <div class="form-group">
                         <label for="NombreTitular">Nombre del Titular</label>
-                        <input asp-for="NombreTitular" class="input-field"
-                               id="nombreTitular" placeholder="e.g. Pedro Ramirez" required>
-                        @Html.ValidationMessageFor(model =>
-                                 model.NombreTitular, "", new { @class = "text-danger" })
+                        <input asp-for="NombreTitular" class="input-field" id="nombreTitular" placeholder="e.g. Pedro Ramirez" required>
+                        @Html.ValidationMessageFor(model => model.NombreTitular, "", new { @class = "text-danger" })
                     </div>
-
                     <div class="form-group">
                         <label for="NumeroTarjeta">Número de tarjeta</label>
-                        <input asp-for="NumeroTarjeta" class="input-field"
-                               id="numeroTarjeta" maxlength="19" placeholder="e.g. 1234 5678 9123 0000"
-                               required>
-                        @Html.ValidationMessageFor(model =>
-                                 model.NumeroTarjeta, "", new { @class = "text-danger" })
+                        <input asp-for="NumeroTarjeta" class="input-field" id="numeroTarjeta" maxlength="19" placeholder="e.g. 1234 5678 9123 0000" required>
+                        @Html.ValidationMessageFor(model => model.NumeroTarjeta, "", new { @class = "text-danger" })
                     </div>
-
                     <div class="form-group date-group">
                         <div class="input-container">
                             <label for="MesExpiracion">Mes</label>
-                            <input asp-for="MesExpiracion" class="small-input"
-                                   id="mesExpiracion" maxlength="2" placeholder="MM" required>
-                            @Html.ValidationMessageFor(model =>
-                                     model.MesExpiracion, "", new { @class = "text-danger" })
+                            <input asp-for="MesExpiracion" class="small-input" id="mesExpiracion" maxlength="2" placeholder="MM" required>
+                            @Html.ValidationMessageFor(model => model.MesExpiracion, "", new { @class = "text-danger" })
                         </div>
                         <div class="input-container">
                             <label for="AñoExpiracion">Año</label>
-                            <input asp-for="AñoExpiracion" class="small-input"
-                                   id="añoExpiracion" maxlength="4" placeholder="AAAA" min="2024" max="2035"
-                                   required>
-                            @Html.ValidationMessageFor(model =>
-                                     model.AñoExpiracion, "", new { @class = "text-danger" })
+                            <input asp-for="AñoExpiracion" class="small-input" id="añoExpiracion" maxlength="4" placeholder="AAAA" min="2024" max="2035" required>
+                            @Html.ValidationMessageFor(model => model.AñoExpiracion, "", new { @class = "text-danger" })
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label for="CVV">Código de Seguridad (CVV)</label>
-                        <input asp-for="CVV" class="input-field small-input"
-                               id="cvv" maxlength="3" placeholder="e.g. 123" required>
-                        @Html.ValidationMessageFor(model => model.CVV, "", new
-                            { @class = "text-danger" })
+                        <input asp-for="CVV" class="input-field small-input" id="cvv" maxlength="3" placeholder="e.g. 123" required>
+                        @Html.ValidationMessageFor(model => model.CVV, "", new { @class = "text-danger" })
                     </div>
-
                     <div class="form-group">
                         <label for="Banco">Banco</label>
-                        <input asp-for="Banco" class="input-field" id="banco"
-                               placeholder="e.g. Banco del Estado">
-                        @Html.ValidationMessageFor(model => model.Banco, "",
-                                 new { @class = "text-danger" })
+                        <input asp-for="Banco" class="input-field" id="banco" placeholder="e.g. Banco del Estado">
+                        @Html.ValidationMessageFor(model => model.Banco, "", new { @class = "text-danger" })
                     </div>
-
                     <div class="form-group">
                         <label for="Marca">Marca de la tarjeta</label>
-                        <input asp-for="Marca" class="input-field" id="marca"
-                               placeholder="e.g. Visa, MasterCard">
-                        @Html.ValidationMessageFor(model => model.Marca, "",
-                                 new { @class = "text-danger" })
+                        <input asp-for="Marca" class="input-field" id="marca" placeholder="e.g. Visa, MasterCard">
+                        @Html.ValidationMessageFor(model => model.Marca, "", new { @class = "text-danger" })
                     </div>
-
                     <div class="form-group">
                         <label for="TipoTarjeta">Tipo de tarjeta</label>
-                        <select asp-for="TipoTarjeta" id="tipoTarjeta"
-                                class="input-field" required>
+                        <select asp-for="TipoTarjeta" id="tipoTarjeta" class="input-field" required>
                             <option value="">Seleccione tipo</option>
                             <option value="Credito">Crédito</option>
                             <option value="Debito">Débito</option>
                         </select>
-                        @Html.ValidationMessageFor(model => model.TipoTarjeta,
-                                 "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.TipoTarjeta, "", new { @class = "text-danger" })
                     </div>
-
                     <div class="form-actions">
-                        <button type="submit" class="btn-save">
-                            Guardar
-                            tarjeta
-                        </button>
-                        <button type="button" class="btn-back"
-                                onclick="window.location.href='/TarjetasGuardadas/Index';">
-                            Volver
-                        </button>
+                        <button type="submit" class="btn-save">Guardar tarjeta</button>
+                        <button type="button" class="btn-back" onclick="window.location.href='/TarjetasGuardadas/Index';">Volver</button>
                     </div>
                 </form>
-
                 <!-- Vista previa -->
                 <div class="tarjeta-preview" id="tarjeta">
                     <div class="tarjeta-contenedor">
@@ -113,44 +77,32 @@ section">
                             <div class="icono-tarjeta">
                                 <i class="fas fa-credit-card"></i>
                             </div>
-                            <div class="tarjeta-numero" id="preview
-numeroTarjeta">
+                            <div class="tarjeta-numero" id="previewnumeroTarjeta">
                                 0000 0000 0000 0000
                             </div>
-                            <div class="tarjeta-nombre" id="preview
-nombreTitular">
+                            <div class="tarjeta-nombre" id="previewnombreTitular">
                                 NOMBRE TITULAR
                             </div>
-                            <div class="tarjeta-fecha" id="preview
-fechaExpiracion">
+                            <div class="tarjeta-fecha" id="previewfechaExpiracion">
                                 MM/AA
                             </div>
                         </div>
-
                         <!-- Reverso de la tarjeta -->
                         <div class="tarjeta-reverso">
-                            <!-- Barra negra -->
                             <div class="barra-negra"></div>
-
-                            <!-- CVV -->
                             <div class="cvv-container">
                                 <span id="preview-cvv">123</span>
                             </div>
                             <div class="cvv-label">Código de seguridad</div>
-
-                            <!-- Texto descriptivo -->
                             <div class="reverso-texto">
-                                Uso exclusivo para transacciones seguras. No
-                                compartir este código con nadie.
+                                Uso exclusivo para transacciones seguras. No compartir este código con nadie.
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <script src="~/js/agregarTarjeta.js"></script>
 </body>
 </html>
