@@ -23,8 +23,8 @@ namespace Excembly_vAlpha.ViewModels
         // Información sobre los servicios adicionales contratados
         public IEnumerable<ServicioAdicionalViewModel> ServiciosAdicionalesContratados { get; set; } = new List<ServicioAdicionalViewModel>();
 
-        // ** Propiedad para los servicios adicionales seleccionados con claves compuestas **
-        public List<ServicioAdicionalSeleccionado> ServiciosAdicionalesSeleccionados { get; set; } = new List<ServicioAdicionalSeleccionado>();
+        // ** Propiedad para los servicios adicionales seleccionados (solo IDs) **
+        public List<int> ServiciosAdicionalesSeleccionados { get; set; } = new List<int>();
 
         // Estado y fechas de la contratación
         public string Estado { get; set; } = "Activa";
@@ -38,9 +38,4 @@ namespace Excembly_vAlpha.ViewModels
         public IEnumerable<ServicioAdicionalViewModel> ServiciosAdicionalesDisponibles { get; set; } = new List<ServicioAdicionalViewModel>(); // Lista de servicios adicionales disponibles
     }
 
-    public class ServicioAdicionalSeleccionado
-    {
-        public int PlanId { get; set; }
-        public int ServicioId { get; set; }
-    }
 }

@@ -9,22 +9,24 @@ namespace Excembly_vAlpha.Mapping
         public ContratacionProfile()
         {
             // Mapeo de Contratacion a ContratacionViewModel
+            // Mapeo de Contratacion a ContratacionViewModel (y viceversa)
             CreateMap<Contratacion, ContratacionViewModel>()
                 .ForMember(dest => dest.NombreUsuario, opt => opt.MapFrom(src => src.Usuario.Nombre + " " + src.Usuario.Apellidos))
                 .ForMember(dest => dest.CorreoUsuario, opt => opt.MapFrom(src => src.Usuario.CorreoElectronico))
-                .ForMember(dest => dest.NombrePlan, opt => opt.MapFrom(src => src.Plan != null ? src.Plan.Nombre : null))
-                .ForMember(dest => dest.PrecioPlan, opt => opt.MapFrom(src => src.Plan != null ? src.Plan.Precio : 0))
-                .ForMember(dest => dest.NombreServicio, opt => opt.MapFrom(src => src.Servicio != null ? src.Servicio.Nombre : null))
-                .ForMember(dest => dest.PrecioServicio, opt => opt.MapFrom(src => src.Servicio != null ? src.Servicio.Precio : 0))
+                .ForMember(dest => dest.NombrePlan, opt => opt.MapFrom(src => src.Plan.Nombre))
+                .ForMember(dest => dest.PrecioPlan, opt => opt.MapFrom(src => src.Plan.Precio))
+                .ForMember(dest => dest.NombreServicio, opt => opt.MapFrom(src => src.Servicio.Nombre))
+                .ForMember(dest => dest.PrecioServicio, opt => opt.MapFrom(src => src.Servicio.Precio))
                 .ForMember(dest => dest.ServiciosAdicionalesContratados, opt => opt.MapFrom(src => src.ServiciosAdicionalesContratados))
-                .ForMember(dest => dest.PlanesDisponibles, opt => opt.Ignore()) // Datos llenados manualmente
-                .ForMember(dest => dest.ServiciosDisponibles, opt => opt.Ignore())
-                .ForMember(dest => dest.ServiciosAdicionalesDisponibles, opt => opt.Ignore())
-                .ReverseMap()
-                .ForMember(dest => dest.Usuario, opt => opt.Ignore())
-                .ForMember(dest => dest.Plan, opt => opt.Ignore())
-                .ForMember(dest => dest.Servicio, opt => opt.Ignore())
-                .ForMember(dest => dest.ServiciosAdicionalesContratados, opt => opt.Ignore());
+                .ForMember(dest => dest.PlanesDisponibles, opt => opt.Ignore()) // Ignorados en la creación
+                .ForMember(dest => dest.ServiciosDisponibles, opt => opt.Ignore()) // Ignorados en la creación
+                .ForMember(dest => dest.ServiciosAdicionalesDisponibles, opt => opt.Ignore()) // Ignorados en la creación
+                .ReverseMap() // **Esto añade el mapeo inverso**
+                .ForMember(dest => dest.Usuario, opt => opt.Ignore()) // Usuario se asigna manualmente
+                .ForMember(dest => dest.Plan, opt => opt.Ignore()) // Plan se asigna manualmente
+                .ForMember(dest => dest.Servicio, opt => opt.Ignore()) // Servicio se asigna manualmente
+                .ForMember(dest => dest.ServiciosAdicionalesContratados, opt => opt.Ignore()); // Asignados manualmente
+
 
             // Mapeo de Servicio a ServicioViewModel
             CreateMap<Servicio, ServicioViewModel>()

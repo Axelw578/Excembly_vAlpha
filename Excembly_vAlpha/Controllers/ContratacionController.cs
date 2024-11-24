@@ -161,14 +161,15 @@ namespace Excembly_vAlpha.Controllers
                         var contratacionId = contratacion.ContratacionId;
 
                         // 3. Validar y agregar servicios adicionales si se seleccionaron
-                        if (contratacionViewModel.ServiciosAdicionalesSeleccionados != null && contratacionViewModel.ServiciosAdicionalesSeleccionados.Count > 0)
+                        if (contratacionViewModel.ServiciosAdicionalesSeleccionados != null && contratacionViewModel.ServiciosAdicionalesSeleccionados.Any())
                         {
                             foreach (var servicioAdicionalSeleccionado in contratacionViewModel.ServiciosAdicionalesSeleccionados)
                             {
-                                var servicioAdicional = await _contratacionService.ObtenerServicioAdicionalPorId(servicioAdicionalSeleccionado.ServicioId);
+                                // Si el modelo ahora solo contiene los IDs de los servicios adicionales, debes buscar el servicio adicional por su ID.
+                                var servicioAdicional = await _contratacionService.ObtenerServicioAdicionalPorId(servicioAdicionalSeleccionado);
                                 if (servicioAdicional == null)
                                 {
-                                    _logger.LogWarning($"Servicio adicional con PlanId {servicioAdicionalSeleccionado.PlanId} y ServicioId {servicioAdicionalSeleccionado.ServicioId} no encontrado.");
+                                    _logger.LogWarning($"Servicio adicional con ID {servicioAdicionalSeleccionado} no encontrado.");
                                     continue;
                                 }
 
@@ -213,6 +214,7 @@ namespace Excembly_vAlpha.Controllers
                 return View("Error");
             }
         }
+
 
 
 
