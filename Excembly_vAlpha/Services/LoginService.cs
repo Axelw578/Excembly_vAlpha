@@ -1,6 +1,7 @@
 ﻿using Excembly_vAlpha.Data;
 using Excembly_vAlpha.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -44,7 +45,15 @@ namespace Excembly_vAlpha.Services
             }
             catch (Exception ex)
             {
-                // Registrar el error para diagnóstico (opcional)
+                // Registrar el error en consola
+                Console.WriteLine("Error al registrar el usuario:");
+                Console.WriteLine(JsonConvert.SerializeObject(new
+                {
+                    Error = ex.Message,
+                    Detalles = ex.InnerException?.Message,
+                    Fecha = DateTime.Now
+                }, Formatting.Indented));
+
                 return (false, "Error al registrar el usuario.");
             }
         }
@@ -52,35 +61,67 @@ namespace Excembly_vAlpha.Services
         // Método para iniciar sesión
         public async Task<(Usuario Usuario, string Message)> IniciarSesionAsync(string correo, string contraseña)
         {
-            var usuario = await _context.Usuarios
-                .Include(u => u.Rol)
-                .FirstOrDefaultAsync(u => u.CorreoElectronico == correo);
-
-            if (usuario == null)
+            try
             {
-                return (null, "El correo no está registrado.");
-            }
+                var usuario = await _context.Usuarios
+                    .Include(u => u.Rol)
+                    .FirstOrDefaultAsync(u => u.CorreoElectronico == correo);
 
-            // Validar contraseña
-            if (usuario.Contraseña != contraseña)
+                if (usuario == null)
+                {
+                    return (null, "El correo no está registrado.");
+                }
+
+                // Validar contraseña
+                if (usuario.Contraseña != contraseña)
+                {
+                    return (null, "Contraseña incorrecta.");
+                }
+
+                return (usuario, "Inicio de sesión exitoso.");
+            }
+            catch (Exception ex)
             {
-                return (null, "Contraseña incorrecta.");
-            }
+                // Registrar el error en consola
+                Console.WriteLine("Error al iniciar sesión:");
+                Console.WriteLine(JsonConvert.SerializeObject(new
+                {
+                    Error = ex.Message,
+                    Detalles = ex.InnerException?.Message,
+                    Fecha = DateTime.Now
+                }, Formatting.Indented));
 
-            return (usuario, "Inicio de sesión exitoso.");
+                return (null, "Error al intentar iniciar sesión.");
+            }
         }
 
         // Método para recuperar cuenta (Borrador)
         public async Task<string> RecuperarCuentaAsync(string correo)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.CorreoElectronico == correo);
-            if (usuario == null)
+            try
             {
-                return "El correo no está registrado.";
-            }
+                var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.CorreoElectronico == correo);
+                if (usuario == null)
+                {
+                    return "El correo no está registrado.";
+                }
 
-            // Aquí se implementaría la lógica de recuperación de cuenta
-            return "Proceso de recuperación iniciado.";
+                // Aquí se implementaría la lógica de recuperación de cuenta
+                return "Proceso de recuperación iniciado.";
+            }
+            catch (Exception ex)
+            {
+                // Registrar el error en consola
+                Console.WriteLine("Error al recuperar la cuenta:");
+                Console.WriteLine(JsonConvert.SerializeObject(new
+                {
+                    Error = ex.Message,
+                    Detalles = ex.InnerException?.Message,
+                    Fecha = DateTime.Now
+                }, Formatting.Indented));
+
+                return "Error al intentar recuperar la cuenta.";
+            }
         }
     }
 }

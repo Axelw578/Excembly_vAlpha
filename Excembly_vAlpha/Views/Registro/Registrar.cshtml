@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Excembly_vAlpha.ViewModels.UsuarioRegistroViewModel
+@{
     Layout = null; // Desactiva el layout para esta vista
 }
 
@@ -18,37 +19,64 @@
                 <div class="card shadow-lg">
                     <div class="card-body">
                         <h3 class="card-title text-center mb-4">Crear Cuenta</h3>
+
+                        <!-- Formulario de registro -->
                         <form id="registroForm" asp-action="Registrar" asp-controller="Registro" method="post">
+                            <!-- Resumen de errores -->
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                            <!-- Campo Nombre -->
                             <div class="mb-3">
                                 <label for="Nombre" class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="Nombre" name="Nombre" required>
+                                <input type="text" class="form-control" id="Nombre" name="Nombre" value="@Model.Nombre" />
+                                <span asp-validation-for="Nombre" class="text-danger"></span>
                             </div>
+
+                            <!-- Campo Apellidos -->
                             <div class="mb-3">
                                 <label for="Apellidos" class="form-label">Apellidos</label>
-                                <input type="text" class="form-control" id="Apellidos" name="Apellidos" required>
+                                <input type="text" class="form-control" id="Apellidos" name="Apellidos" value="@Model.Apellidos" />
+                                <span asp-validation-for="Apellidos" class="text-danger"></span>
                             </div>
+
+                            <!-- Campo Correo Electrónico -->
                             <div class="mb-3">
                                 <label for="Correo" class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="Correo" name="Correo" required>
+                                <input type="email" class="form-control" id="Correo" name="Correo" value="@Model.Correo" />
+                                <span asp-validation-for="Correo" class="text-danger"></span>
                             </div>
+
+                            <!-- Campo Contraseña -->
                             <div class="mb-3">
                                 <label for="Contraseña" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="Contraseña" name="Contraseña" required>
+                                <input type="password" class="form-control" id="Contraseña" name="Contraseña" />
+                                <span asp-validation-for="Contraseña" class="text-danger"></span>
                             </div>
+
+                            <!-- Campo Confirmar Contraseña -->
                             <div class="mb-3">
                                 <label for="ConfirmarContraseña" class="form-label">Confirmar Contraseña</label>
-                                <input type="password" class="form-control" id="ConfirmarContraseña" name="ConfirmarContraseña" required>
+                                <input type="password" class="form-control" id="ConfirmarContraseña" name="ConfirmarContraseña" />
+                                <span asp-validation-for="ConfirmarContraseña" class="text-danger"></span>
                             </div>
+
+                            <!-- Campo Teléfono -->
                             <div class="mb-3">
                                 <label for="Telefono" class="form-label">Teléfono</label>
-                                <input type="tel" class="form-control" id="Telefono" name="Telefono">
+                                <input type="tel" class="form-control" id="Telefono" name="Telefono" value="@Model.Telefono" />
+                                <span asp-validation-for="Telefono" class="text-danger"></span>
                             </div>
+
+                            <!-- Campo URL de Foto de Perfil -->
                             <div class="mb-3">
                                 <label for="FotoPerfilUrl" class="form-label">URL de la Foto de Perfil</label>
-                                <input type="url" class="form-control" id="FotoPerfilUrl" name="FotoPerfilUrl">
+                                <input type="url" class="form-control" id="FotoPerfilUrl" name="FotoPerfilUrl" value="@Model.FotoPerfilUrl" />
+                                <span asp-validation-for="FotoPerfilUrl" class="text-danger"></span>
                             </div>
+
                             <button type="submit" class="btn btn-primary w-100">Registrar</button>
                         </form>
+
                         <p class="text-center mt-3">
                             ¿Ya tienes una cuenta? <a href="~/Login/Index">Inicia sesión</a>
                         </p>
@@ -61,6 +89,8 @@
     <!-- Scripts de Bootstrap y jQuery -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/js/registrar.js"></script> <!-- Archivo JavaScript personalizado -->
 </body>
 </html>

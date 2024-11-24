@@ -2,6 +2,7 @@
 using Excembly_vAlpha.Services;
 using Microsoft.AspNetCore.Mvc;
 using Excembly_vAlpha.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -58,7 +59,6 @@ namespace Excembly_vAlpha.Controllers
                 if (success)
                 {
                     TempData["RegistroExitoso"] = "Usuario registrado con éxito.";
-
                     return RedirectToAction("Index", "Login");
                 }
 
@@ -67,8 +67,16 @@ namespace Excembly_vAlpha.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de excepción
-                ModelState.AddModelError("", $"Error inesperado: {ex.Message}");
+                // Manejo de excepción: registra el error en la consola y muestra un mensaje genérico en la vista
+                Console.WriteLine("Error en el registro de usuario:");
+                Console.WriteLine(JsonConvert.SerializeObject(new
+                {
+                    Error = ex.Message,
+                    Detalles = ex.InnerException?.Message,
+                    Fecha = DateTime.Now
+                }, Formatting.Indented));
+
+                ModelState.AddModelError("", "Ha ocurrido un error inesperado. Por favor, intente nuevamente.");
             }
 
             // Retorna la vista de registro con los errores de validación
