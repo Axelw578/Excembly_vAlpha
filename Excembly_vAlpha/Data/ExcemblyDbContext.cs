@@ -81,7 +81,18 @@ namespace Excembly_vAlpha.Data
                 .WithMany(s => s.PlanServicios)
                 .HasForeignKey(ps => ps.ServicioId);
 
+            // Configuración para ServicioAdicionalContratado
+            modelBuilder.Entity<ServicioAdicionalContratado>()
+                .HasOne(sac => sac.Contratacion)
+                .WithMany(c => c.ServiciosAdicionalesContratados)
+                .HasForeignKey(sac => sac.ContratacionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<ServicioAdicionalContratado>()
+                .HasOne(sac => sac.ServicioAdicional)
+                .WithMany(sa => sa.ServiciosAdicionalesContratados)
+                .HasForeignKey(sac => new { sac.ServicioAdicionalId, sac.PlanId }) // Clave compuesta
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Configuración de la relación uno a uno entre Cita y Contratacion
             modelBuilder.Entity<Cita>()
@@ -136,38 +147,19 @@ namespace Excembly_vAlpha.Data
                 .ToTable("serviciosadicionales"); // Nombre de la tabla
 
             modelBuilder.Entity<ServicioAdicional>()
-                .HasKey(sa => new { sa.PlanId, sa.ServicioId }); // Llave compuesta
-
-            modelBuilder.Entity<ServicioAdicional>()
-                .HasOne(sa => sa.Plan)
-                .WithMany(p => p.ServiciosAdicionales)
-                .HasForeignKey(sa => sa.PlanId)
-                .OnDelete(DeleteBehavior.Restrict); // Relación con Plan
-
-            modelBuilder.Entity<ServicioAdicional>()
-                .HasOne(sa => sa.Servicio)
-                .WithMany(s => s.ServiciosAdicionales)
-                .HasForeignKey(sa => sa.ServicioId)
-                .OnDelete(DeleteBehavior.Restrict); // Relación con Servicio
-
-
-
-
-            // Configuración de ServicioAdicional (Llave Compuesta)
-            modelBuilder.Entity<ServicioAdicional>()
-
                 .HasKey(sa => new { sa.PlanId, sa.ServicioId });
+
             modelBuilder.Entity<ServicioAdicional>()
                 .HasOne(sa => sa.Plan)
                 .WithMany(p => p.ServiciosAdicionales)
                 .HasForeignKey(sa => sa.PlanId)
                 .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<ServicioAdicional>()
                 .HasOne(sa => sa.Servicio)
                 .WithMany(s => s.ServiciosAdicionales)
                 .HasForeignKey(sa => sa.ServicioId)
                 .OnDelete(DeleteBehavior.Restrict);
-
 
 
             // Configuración de Técnico

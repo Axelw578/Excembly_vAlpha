@@ -314,24 +314,29 @@ namespace Excembly_vAlpha.Services
             }
         }
 
-        public async Task<ServicioAdicional> ObtenerServicioAdicionalPorId(int servicioAdicionalId)
+        public async Task<ServicioAdicional> ObtenerServicioAdicionalPorId(int id, int? planId = null)
         {
             try
             {
-                var servicioAdicional = await _context.ServiciosAdicionales.FindAsync(servicioAdicionalId);
+                // Buscar usando el ID único, pero también validar con PlanId si es necesario
+                var servicioAdicional = await _context.ServiciosAdicionales
+                    .FirstOrDefaultAsync(sa => sa.Id == id && (planId == null || sa.PlanId == planId));
+
                 if (servicioAdicional == null)
                 {
-                    _logger.LogWarning($"No se encontró el servicio adicional con ID: {servicioAdicionalId}");
+                    _logger.LogWarning($"No se encontró el servicio adicional con ID: {id} y PlanId: {planId}");
                 }
+
                 return servicioAdicional;
             }
             catch (Exception ex)
             {
                 string errorJson = JsonConvert.SerializeObject(ex, Formatting.Indented);
-                _logger.LogError($"Error al obtener el servicio adicional con ID {servicioAdicionalId}. Detalles: {errorJson}");
+                _logger.LogError($"Error al obtener el servicio adicional con ID {id}. Detalles: {errorJson}");
                 throw;
             }
         }
+
 
         public async Task<bool> AgregarServicioAdicionalContratado(ServicioAdicionalContratado servicioAdicionalContratado)
         {

@@ -1,8 +1,11 @@
-﻿namespace Excembly_vAlpha.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Excembly_vAlpha.Models
 {
     // actualizado
     public class ServicioAdicional
     {
+        [Key]
         public int Id { get; set; }  // ID propio para identificador único
         public int PlanId { get; set; }
         public int ServicioId { get; set; }
@@ -15,5 +18,6 @@
         public string Nombre => Servicio?.Nombre ?? "Servicio desconocido";
 
         public ICollection<ServicioAdicionalContratado> ServiciosAdicionalesContratados { get; set; }
+
     }
 }

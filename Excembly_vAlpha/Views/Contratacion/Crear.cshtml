@@ -42,8 +42,13 @@
                 @foreach (var servicioAdicional in Model.ServiciosAdicionalesDisponibles)
                 {
                     <div class="form-check">
-                        <input type="checkbox" id="ServicioAdicional_@servicioAdicional.ServicioId" name="ServiciosAdicionalesIds" value="@servicioAdicional.ServicioId" class="form-check-input" />
-                        <label for="ServicioAdicional_@servicioAdicional.ServicioId" class="form-check-label">@servicioAdicional.NombreServicio</label>
+                        <!-- Cambié el nombre aquí para coincidir con la propiedad en el ViewModel -->
+                        <input type="checkbox" id="ServicioAdicional_@servicioAdicional.ServicioId"
+                               name="ServiciosAdicionalesSeleccionados" value="@servicioAdicional.ServicioId"
+                               class="form-check-input" />
+                        <label for="ServicioAdicional_@servicioAdicional.ServicioId" class="form-check-label">
+                            @servicioAdicional.NombreServicio
+                        </label>
                         <span class="badge bg-secondary ms-2">@servicioAdicional.PrecioConDescuento.ToString("C")</span>
                     </div>
                 }

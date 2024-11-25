@@ -24,6 +24,7 @@ namespace Excembly_vAlpha.Models
         public Cita Cita { get; set; }
         public ICollection<ServicioAdicionalContratado> ServiciosAdicionalesContratados { get; set; }
 
+
         public ICollection<Comentario> Comentarios { get; set; }
     }
 

@@ -114,106 +114,93 @@ namespace Excembly_vAlpha.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
-                    // 1. Crear la contratación con el plan seleccionado
-                    var contratacion = _mapper.Map<Contratacion>(contratacionViewModel);
+                    _logger.LogWarning("El formulario de creación no es válido.");
+                    return View(await CrearContratacionViewModel());
+                }
 
-                    // Verificar que un plan esté seleccionado
-                    if (contratacionViewModel.PlanId.HasValue)
-                    {
-                        var plan = await _contratacionService.ObtenerPlanPorId(contratacionViewModel.PlanId.Value);
-                        if (plan == null)
-                        {
-                            _logger.LogWarning($"Plan con ID {contratacionViewModel.PlanId} no encontrado.");
-                            return View("Error");
-                        }
+                // Mapear el ViewModel a la entidad Contratacion
+                var contratacion = _mapper.Map<Contratacion>(contratacionViewModel);
 
-                        // Asignar el plan a la contratación
-                        contratacion.PlanId = plan.PlanId;
-                        contratacion.Estado = "Activa"; // Aseguramos que el estado de la contratación esté activo
-                    }
-                    else if (contratacionViewModel.ServicioId.HasValue)
+                // Validar y asignar el plan o servicio principal
+                if (contratacionViewModel.PlanId.HasValue)
+                {
+                    var plan = await _contratacionService.ObtenerPlanPorId(contratacionViewModel.PlanId.Value);
+                    if (plan == null)
                     {
-                        var servicio = await _contratacionService.ObtenerServicioPorId(contratacionViewModel.ServicioId.Value);
-                        if (servicio == null)
-                        {
-                            _logger.LogWarning($"Servicio con ID {contratacionViewModel.ServicioId} no encontrado.");
-                            return View("Error");
-                        }
-
-                        // Asignar el servicio a la contratación
-                        contratacion.ServicioId = servicio.ServicioId;
-                        contratacion.Estado = "Activa";
-                    }
-                    else
-                    {
-                        _logger.LogWarning("No se seleccionó un plan ni un servicio para la contratación.");
+                        _logger.LogWarning($"Plan con ID {contratacionViewModel.PlanId} no encontrado.");
                         return View("Error");
                     }
-
-                    // 2. Guardar la contratación en la base de datos y obtener el ID generado
-                    var resultadoContratacion = await _contratacionService.AgregarContratacion(contratacion);
-
-                    if (resultadoContratacion)
+                    contratacion.PlanId = plan.PlanId;
+                    contratacion.Estado = "Activa";
+                }
+                else if (contratacionViewModel.ServicioId.HasValue)
+                {
+                    var servicio = await _contratacionService.ObtenerServicioPorId(contratacionViewModel.ServicioId.Value);
+                    if (servicio == null)
                     {
-                        // Obtener el ID de la contratación recién creada
-                        var contratacionId = contratacion.ContratacionId;
+                        _logger.LogWarning($"Servicio con ID {contratacionViewModel.ServicioId} no encontrado.");
+                        return View("Error");
+                    }
+                    contratacion.ServicioId = servicio.ServicioId;
+                    contratacion.Estado = "Activa";
+                }
+                else
+                {
+                    _logger.LogWarning("No se seleccionó ni un plan ni un servicio principal.");
+                    return View("Error");
+                }
 
-                        // 3. Validar y agregar servicios adicionales si se seleccionaron
-                        if (contratacionViewModel.ServiciosAdicionalesSeleccionados != null && contratacionViewModel.ServiciosAdicionalesSeleccionados.Any())
+                // Guardar la contratación en la base de datos
+                var resultadoContratacion = await _contratacionService.AgregarContratacion(contratacion);
+                if (!resultadoContratacion)
+                {
+                    _logger.LogWarning("No se pudo guardar la contratación.");
+                    return View("Error");
+                }
+
+                // Obtener el ID de la contratación recién creada
+                var contratacionId = contratacion.ContratacionId;
+
+                // Asociar los servicios adicionales seleccionados
+                if (contratacionViewModel.ServiciosAdicionalesSeleccionados != null &&
+                    contratacionViewModel.ServiciosAdicionalesSeleccionados.Any())
+                {
+                    foreach (var servicioAdicionalId in contratacionViewModel.ServiciosAdicionalesSeleccionados)
+                    {
+                        var servicioAdicional = await _contratacionService.ObtenerServicioAdicionalPorId(servicioAdicionalId);
+                        if (servicioAdicional == null)
                         {
-                            foreach (var servicioAdicionalSeleccionado in contratacionViewModel.ServiciosAdicionalesSeleccionados)
-                            {
-                                // Si el modelo ahora solo contiene los IDs de los servicios adicionales, debes buscar el servicio adicional por su ID.
-                                var servicioAdicional = await _contratacionService.ObtenerServicioAdicionalPorId(servicioAdicionalSeleccionado);
-                                if (servicioAdicional == null)
-                                {
-                                    _logger.LogWarning($"Servicio adicional con ID {servicioAdicionalSeleccionado} no encontrado.");
-                                    continue;
-                                }
-
-                                // Crear una entrada en ServicioAdicionalContratado
-                                var servicioAdicionalContratado = new ServicioAdicionalContratado
-                                {
-                                    ContratacionId = contratacionId,
-                                    ServicioAdicionalId = servicioAdicional.ServicioId,
-                                    DescuentoAplicado = servicioAdicional.Descuento
-                                };
-
-                                await _contratacionService.AgregarServicioAdicionalContratado(servicioAdicionalContratado);
-                            }
+                            _logger.LogWarning($"Servicio adicional con ID {servicioAdicionalId} no encontrado. Se omitirá.");
+                            continue;
                         }
 
-                        _logger.LogInformation($"Contratación creada con éxito. ID: {contratacionId}");
+                        var servicioAdicionalContratado = new ServicioAdicionalContratado
+                        {
+                            ContratacionId = contratacionId,
+                            ServicioAdicionalId = servicioAdicional.ServicioId,
+                            DescuentoAplicado = servicioAdicional.Descuento
+                        };
 
-                        // Redirigir a la vista de detalles de la contratación
-                        return RedirectToAction("Detalles", new { contratacionId });
-                    }
-                    else
-                    {
-                        _logger.LogWarning("No se pudo guardar la contratación.");
-                        return View("Error");
+                        var resultadoServicio = await _contratacionService.AgregarServicioAdicionalContratado(servicioAdicionalContratado);
+                        if (!resultadoServicio)
+                        {
+                            _logger.LogWarning($"No se pudo guardar el servicio adicional con ID {servicioAdicionalId} para la contratación {contratacionId}.");
+                        }
                     }
                 }
 
-                // Si el formulario no es válido, vuelve a cargar el formulario de creación
-                _logger.LogWarning("Formulario de creación no válido.");
-                var viewModel = await CrearContratacionViewModel();
-                return View(viewModel);
+                _logger.LogInformation($"Contratación creada exitosamente con ID: {contratacionId}");
+                return RedirectToAction("Detalles", new { contratacionId });
             }
             catch (Exception ex)
             {
-                _logger.LogError(JsonConvert.SerializeObject(new
-                {
-                    Error = "Error al crear la contratación",
-                    Detalle = ex.Message,
-                    StackTrace = ex.StackTrace,
-                    ContratacionViewModel = contratacionViewModel
-                }));
+                LogJsonError(ex, "Error al crear la contratación.");
                 return View("Error");
             }
         }
+
 
 
 
