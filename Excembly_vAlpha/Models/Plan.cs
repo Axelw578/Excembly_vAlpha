@@ -20,6 +20,8 @@ namespace Excembly_vAlpha.Models
         public ICollection<Cita> Citas { get; set; }
 
         // Relación con contrataciones
+
+
         public ICollection<Contratacion> Contrataciones { get; set; }
 
         // Relación con dispositivos de plan familiar

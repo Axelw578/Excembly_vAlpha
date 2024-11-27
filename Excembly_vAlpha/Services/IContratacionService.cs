@@ -1,4 +1,5 @@
 ﻿using Excembly_vAlpha.Models;
+using Excembly_vAlpha.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -23,5 +24,8 @@ namespace Excembly_vAlpha.Services
         Task<ServicioAdicional> ObtenerServicioAdicionalPorId(int servicioAdicionalId, int? planId = null);
 
         Task<bool> AgregarServicioAdicionalContratado(ServicioAdicionalContratado servicioAdicionalContratado);
+
+        // Nuevo método
+        Task<ContratacionViewModel?> ObtenerDetallesDeContratacion(int contratacionId);
     }
 }

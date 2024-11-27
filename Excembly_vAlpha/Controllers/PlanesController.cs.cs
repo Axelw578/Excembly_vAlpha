@@ -1,70 +1,80 @@
-﻿using Excembly_vAlpha.Services;
+﻿using AutoMapper;
+using Excembly_vAlpha.Services;
 using Excembly_vAlpha.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Excembly_vAlpha.Controllers
 {
     public class PlanesController : Controller
     {
         private readonly PlanesService _planesService;
+        private readonly IMapper _mapper;
 
-        public PlanesController(PlanesService planesService)
+        public PlanesController(PlanesService planesService, IMapper mapper)
         {
             _planesService = planesService;
+            _mapper = mapper;
         }
 
         // Acción para mostrar todos los planes
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
             // Obtener los planes desde el servicio
-            var planes = _planesService.ObtenerTodosLosPlanes();
+            var planes = await _planesService.ObtenerTodosLosPlanesAsync();
 
-            // Convertir los datos de los planes en una lista de PlanViewModel
-            var planesViewModel = planes.Select(plan => new PlanViewModel
-            {
-                PlanId = plan.PlanId,
-                Nombre = plan.Nombre,
-                Descripcion = plan.Descripcion,
-                Precio = plan.Precio,
-                Imagen = plan.Imagen,
-
-                // Convertir los servicios incluidos en el plan
-                ServiciosIncluidos = plan.PlanServicios?.Select(ps => ps.Servicio.Nombre).ToList() ?? new List<string>(),
-
-                // Convertir los servicios adicionales con descuento en un nuevo ViewModel
-                ServiciosAdicionales = plan.ServiciosAdicionales?.Select(sa => new ServicioAdicionalViewModel
-                {
-                    NombreServicio = sa.Servicio.Nombre,
-                    PrecioOriginal = sa.Servicio.Precio,
-                    PrecioConDescuento = sa.Servicio.Precio * (1 - sa.Descuento), // Calculando el precio con descuento
-                    Descuento = sa.Descuento
-                }).ToList() ?? new List<ServicioAdicionalViewModel>()
-            }).ToList();
+            // Convertir los datos de los planes en una lista de PlanViewModel usando AutoMapper
+            var planesViewModel = _mapper.Map<List<PlanViewModel>>(planes);
 
             // Pasar el modelo a la vista
             return View(planesViewModel);
         }
 
         // Acción para contratar un plan
-        public IActionResult Contratar(int id)
+        // Controlador de Planes
+        public async Task<IActionResult> Contratar(int id)
         {
             if (!User.Identity.IsAuthenticated)
             {
-                // Redirige a la página de registro con la URL de retorno a esta acción de Contratar en Servicios
-                return RedirectToAction("Registrar", "Registro", new { returnUrl = Url.Action("Contratar", "Servicios", new { id = id }) });
+                // Redirige a registro si no está autenticado
+                return RedirectToAction("Registrar", "Registro", new { returnUrl = Url.Action("Contratar", "Planes", new { id }) });
             }
 
-            // Obtener el servicio específico por su ID
-            var servicio = _planesService.ObtenerPlanPorId(id);
-            if (servicio == null)
+            // Obtener el plan por ID
+            var plan =  _planesService.ObtenerPlanPorId(id);
+            if (plan == null)
             {
                 return NotFound();
             }
 
-            // Redirige a la vista de contratación del servicio específico
-            return View("Contratacion", servicio);
+            // Redirige a la acción Crear del controlador Contratación pasando el planId
+            return RedirectToAction("Crear", "Contratacion", new { planId = id });
         }
 
+
+        // Acción para crear una contratación (esto se llamará desde la vista de Contratación)
+        [HttpPost]
+        public async Task<IActionResult> CrearContratacion(int planId, List<int> serviciosAdicionalesSeleccionados)
+        {
+            // Verificar que el usuario esté autenticado
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            // Guardar la contratación del plan
+            var contratacionId = await _planesService.GuardarContratacionAsync(planId, User.Identity.Name);
+
+            // Guardar los servicios adicionales seleccionados, si hay alguno
+            if (serviciosAdicionalesSeleccionados != null && serviciosAdicionalesSeleccionados.Any())
+            {
+                await _planesService.GuardarServiciosAdicionalesAsync(contratacionId, serviciosAdicionalesSeleccionados);
+            }
+
+            // Redirigir a la vista de confirmación de la contratación
+            return RedirectToAction("Confirmacion", "Contratacion", new { id = contratacionId });
+        }
     }
 }

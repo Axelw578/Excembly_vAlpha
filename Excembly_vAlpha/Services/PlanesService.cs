@@ -1,56 +1,68 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper; // Incluir AutoMapper
 using Excembly_vAlpha.Data;
 using Excembly_vAlpha.Models;
 using Excembly_vAlpha.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json; // Incluir Newtonsoft.Json para manejar errores
 
 namespace Excembly_vAlpha.Services
 {
     public class PlanesService
     {
         private readonly ExcemblyDbContext _context;
+        private readonly IMapper _mapper; // Inyectar AutoMapper
 
-        public PlanesService(ExcemblyDbContext context)
+        public PlanesService(ExcemblyDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
-        public async Task<IEnumerable<Plan>> ObtenerTodosLosPlanesAsync()
+
+        // Obtener todos los planes
+        public async Task<IEnumerable<PlanViewModel>> ObtenerTodosLosPlanesAsync()
         {
-            return await _context.Planes
+            var planes = await _context.Planes
                 .Include(p => p.PlanServicios)
                     .ThenInclude(ps => ps.Servicio)
                 .Include(p => p.ServiciosAdicionales)
                     .ThenInclude(sa => sa.Servicio)
                 .ToListAsync();
+
+            return _mapper.Map<IEnumerable<PlanViewModel>>(planes); // Usar AutoMapper para mapear a ViewModel
         }
 
-        public async Task<IEnumerable<Plan>> ObtenerTodosLosPlanesFamiliarAsync()
+        // Obtener todos los planes familiares
+        public async Task<IEnumerable<PlanViewModel>> ObtenerTodosLosPlanesFamiliarAsync()
         {
-            return await _context.Set<Plan>()
-                .Include(p => p.PlanServicios)  // Cargar la relación PlanServicio
-                    .ThenInclude(ps => ps.Servicio)  // Cargar el Servicio relacionado
+            var planes = await _context.Set<Plan>()
+                .Include(p => p.PlanServicios)
+                    .ThenInclude(ps => ps.Servicio)
                 .Include(p => p.ServiciosAdicionales)
                     .ThenInclude(sa => sa.Servicio)
                 .Include(p => p.DispositivosPlanFamiliar)
                 .ToListAsync();
+
+            return _mapper.Map<IEnumerable<PlanViewModel>>(planes); // Usar AutoMapper para mapear a ViewModel
         }
 
-
-        // Método para obtener todos los planes
-        public IEnumerable<Plan> ObtenerTodosLosPlanes()
+        // Obtener todos los planes (sin asincronía)
+        public IEnumerable<PlanViewModel> ObtenerTodosLosPlanes()
         {
-            return _context.Set<Plan>()
-                           .Include(p => p.PlanServicios)
-                               .ThenInclude(ps => ps.Servicio)
-                           .Include(p => p.ServiciosAdicionales)
-                               .ThenInclude(sa => sa.Servicio)
-                           .Include(p => p.DispositivosPlanFamiliar)
-                           .ToList();
+            var planes = _context.Set<Plan>()
+                .Include(p => p.PlanServicios)
+                    .ThenInclude(ps => ps.Servicio)
+                .Include(p => p.ServiciosAdicionales)
+                    .ThenInclude(sa => sa.Servicio)
+                .Include(p => p.DispositivosPlanFamiliar)
+                .ToList();
+
+            return _mapper.Map<IEnumerable<PlanViewModel>>(planes); // Usar AutoMapper para mapear a ViewModel
         }
 
-        // Método para obtener un plan por ID
+        // Obtener plan por ID
         public PlanViewModel ObtenerPlanPorId(int planId)
         {
             var plan = _context.Planes
@@ -62,59 +74,61 @@ namespace Excembly_vAlpha.Services
 
             if (plan == null) return null;
 
-            return new PlanViewModel
-            {
-                PlanId = plan.PlanId,
-                Nombre = plan.Nombre,
-                Descripcion = plan.Descripcion,
-                Precio = plan.Precio,
-                Imagen = plan.Imagen,
-                ServiciosIncluidos = plan.PlanServicios.Select(ps => ps.Servicio.Nombre).ToList(),
-                ServiciosAdicionales = plan.ServiciosAdicionales.Select(sa => new ServicioAdicionalViewModel
-                {
-                    ServicioId = sa.ServicioId,
-                    NombreServicio = sa.Servicio.Nombre,
-                    PrecioOriginal = sa.Servicio.Precio,
-                    Descuento = sa.Descuento,
-                    PrecioConDescuento = AplicarDescuento(sa.Servicio.Precio, sa.Descuento)
-                }).ToList()
-            };
+            // Usar AutoMapper para mapear a ViewModel
+            return _mapper.Map<PlanViewModel>(plan);
         }
 
+        // Método para aplicar descuento
         public decimal AplicarDescuento(decimal precioOriginal, decimal descuento)
         {
             return precioOriginal - (precioOriginal * descuento);
         }
 
-
-
-
         // Método para guardar una contratación de plan
         public async Task<int> GuardarContratacionAsync(int planId, string usuarioEmail)
         {
-            var contratacion = new Contratacion
+            try
             {
-                PlanId = planId,
-                FechaContratacion = DateTime.Now
-            };
+                var contratacion = new Contratacion
+                {
+                    PlanId = planId,
+                    FechaContratacion = DateTime.Now
+                };
 
-            _context.Contratacion.Add(contratacion);
-            await _context.SaveChangesAsync();
+                _context.Contratacion.Add(contratacion);
+                await _context.SaveChangesAsync();
 
-            return contratacion.ContratacionId;
+                return contratacion.ContratacionId;
+            }
+            catch (Exception ex)
+            {
+                // Imprimir error en la consola usando Newtonsoft.Json
+                var errorJson = JsonConvert.SerializeObject(new { error = ex.Message });
+                Console.WriteLine(errorJson);
+                return 0; // Retornar un valor por defecto en caso de error
+            }
         }
 
         // Método para guardar los servicios adicionales seleccionados en una contratación
         public async Task GuardarServiciosAdicionalesAsync(int contratacionId, List<int> serviciosAdicionalesSeleccionados)
         {
-            var serviciosAdicionales = serviciosAdicionalesSeleccionados.Select(id => new ServicioAdicionalContratado
+            try
             {
-                ContratacionId = contratacionId,
-                ServicioAdicionalId = id
-            });
+                var serviciosAdicionales = serviciosAdicionalesSeleccionados.Select(id => new ServicioAdicionalContratado
+                {
+                    ContratacionId = contratacionId,
+                    ServicioAdicionalId = id
+                });
 
-            _context.ServicioAdicionalContratado.AddRange(serviciosAdicionales);
-            await _context.SaveChangesAsync();
+                _context.ServicioAdicionalContratado.AddRange(serviciosAdicionales);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                // Imprimir error en la consola usando Newtonsoft.Json
+                var errorJson = JsonConvert.SerializeObject(new { error = ex.Message });
+                Console.WriteLine(errorJson);
+            }
         }
 
         // Método para obtener todos los IDs de los servicios adicionales asociados a los planes
@@ -134,13 +148,12 @@ namespace Excembly_vAlpha.Services
                            .FirstOrDefault(s => s.ServicioId == servicioId);
         }
 
+        // Método para obtener los servicios individuales
         public async Task<List<Servicio>> ObtenerServiciosIndividualesAsync()
         {
             var servicios = await _context.Servicios.ToListAsync();
             return servicios.Where(s => s.EsIndividual).ToList(); // Filtrado en memoria
         }
-
-
 
         // Método para recuperar solo el ID de un servicio adicional específico
         public int RecuperarServicioAdicionalId(int servicioId)

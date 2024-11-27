@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Excembly_vAlpha.ViewModels;
 
 namespace Excembly_vAlpha.Services
 {
@@ -227,6 +228,41 @@ namespace Excembly_vAlpha.Services
             }
         }
 
+
+        public async Task<ContratacionViewModel?> ObtenerDetallesDeContratacion(int contratacionId)
+        {
+            try
+            {
+                var contratacion = await _context.Contratacion
+                    .Include(c => c.ServiciosAdicionalesContratados)
+                        .ThenInclude(sac => sac.ServicioAdicional)
+                    .Include(c => c.Plan)
+                    .Include(c => c.Servicio)
+                    .FirstOrDefaultAsync(c => c.ContratacionId == contratacionId);
+
+                if (contratacion == null)
+                {
+                    _logger.LogWarning($"No se encontró la contratación con ID: {contratacionId}");
+                    return null;
+                }
+
+                // Mapear entidad al ViewModel
+                var contratacionViewModel = _mapper.Map<ContratacionViewModel>(contratacion);
+
+                // Cargar datos adicionales si es necesario
+                contratacionViewModel.PlanesDisponibles = _mapper.Map<IEnumerable<PlanViewModel>>(await ObtenerPlanesDisponibles());
+                contratacionViewModel.ServiciosDisponibles = _mapper.Map<IEnumerable<ServicioViewModel>>(await ObtenerServiciosDisponibles());
+                contratacionViewModel.ServiciosAdicionalesDisponibles = _mapper.Map<IEnumerable<ServicioAdicionalViewModel>>(await ObtenerServiciosAdicionalesDisponibles());
+
+                return contratacionViewModel;
+            }
+            catch (Exception ex)
+            {
+                string errorJson = JsonConvert.SerializeObject(ex, Formatting.Indented);
+                _logger.LogError($"Error al obtener los detalles de la contratación con ID: {contratacionId}. Detalles: {errorJson}");
+                throw;
+            }
+        }
 
 
 

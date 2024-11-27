@@ -1,41 +1,50 @@
 ﻿@model Excembly_vAlpha.ViewModels.ContratacionViewModel
 
 @{
-    ViewData["Title"] = "Detalles de Contratación";
+    ViewData["Title"] = "Detalles de la Contratación";
 }
 
-<div class="container mt-4">
-    <h2>@ViewData["Title"]</h2>
+<h1>Detalles de la Contratación</h1>
 
-    <div class="mb-3">
-        <label class="form-label">Usuario:</label>
-        <p>@Model.NombreUsuario</p>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Usuario: @Model.NombreUsuario</h5>
+        <p>Correo: @Model.CorreoUsuario</p>
+
+        <h6 class="mt-3">Información del Plan</h6>
+        <p>Plan: @Model.NombrePlan</p>
+        <p>Precio: @Model.PrecioPlan</p>
+
+        <h6 class="mt-3">Información del Servicio</h6>
+        <p>Servicio: @Model.NombreServicio</p>
+        <p>Precio: @Model.PrecioServicio</p>
+
+        <h6 class="mt-3">Servicios Adicionales Contratados</h6>
+        @if (Model.ServiciosAdicionalesContratados != null && Model.ServiciosAdicionalesContratados.Any())
+        {
+            <ul>
+                @foreach (var servicioAdicional in Model.ServiciosAdicionalesContratados)
+                {
+                    <li>
+                        @servicioAdicional.NombreServicio -
+                        @servicioAdicional.PrecioOriginal -
+                        @servicioAdicional.PrecioConDescuento
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No hay servicios adicionales contratados.</p>
+        }
+
+
+        <h6 class="mt-3">Estado: @Model.Estado</h6>
+        <p>Fecha de Contratación: @Model.FechaContratacion.ToShortDateString()</p>
+
+        @if (Model.FechaCancelacion.HasValue)
+        {
+            <p>Fecha de Cancelación: @Model.FechaCancelacion.Value.ToShortDateString()</p>
+        }
     </div>
-
-    <div class="mb-3">
-        <label class="form-label">Plan:</label>
-        <p>@Model.NombrePlan</p>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Servicio:</label>
-        <p>@Model.NombreServicio</p>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Estado:</label>
-        <p>@Model.Estado</p>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Servicios Adicionales:</label>
-        <ul>
-            @foreach (var servicio in Model.ServiciosAdicionalesContratados)
-            {
-                <li>@servicio.NombreServicio - @servicio.PrecioConDescuento.ToString("C")</li>
-            }
-        </ul>
-    </div>
-
-    <a href="@Url.Action("Index", "Contratacion")" class="btn btn-secondary">Volver a la lista</a>
 </div>
