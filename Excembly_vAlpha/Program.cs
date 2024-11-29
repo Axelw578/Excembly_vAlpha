@@ -1,5 +1,6 @@
 using Excembly_vAlpha.Data;
 using Excembly_vAlpha.Mapping;
+using Excembly_vAlpha.MappingProfiles;
 using Excembly_vAlpha.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<ContratacionProfile>();
     cfg.AddProfile<UsuarioProfile>();
+    cfg.AddProfile<ContratacionAdminProfile>();
     // Agregar aquí cualquier otro perfil que sea necesario
 });
 
@@ -39,10 +41,12 @@ builder.Services.AddScoped<TecnicosService, TecnicosService>();
 builder.Services.AddScoped<DireccionService, DireccionService>();
 builder.Services.AddScoped<TarjetaService, TarjetaService>();
 builder.Services.AddScoped<PoliticaService, PoliticaService>();
-builder.Services.AddScoped<IContratacionService, ContratacionService>();
 builder.Services.AddScoped<ServicioAdicionalService, ServicioAdicionalService>();
 builder.Services.AddScoped<CitasService, CitasService>();
 builder.Services.AddScoped<CuentaService, CuentaService>();
+builder.Services.AddScoped<IContratacionService, ContratacionService>();
+builder.Services.AddScoped<IContratacionAdminServices, ContratacionAdminServices>();
+
 
 
 

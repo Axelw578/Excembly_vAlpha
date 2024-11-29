@@ -1,0 +1,23 @@
+﻿@model Excembly_vAlpha.ViewModels.AsignarTecnicoViewModel
+
+<h2>Asignar Técnico a la Contratación</h2>
+
+<!-- Formulario de Asignación de Técnico -->
+<form method="post" action="@Url.Action("AsignarTecnico", "ContratacionAdmin")">
+    <input type="hidden" name="contratacionId" value="@Model.ContratacionId" />
+
+    <div class="form-group">
+        <label for="tecnicoId">Seleccionar Técnico</label>
+        <select class="form-control" id="tecnicoId" name="tecnicoId">
+            <option value="">--Seleccione un Técnico--</option>
+            @foreach (var tecnico in Model.Tecnicos)
+            {
+                <option value="@tecnico.TecnicoId">@tecnico.Nombre @tecnico.Apellidos</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Asignar Técnico</button>
+</form>
+
+<a href="@Url.Action("Index", "ContratacionAdmin")" class="btn btn-secondary mt-4">Volver a la lista de contrataciones</a>

@@ -38,9 +38,35 @@ namespace Excembly_vAlpha.Data
 
 
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            // Configuración para AsignacionTecnico
+            modelBuilder.Entity<AsignacionTecnico>(entity =>
+            {
+                // Definir AsignacionId como clave primaria
+                entity.HasKey(a => a.AsignacionId);
+
+                // Relación entre AsignacionTecnico y Contratacion
+                entity.HasOne(a => a.Contratacion)
+                      .WithMany(c => c.AsignacionesTecnico)
+                      .HasForeignKey(a => a.ContratacionId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // Relación entre AsignacionTecnico y Tecnico
+                entity.HasOne(a => a.Tecnico)
+                      .WithMany()
+                      .HasForeignKey(a => a.TecnicoId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // Opcional: Relación con Usuario
+                entity.HasOne(a => a.Usuario)
+                      .WithMany(u => u.AsignacionesTecnico)
+                      .HasForeignKey(a => a.UsuarioId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+
 
             // Configuración de relaciones en Contratacion
             modelBuilder.Entity<Contratacion>()
@@ -234,24 +260,6 @@ namespace Excembly_vAlpha.Data
             modelBuilder.Entity<PoliticaPrivacidad>()
                 .HasKey(pp => pp.PoliticaId);
 
-            // Configuración de AsignacionTecnico
-            modelBuilder.Entity<AsignacionTecnico>()
-                .HasKey(at => at.AsignacionId);
-            modelBuilder.Entity<AsignacionTecnico>()
-                .HasOne(at => at.Usuario)
-                .WithMany(u => u.AsignacionesTecnico)
-                .HasForeignKey(at => at.UsuarioId)
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<AsignacionTecnico>()
-                .HasOne(at => at.Tecnico)
-                .WithMany(t => t.AsignacionesTecnico)
-                .HasForeignKey(at => at.TecnicoId)
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<AsignacionTecnico>()
-                .HasOne(at => at.Servicio)
-                .WithMany(s => s.AsignacionesTecnicos)
-                .HasForeignKey(at => at.ServicioId)
-                .OnDelete(DeleteBehavior.Restrict);
 
             // Configuración del modelo Comentario
             modelBuilder.Entity<Comentario>()

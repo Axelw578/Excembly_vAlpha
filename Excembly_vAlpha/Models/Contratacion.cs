@@ -21,8 +21,9 @@ namespace Excembly_vAlpha.Models
         public Usuario Usuario { get; set; }
         public Plan Plan { get; set; }
         public Servicio Servicio { get; set; }
-        public Cita Cita { get; set; }
+        public Cita Cita { get; set; }// NO LO USAREMOS IGNORAR 
         public ICollection<ServicioAdicionalContratado> ServiciosAdicionalesContratados { get; set; }
+        public ICollection<AsignacionTecnico> AsignacionesTecnico { get; set; } // Relación con AsignacionTecnico
 
 
         public ICollection<Comentario> Comentarios { get; set; }

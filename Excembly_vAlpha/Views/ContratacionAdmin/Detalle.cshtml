@@ -1,0 +1,38 @@
+﻿@model dynamic
+
+<h2>Detalle de Contratación</h2>
+
+<div>
+    <h4>Contratación: @Model.Contratacion.ContratacionId</h4>
+    <p><strong>Usuario:</strong> @Model.Contratacion.NombreUsuario</p>
+    <p><strong>Servicio:</strong> @Model.Contratacion.ServicioContratado</p>
+    <p><strong>Estado:</strong> @Model.Contratacion.Estado</p>
+    <p><strong>Fecha Contratación:</strong> @Model.Contratacion.FechaContratacion.ToShortDateString()</p>
+
+    <h4>Pagos Relacionados:</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID Pago</th>
+                <th>Monto</th>
+                <th>Fecha</th>
+                <th>Metodo de Pago</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pago in Model.Pagos)
+            {
+                <tr>
+                    <td>@pago.PagoId</td>
+                    <td>@pago.Monto</td>
+                    <td>@pago.FechaPago.ToShortDateString()</td>
+                    <td>@pago.MetodoPago</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="mt-4">
+        <a href="@Url.Action("Index", "ContratacionAdmin")" class="btn btn-secondary">Volver a la lista</a>
+    </div>
+</div>

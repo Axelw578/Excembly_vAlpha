@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Excembly_vAlpha.ViewModels.ContratacionAdminViewModel>
+
+<h2>Lista de Contrataciones</h2>
+
+<!-- Filtro de Contrataciones -->
+<form id="filtroForm" method="get" action="@Url.Action("Filtrar", "ContratacionAdmin")">
+    <div class="form-row">
+        <div class="col">
+            <label for="fechaInicio">Fecha de Inicio</label>
+            <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" />
+        </div>
+        <div class="col">
+            <label for="fechaFin">Fecha de Fin</label>
+            <input type="date" id="fechaFin" name="fechaFin" class="form-control" />
+        </div>
+        <div class="col">
+            <label for="usuarioId">Usuario</label>
+            <input type="number" id="usuarioId" name="usuarioId" class="form-control" placeholder="ID de usuario" />
+        </div>
+        <div class="col">
+            <button type="submit" class="btn btn-primary mt-4">Filtrar</button>
+        </div>
+    </div>
+</form>
+
+<!-- Tabla de Contrataciones -->
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Servicio</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ContratacionId</td>
+                <td>@item.NombreUsuario</td>
+                <td>@item.ServicioContratado</td>
+                <td>@item.Estado</td>
+                <td>@item.FechaContratacion.ToShortDateString()</td>
+                <td>
+                    <a href="@Url.Action("Detalle", "ContratacionAdmin", new { id = item.ContratacionId })" class="btn btn-primary">Ver Detalle</a>
+                    <a href="@Url.Action("AsignarTecnico", "ContratacionAdmin", new { contratacionId = item.ContratacionId })" class="btn btn-success">Asignar Técnico</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

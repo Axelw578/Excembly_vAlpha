@@ -22,7 +22,7 @@ namespace Excembly_vAlpha.Models
         public Rol Rol { get; set; }
 
         // Colecciones de navegación
-        public ICollection<Cita> Citas { get; set; }
+        public ICollection<Cita> Citas { get; set; }// NO LO USAREMOS IGNORAR 
         public ICollection<Pago> Pagos { get; set; }
         public ICollection<DispositivoPlanFamiliar> DispositivosPlanFamiliar { get; set; }
         public ICollection<TarjetaGuardada> TarjetasGuardadas { get; set; }
