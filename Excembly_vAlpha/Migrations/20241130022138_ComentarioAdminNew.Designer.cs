@@ -4,6 +4,7 @@ using Excembly_vAlpha.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Excembly_vAlpha.Migrations
 {
     [DbContext(typeof(ExcemblyDbContext))]
-    partial class ExcemblyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241130022138_ComentarioAdminNew")]
+    partial class ComentarioAdminNew
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,6 +86,9 @@ namespace Excembly_vAlpha.Migrations
                     b.Property<int>("TecnicoId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TecnicoId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
@@ -93,6 +99,8 @@ namespace Excembly_vAlpha.Migrations
                     b.HasIndex("ServicioId");
 
                     b.HasIndex("TecnicoId");
+
+                    b.HasIndex("TecnicoId1");
 
                     b.HasIndex("UsuarioId");
 
@@ -819,10 +827,14 @@ namespace Excembly_vAlpha.Migrations
                         .HasForeignKey("ServicioId");
 
                     b.HasOne("Excembly_vAlpha.Models.Tecnico", "Tecnico")
-                        .WithMany("AsignacionesTecnico")
+                        .WithMany()
                         .HasForeignKey("TecnicoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Excembly_vAlpha.Models.Tecnico", null)
+                        .WithMany("AsignacionesTecnico")
+                        .HasForeignKey("TecnicoId1");
 
                     b.HasOne("Excembly_vAlpha.Models.Usuario", "Usuario")
                         .WithMany("AsignacionesTecnico")

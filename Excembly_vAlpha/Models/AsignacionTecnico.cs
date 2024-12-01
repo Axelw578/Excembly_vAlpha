@@ -6,6 +6,7 @@ namespace Excembly_vAlpha.Models
     {
         public int AsignacionId { get; set; }
         public int TecnicoId { get; set; }
+        public int? ServicioId { get; set; }
         public int ContratacionId { get; set; } // Relación principal con Contratacion
         public int UsuarioId { get; set; }
         public DateTime FechaAsignacion { get; set; } = DateTime.Now;
@@ -15,5 +16,8 @@ namespace Excembly_vAlpha.Models
         public Tecnico Tecnico { get; set; }
         public Contratacion Contratacion { get; set; }
         public Usuario Usuario { get; set; } // Opcional, si deseas acceso rápido al usuario
+
     }
 }
+
+

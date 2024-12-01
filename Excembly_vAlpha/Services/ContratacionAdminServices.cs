@@ -119,10 +119,12 @@ namespace Excembly_vAlpha.Services
         {
             try
             {
+                // Recuperar la contratación
                 var contratacion = await _context.Contratacion.FindAsync(contratacionId);
                 if (contratacion == null)
                     throw new KeyNotFoundException($"Contratación con ID {contratacionId} no encontrada.");
 
+                // Recuperar el técnico
                 var tecnico = await _context.Tecnicos.FindAsync(tecnicoId);
                 if (tecnico == null)
                     throw new KeyNotFoundException($"Técnico con ID {tecnicoId} no encontrado.");
@@ -136,14 +138,18 @@ namespace Excembly_vAlpha.Services
                     TecnicoId = tecnicoId,
                     ContratacionId = contratacionId,
                     UsuarioId = contratacion.UsuarioId,
+                    ServicioId = contratacion.ServicioId, // Asegúrate de que 'contratacion.ServicioId' tenga un valor válido
                     FechaAsignacion = DateTime.Now,
                     Estado = "Asignado"
                 };
 
+                // Agregar la asignación
                 _context.AsignacionesTecnicos.Add(nuevaAsignacion);
 
-                // Actualizar el estado del técnico y guardar cambios
+                // Actualizar la disponibilidad del técnico
                 tecnico.Disponibilidad = false;
+
+                // Guardar los cambios en la base de datos
                 await _context.SaveChangesAsync();
 
                 return true;
@@ -154,6 +160,8 @@ namespace Excembly_vAlpha.Services
                 throw;
             }
         }
+
+
 
         public async Task<IEnumerable<Tecnico>> ObtenerTecnicosAsync()
         {

@@ -1,22 +1,39 @@
 ﻿@model dynamic
 
-<h2>Detalle de Contratación</h2>
+<link rel="stylesheet" href="~/css/DetalleContratacion.css">
 
-<div>
-    <h4>Contratación: @Model.Contratacion.ContratacionId</h4>
-    <p><strong>Usuario:</strong> @Model.Contratacion.NombreUsuario</p>
-    <p><strong>Servicio:</strong> @Model.Contratacion.ServicioContratado</p>
-    <p><strong>Estado:</strong> @Model.Contratacion.Estado</p>
-    <p><strong>Fecha Contratación:</strong> @Model.Contratacion.FechaContratacion.ToShortDateString()</p>
+<div class="detalle-container">
+    <h2 class="header-title">Detalle de Contratación</h2>
+    <!-- Mensajes de TempData -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
 
-    <h4>Pagos Relacionados:</h4>
+    <div class="detalle-informacion">
+        <h4>Contratación ID: <span>@Model.Contratacion.ContratacionId</span></h4>
+        <p><strong>Usuario:</strong> <span>@Model.Contratacion.NombreUsuario</span></p>
+        <p><strong>Servicio:</strong> <span>@Model.Contratacion.ServicioContratado</span></p>
+        <p><strong>Estado:</strong> <span class="estado @Model.Contratacion.Estado.ToLower()">@Model.Contratacion.Estado</span></p>
+        <p><strong>Fecha Contratación:</strong> <span>@Model.Contratacion.FechaContratacion.ToShortDateString()</span></p>
+    </div>
+
+    <h4 class="subtitulo">Pagos Relacionados</h4>
     <table class="table">
         <thead>
             <tr>
                 <th>ID Pago</th>
                 <th>Monto</th>
                 <th>Fecha</th>
-                <th>Metodo de Pago</th>
+                <th>Método de Pago</th>
             </tr>
         </thead>
         <tbody>
@@ -24,7 +41,7 @@
             {
                 <tr>
                     <td>@pago.PagoId</td>
-                    <td>@pago.Monto</td>
+                    <td>$@pago.Monto.ToString("F2")</td>
                     <td>@pago.FechaPago.ToShortDateString()</td>
                     <td>@pago.MetodoPago</td>
                 </tr>
@@ -32,7 +49,15 @@
         </tbody>
     </table>
 
-    <div class="mt-4">
+    <div class="acciones mt-4">
         <a href="@Url.Action("Index", "ContratacionAdmin")" class="btn btn-secondary">Volver a la lista</a>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const errorMessage = "@TempData["ErrorMessage"]";
+        if (errorMessage) {
+            console.error(errorMessage);
+        }
+    });
+</script>

@@ -35,6 +35,7 @@ namespace Excembly_vAlpha.Data
         public DbSet<Contratacion> Contratacion{ get; set; }
         public DbSet<ServicioAdicionalContratado> ServicioAdicionalContratado { get; set; }
         public DbSet<ServicioAdicional> ServicioAdicional { get; set; }
+        public DbSet<Comentario> Comentario { get; set; }
 
 
 
@@ -55,14 +56,27 @@ namespace Excembly_vAlpha.Data
 
                 // Relación entre AsignacionTecnico y Tecnico
                 entity.HasOne(a => a.Tecnico)
-                      .WithMany()
+                      .WithMany(t => t.AsignacionesTecnico) 
                       .HasForeignKey(a => a.TecnicoId)
                       .OnDelete(DeleteBehavior.Restrict);
 
-                // Opcional: Relación con Usuario
+                // Relación opcional con Usuario
                 entity.HasOne(a => a.Usuario)
-                      .WithMany(u => u.AsignacionesTecnico)
+                      .WithMany(u => u.AsignacionesTecnico) 
                       .HasForeignKey(a => a.UsuarioId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Configuración para Técnico
+            modelBuilder.Entity<Tecnico>(entity =>
+            {
+                // TecnicoId como clave primaria
+                entity.HasKey(t => t.TecnicoId);
+
+                // Configurar la colección AsignacionesTecnico 
+                entity.HasMany(t => t.AsignacionesTecnico)
+                      .WithOne(a => a.Tecnico)
+                      .HasForeignKey(a => a.TecnicoId)
                       .OnDelete(DeleteBehavior.Restrict);
             });
 
@@ -188,10 +202,6 @@ namespace Excembly_vAlpha.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
 
-            // Configuración de Técnico
-            modelBuilder.Entity<Tecnico>()
-                .HasKey(t => t.TecnicoId);
-
             // Configuración de Cita
             modelBuilder.Entity<Cita>()
                 .HasKey(c => c.CitaId);
@@ -267,11 +277,6 @@ namespace Excembly_vAlpha.Data
                 .WithMany(ct => ct.Comentarios)  
                 .HasForeignKey(c => c.ContratacionId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-
-
-
-
         }
     }
 }

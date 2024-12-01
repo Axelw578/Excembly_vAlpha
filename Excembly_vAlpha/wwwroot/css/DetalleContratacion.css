@@ -1,0 +1,117 @@
+﻿/* Contenedor principal */
+.detalle-container {
+    max-width: 900px;
+    margin: 30px auto;
+    background-color: #333333;
+    color: #f1f1f1;
+    border-radius: 15px;
+    padding: 20px 30px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Título principal */
+.header-title {
+    text-align: center;
+    color: #feca1b;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Información general */
+.detalle-informacion {
+    margin-bottom: 20px;
+}
+
+    .detalle-informacion h4 {
+        font-size: 18px;
+        color: #feca1b;
+        margin-bottom: 10px;
+    }
+
+    .detalle-informacion p {
+        font-size: 16px;
+        margin-bottom: 8px;
+        line-height: 1.5;
+    }
+
+    .detalle-informacion span {
+        color: #ffffff;
+        font-weight: bold;
+    }
+
+/* Estado con colores personalizados */
+.estado.activo {
+    color: #28a745;
+}
+
+.estado.cancelado {
+    color: #dc3545;
+}
+
+.estado.completado {
+    color: #17a2b8;
+}
+
+/* Subtítulo */
+.subtitulo {
+    color: #feca1b;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Tabla */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background-color: #444444;
+    color: #f1f1f1;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+    .table th {
+        background-color: #555555;
+        color: #f1f1f1;
+        text-align: left;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .table td {
+        padding: 10px;
+        color: #f1f1f1;
+        border-top: 1px solid #555555;
+        font-size: 14px;
+    }
+
+.table-hover tbody tr:hover {
+    background-color: #555555;
+    cursor: pointer;
+}
+
+/* Botón de acciones */
+.acciones {
+    text-align: center;
+    margin-top: 20px;
+}
+
+    .acciones .btn-secondary {
+        background-color: #444444;
+        color: #f1f1f1;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+        .acciones .btn-secondary:hover {
+            background-color: #555555;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }

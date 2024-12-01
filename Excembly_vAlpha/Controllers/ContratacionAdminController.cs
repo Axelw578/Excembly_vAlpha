@@ -39,16 +39,19 @@ namespace Excembly_vAlpha.Controllers
         {
             try
             {
+                // Llama al servicio para filtrar las contrataciones
                 var contrataciones = await _contratacionService.FiltrarContratacionesAsync(fechaInicio, fechaFin, usuarioId);
-                return PartialView("_ListaContrataciones", contrataciones); // Retorna una vista parcial con los resultados
+
+                // Devuelve la vista completa con los datos filtrados
+                return View("Index", contrataciones);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {JsonConvert.SerializeObject(ex)}");
-                return BadRequest("Hubo un problema al filtrar las contrataciones.");
+                TempData["ErrorMessage"] = "Hubo un problema al filtrar las contrataciones.";
+                return RedirectToAction("Index");
             }
         }
-
         // 3. Detalle de una contratación
         [HttpGet]
         public async Task<IActionResult> Detalle(int id)
@@ -87,9 +90,9 @@ namespace Excembly_vAlpha.Controllers
                     ContratacionId = contratacionId,
                     Tecnicos = tecnicos.Select(t => new TecnicoViewModel
                     {
+                        TecnicoId = t.TecnicoId,
                         Nombre = t.Nombre,
-                        Apellidos = t.Apellidos,
-                        Disponibilidad = t.Disponibilidad
+                        Apellidos = t.Apellidos
                     }).ToList()
                 };
 
@@ -108,8 +111,11 @@ namespace Excembly_vAlpha.Controllers
         {
             try
             {
-                // Validar que el técnico haya sido seleccionado
-                if (model.TecnicoId == 0)
+                Console.WriteLine($"ContratacionId: {model.ContratacionId}");
+                Console.WriteLine($"TecnicoId: {model.TecnicoId}");
+
+                // Validar que el modelo sea válido solo para los campos relevantes
+                if (!ModelState.IsValid || model.TecnicoId == 0)
                 {
                     TempData["ErrorMessage"] = "Por favor seleccione un técnico.";
                     return RedirectToAction("AsignarTecnico", new { contratacionId = model.ContratacionId });
@@ -118,7 +124,6 @@ namespace Excembly_vAlpha.Controllers
                 // Llamar al servicio para asignar el técnico
                 var resultado = await _contratacionService.AsignarTecnicoAsync(model.ContratacionId, model.TecnicoId);
 
-                // Verificar si la asignación fue exitosa
                 if (resultado)
                 {
                     TempData["SuccessMessage"] = "Técnico asignado correctamente.";
@@ -128,7 +133,6 @@ namespace Excembly_vAlpha.Controllers
                     TempData["ErrorMessage"] = "No se pudo asignar el técnico.";
                 }
 
-                // Redirigir a la vista de detalles
                 return RedirectToAction("Detalle", new { id = model.ContratacionId });
             }
             catch (Exception ex)
@@ -140,4 +144,3 @@ namespace Excembly_vAlpha.Controllers
         }
     }
 }
- 

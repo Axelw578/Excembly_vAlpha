@@ -1,0 +1,96 @@
+﻿/* Contenedor principal con mayor ancho */
+.asignar-tecnico-container {
+    max-width: 800px; /* Incrementado de 600px a 800px */
+    background-color: #333333;
+    color: #f1f1f1;
+    border-radius: 20px;
+    padding: 40px; /* Más espacio interno */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    margin: 50px auto;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .asignar-tecnico-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Título */
+    .asignar-tecnico-container h2 {
+        color: #feca1b;
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 30px; /* Mayor espacio debajo del título */
+        font-size: 28px; /* Título más grande */
+    }
+
+    /* Etiquetas */
+    .asignar-tecnico-container .form-label {
+        font-weight: bold;
+        color: #f1f1f1;
+        font-size: 16px; /* Texto más grande */
+        margin-bottom: 10px; /* Más espacio */
+    }
+
+    /* Campos de formulario */
+    .asignar-tecnico-container .form-control {
+        background-color: #444444;
+        color: #f1f1f1;
+        border: 1px solid #555555;
+        border-radius: 12px;
+        padding: 14px; /* Más espacio interno */
+        font-size: 16px; /* Fuente más grande */
+        transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+        .asignar-tecnico-container .form-control::placeholder {
+            color: #bbbbbb;
+        }
+
+        .asignar-tecnico-container .form-control:focus {
+            border-color: #feca1b;
+            outline: none;
+            box-shadow: 0 0 8px rgba(254, 202, 27, 0.5);
+        }
+
+    /* Botón principal */
+    .asignar-tecnico-container .btn-primary {
+        background-color: #feca1b;
+        color: #333333;
+        border: none;
+        border-radius: 12px;
+        font-weight: bold;
+        padding: 14px; /* Más alto */
+        width: 100%;
+        font-size: 14px; /* Fuente más grande */
+        margin-top: 25px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .asignar-tecnico-container .btn-primary:hover {
+            background-color: #e5b917;
+            color: #ffffff;
+            box-shadow: 0 5px 10px rgba(254, 202, 27, 0.4);
+        }
+
+    /* Botón secundario */
+    .asignar-tecnico-container .btn-secondary {
+        background-color: #444444;
+        color: #f1f1f1;
+        border: none;
+        border-radius: 12px;
+        font-weight: bold;
+        padding: 12px; /* Más alto */
+        width: 100%;
+        font-size: 15px; /* Fuente más grande */
+        text-align: center;
+        display: inline-block;
+        margin-top: 1px; /* Más espacio */
+        text-decoration: none;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .asignar-tecnico-container .btn-secondary:hover {
+            background-color: #555555;
+            color: #ffffff;
+        }
