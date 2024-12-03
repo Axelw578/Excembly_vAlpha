@@ -31,6 +31,8 @@ namespace Excembly_vAlpha.Services
                     .Include(c => c.Usuario)
                     .Include(c => c.Plan)
                     .Include(c => c.Servicio)
+                    .Include(c => c.ServiciosAdicionalesContratados) // Incluye servicios adicionales
+                        .ThenInclude(sac => sac.ServicioAdicional)
                     .ToListAsync();
 
                 return _mapper.Map<IEnumerable<ContratacionAdminViewModel>>(contrataciones);
@@ -81,6 +83,8 @@ namespace Excembly_vAlpha.Services
                     .Include(c => c.Usuario)
                     .Include(c => c.Plan)
                     .Include(c => c.Servicio)
+                    .Include(c => c.ServiciosAdicionalesContratados) // Incluye servicios adicionales
+                        .ThenInclude(sac => sac.ServicioAdicional)
                     .FirstOrDefaultAsync(c => c.ContratacionId == contratacionId);
 
                 if (contratacion == null)
@@ -119,8 +123,12 @@ namespace Excembly_vAlpha.Services
         {
             try
             {
-                // Recuperar la contratación
-                var contratacion = await _context.Contratacion.FindAsync(contratacionId);
+                // Recuperar la contratación con las relaciones necesarias
+                var contratacion = await _context.Contratacion
+                    .Include(c => c.Servicio)
+                    .Include(c => c.ServiciosAdicionalesContratados)
+                    .FirstOrDefaultAsync(c => c.ContratacionId == contratacionId);
+
                 if (contratacion == null)
                     throw new KeyNotFoundException($"Contratación con ID {contratacionId} no encontrada.");
 
@@ -138,7 +146,7 @@ namespace Excembly_vAlpha.Services
                     TecnicoId = tecnicoId,
                     ContratacionId = contratacionId,
                     UsuarioId = contratacion.UsuarioId,
-                    ServicioId = contratacion.ServicioId, // Asegúrate de que 'contratacion.ServicioId' tenga un valor válido
+                    ServicioId = contratacion.ServicioId,
                     FechaAsignacion = DateTime.Now,
                     Estado = "Asignado"
                 };

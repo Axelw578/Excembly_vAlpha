@@ -1,4 +1,5 @@
-﻿using Excembly_vAlpha.Services;
+﻿using AutoMapper;
+using Excembly_vAlpha.Services;
 using Excembly_vAlpha.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -11,10 +12,12 @@ namespace Excembly_vAlpha.Controllers
     public class ContratacionAdminController : Controller
     {
         private readonly IContratacionAdminServices _contratacionService;
+        private readonly IMapper _mapper;
 
-        public ContratacionAdminController(IContratacionAdminServices contratacionService)
+        public ContratacionAdminController(IContratacionAdminServices contratacionService, IMapper mapper)
         {
             _contratacionService = contratacionService;
+            _mapper = mapper;
         }
 
         // 1. Vista principal: listar todas las contrataciones
@@ -39,10 +42,7 @@ namespace Excembly_vAlpha.Controllers
         {
             try
             {
-                // Llama al servicio para filtrar las contrataciones
                 var contrataciones = await _contratacionService.FiltrarContratacionesAsync(fechaInicio, fechaFin, usuarioId);
-
-                // Devuelve la vista completa con los datos filtrados
                 return View("Index", contrataciones);
             }
             catch (Exception ex)
@@ -52,6 +52,7 @@ namespace Excembly_vAlpha.Controllers
                 return RedirectToAction("Index");
             }
         }
+
         // 3. Detalle de una contratación
         [HttpGet]
         public async Task<IActionResult> Detalle(int id)
@@ -61,20 +62,26 @@ namespace Excembly_vAlpha.Controllers
                 var contratacion = await _contratacionService.ObtenerDetalleContratacionAsync(id);
                 var pagos = await _contratacionService.ObtenerPagosPorContratacionAsync(id);
 
-                var detalleViewModel = new
-                {
-                    Contratacion = contratacion,
-                    Pagos = pagos
-                };
+                // Mapear la entidad a DetalleContratacionAdminViewModel
+                var viewModel = _mapper.Map<DetalleContratacionAdminViewModel>(contratacion);
+                viewModel.Pagos = pagos.Select(p => _mapper.Map<PagoAdminViewModel>(p)).ToList();
 
-                return View(detalleViewModel);
+                return View(viewModel);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {JsonConvert.SerializeObject(ex)}");
-                return View("Error", new { message = "Hubo un problema al cargar el detalle de la contratación." });
+                Console.WriteLine($"Error: {ex.Message}");
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Hubo un problema al cargar el detalle de la contratación.",
+                    errorDetail = ex.Message
+                });
             }
         }
+
+
 
         // 4. Vista para asignar técnico
         [HttpGet]
@@ -82,7 +89,6 @@ namespace Excembly_vAlpha.Controllers
         {
             try
             {
-                // Obtener la lista de técnicos disponibles
                 var tecnicos = await _contratacionService.ObtenerTecnicosAsync();
 
                 var viewModel = new AsignarTecnicoViewModel
@@ -114,14 +120,12 @@ namespace Excembly_vAlpha.Controllers
                 Console.WriteLine($"ContratacionId: {model.ContratacionId}");
                 Console.WriteLine($"TecnicoId: {model.TecnicoId}");
 
-                // Validar que el modelo sea válido solo para los campos relevantes
                 if (!ModelState.IsValid || model.TecnicoId == 0)
                 {
                     TempData["ErrorMessage"] = "Por favor seleccione un técnico.";
                     return RedirectToAction("AsignarTecnico", new { contratacionId = model.ContratacionId });
                 }
 
-                // Llamar al servicio para asignar el técnico
                 var resultado = await _contratacionService.AsignarTecnicoAsync(model.ContratacionId, model.TecnicoId);
 
                 if (resultado)

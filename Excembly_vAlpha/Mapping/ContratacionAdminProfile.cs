@@ -15,7 +15,39 @@ namespace Excembly_vAlpha.MappingProfiles
                 .ForMember(dest => dest.CorreoUsuario, opt => opt.MapFrom(src => src.Usuario.CorreoElectronico))
                 .ForMember(dest => dest.TelefonoUsuario, opt => opt.MapFrom(src => src.Usuario.Telefono))
                 .ForMember(dest => dest.PlanContratado, opt => opt.MapFrom(src => src.Plan != null ? src.Plan.Nombre : null))
-                .ForMember(dest => dest.ServicioContratado, opt => opt.MapFrom(src => src.Servicio != null ? src.Servicio.Nombre : null));
+                .ForMember(dest => dest.ServicioContratado, opt => opt.MapFrom(src => src.Servicio != null ? src.Servicio.Nombre : null))
+                .ForMember(dest => dest.ServiciosAdicionalesContratados, opt => opt.MapFrom(src =>
+                    src.ServiciosAdicionalesContratados.Select(sac => sac.ServicioAdicional.Nombre).ToList()));
+
+            // Mapeo entre ContratacionAdminViewModelDTO y ContratacionAdminViewModel
+            CreateMap<ContratacionAdminViewModelDTO, ContratacionAdminViewModel>()
+                .ForMember(dest => dest.ContratacionId, opt => opt.MapFrom(src => src.ContratacionId))
+                .ForMember(dest => dest.FechaContratacion, opt => opt.MapFrom(src => src.FechaContratacion))
+                .ForMember(dest => dest.NombreUsuario, opt => opt.MapFrom(src => src.Usuario.Nombre))
+                .ForMember(dest => dest.PlanContratado, opt => opt.MapFrom(src => src.Plan.Nombre))
+                .ForMember(dest => dest.ServiciosAdicionalesContratados, opt => opt.MapFrom(src =>
+                    src.ServiciosAdicionales.Select(sa => sa.Nombre).ToList()));
+
+            // Mapeo de un modelo específico (en lugar de 'SomeSpecificModel', usa el tipo real)
+            CreateMap<Contratacion, ContratacionAdminViewModelDTO>()
+                .ForMember(dest => dest.ContratacionId, opt => opt.MapFrom(src => src.ContratacionId))
+                .ForMember(dest => dest.FechaContratacion, opt => opt.MapFrom(src => src.FechaContratacion))
+                .ForMember(dest => dest.Usuario, opt => opt.MapFrom(src => new UsuarioDTO
+                {
+                    UsuarioId = src.Usuario.UsuarioId,
+                    Nombre = src.Usuario.Nombre
+                }))
+                .ForMember(dest => dest.Plan, opt => opt.MapFrom(src => new PlanDTO
+                {
+                    PlanId = src.Plan.PlanId,
+                    Nombre = src.Plan.Nombre
+                }))
+                .ForMember(dest => dest.ServiciosAdicionales, opt => opt.MapFrom(src =>
+                    src.ServiciosAdicionalesContratados.Select(sa => new ServicioAdicionalDTO
+                    {
+                        ServicioAdicionalId = sa.ServicioAdicionalId,
+                        Nombre = sa.ServicioAdicional.Nombre
+                    }).ToList()));
 
             // Mapeo para PagoAdminViewModel
             CreateMap<Pago, PagoAdminViewModel>()
@@ -29,13 +61,25 @@ namespace Excembly_vAlpha.MappingProfiles
                 .ForMember(dest => dest.FechaContratacion, opt => opt.MapFrom(src => src.Contratacion.FechaContratacion))
                 .ForMember(dest => dest.EstadoContratacion, opt => opt.MapFrom(src => src.Contratacion.Estado));
 
+            // Mapeo para TecnicoViewModel
             CreateMap<Tecnico, TecnicoViewModel>()
-    .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombre))
-    .ForMember(dest => dest.Apellidos, opt => opt.MapFrom(src => src.Apellidos))
-    .ForMember(dest => dest.Disponibilidad, opt => opt.MapFrom(src => src.Disponibilidad));
+                .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.Nombre))
+                .ForMember(dest => dest.Apellidos, opt => opt.MapFrom(src => src.Apellidos))
+                .ForMember(dest => dest.Disponibilidad, opt => opt.MapFrom(src => src.Disponibilidad));
 
+            // Mapeo para DetalleContratacionAdminViewModel
+            CreateMap<Contratacion, DetalleContratacionAdminViewModel>()
+                .ForMember(dest => dest.NombreUsuario, opt => opt.MapFrom(src => src.Usuario.Nombre))
+                .ForMember(dest => dest.CorreoUsuario, opt => opt.MapFrom(src => src.Usuario.CorreoElectronico))
+                .ForMember(dest => dest.PlanContratado, opt => opt.MapFrom(src => src.Plan != null ? src.Plan.Nombre : null))
+                .ForMember(dest => dest.ServicioContratado, opt => opt.MapFrom(src => src.Servicio != null ? src.Servicio.Nombre : null))
+                .ForMember(dest => dest.ServiciosAdicionalesContratados, opt => opt.MapFrom(src =>
+                    src.ServiciosAdicionalesContratados.Select(sac => sac.ServicioAdicional.Nombre).ToList()))
+                .ForMember(dest => dest.Pagos, opt => opt.Ignore()); // Los pagos se asignan manualmente
 
-
+            // Mapeo entre ContratacionAdminViewModel y DetalleContratacionAdminViewModel
+            CreateMap<ContratacionAdminViewModel, DetalleContratacionAdminViewModel>()
+                .ForMember(dest => dest.Pagos, opt => opt.Ignore()); // Pagos se deben asignar manualmente
         }
     }
 }

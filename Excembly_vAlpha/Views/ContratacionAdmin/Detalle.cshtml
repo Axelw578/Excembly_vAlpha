@@ -1,9 +1,10 @@
-﻿@model dynamic
+﻿@model Excembly_vAlpha.ViewModels.DetalleContratacionAdminViewModel
 
 <link rel="stylesheet" href="~/css/DetalleContratacion.css">
 
 <div class="detalle-container">
     <h2 class="header-title">Detalle de Contratación</h2>
+
     <!-- Mensajes de TempData -->
     @if (TempData["ErrorMessage"] != null)
     {
@@ -19,11 +20,27 @@
     }
 
     <div class="detalle-informacion">
-        <h4>Contratación ID: <span>@Model.Contratacion.ContratacionId</span></h4>
-        <p><strong>Usuario:</strong> <span>@Model.Contratacion.NombreUsuario</span></p>
-        <p><strong>Servicio:</strong> <span>@Model.Contratacion.ServicioContratado</span></p>
-        <p><strong>Estado:</strong> <span class="estado @Model.Contratacion.Estado.ToLower()">@Model.Contratacion.Estado</span></p>
-        <p><strong>Fecha Contratación:</strong> <span>@Model.Contratacion.FechaContratacion.ToShortDateString()</span></p>
+        <h4>Contratación ID: <span>@Model.ContratacionId</span></h4>
+        <p><strong>Usuario:</strong> <span>@Model.NombreUsuario</span></p>
+        <p><strong>Correo:</strong> <span>@Model.CorreoUsuario</span></p>
+        <p><strong>Servicio:</strong> <span>@Model.ServicioContratado</span></p>
+        <p><strong>Plan:</strong> <span>@Model.PlanContratado ?? "N/A"</span></p>
+        <p><strong>Servicios Adicionales:</strong></p>
+        <ul>
+            @if (Model.ServiciosAdicionalesContratados != null && Model.ServiciosAdicionalesContratados.Any())
+            {
+                @foreach (var servicio in Model.ServiciosAdicionalesContratados)
+                {
+                    <li>@servicio</li>
+                }
+            }
+            else
+            {
+                <li>No hay servicios adicionales contratados.</li>
+            }
+        </ul>
+        <p><strong>Estado:</strong> <span class="estado @Model.Estado.ToLower()">@Model.Estado</span></p>
+        <p><strong>Fecha Contratación:</strong> <span>@Model.FechaContratacion.ToShortDateString()</span></p>
     </div>
 
     <h4 class="subtitulo">Pagos Relacionados</h4>
@@ -53,11 +70,3 @@
         <a href="@Url.Action("Index", "ContratacionAdmin")" class="btn btn-secondary">Volver a la lista</a>
     </div>
 </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const errorMessage = "@TempData["ErrorMessage"]";
-        if (errorMessage) {
-            console.error(errorMessage);
-        }
-    });
-</script>

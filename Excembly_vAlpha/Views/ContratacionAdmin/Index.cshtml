@@ -1,5 +1,4 @@
-﻿INDEX.CSHTML
-@model IEnumerable<Excembly_vAlpha.ViewModels.ContratacionAdminViewModel>
+﻿@model IEnumerable<Excembly_vAlpha.ViewModels.ContratacionAdminViewModel>
 
 <link rel="stylesheet" href="~/css/ContraAdmi.css">
 
@@ -34,6 +33,8 @@
                 <th>ID</th>
                 <th>Usuario</th>
                 <th>Servicio</th>
+                <th>Plan Contratado</th>
+                <th>Servicios Adicionales</th>
                 <th>Estado</th>
                 <th>Fecha</th>
                 <th>Acciones</th>
@@ -46,6 +47,22 @@
                     <td>@item.ContratacionId</td>
                     <td>@item.NombreUsuario</td>
                     <td>@item.ServicioContratado</td>
+                    <td>@item.PlanContratado ?? "N/A"</td>
+                    <td>
+                        @if (item.ServiciosAdicionalesContratados != null && item.ServiciosAdicionalesContratados.Any())
+                        {
+                            <ul>
+                                @foreach (var servicio in item.ServiciosAdicionalesContratados)
+                                {
+                                    <li>@servicio</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <span>No aplica</span>
+                        }
+                    </td>
                     <td>@item.Estado</td>
                     <td>@item.FechaContratacion.ToShortDateString()</td>
                     <td>

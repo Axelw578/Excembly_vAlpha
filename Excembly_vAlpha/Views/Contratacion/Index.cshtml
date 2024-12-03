@@ -41,9 +41,11 @@ else
                                class="btn btn-warning btn-sm me-1">Editar</a>
                             <form asp-action="Cancelar" asp-controller="Contratacion" method="post" style="display:inline;">
                                 <input type="hidden" name="contratacionId" value="@contratacion.ContratacionId" />
-                                <button type="submit" class="btn btn-danger btn-sm">Cancelar</button>
+                                <button type="submit" class="btn btn-danger btn-sm me-1">Cancelar</button>
                             </form>
-                        </td>
+                            <a href="@Url.Action("Agregar", "Comentario", new { contratacionId = contratacion.ContratacionId })"
+                               class="btn btn-success btn-sm">Agregar Comentario</a>
+                        </td>-
                     </tr>
                 }
             </tbody>

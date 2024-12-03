@@ -17,6 +17,8 @@
         // Información adicional
         public string PlanContratado { get; set; } // Nombre del plan, si aplica
         public string ServicioContratado { get; set; } // Nombre del servicio, si aplica
-    }
 
+        // Nuevos campos para servicios adicionales contratados
+        public List<string> ServiciosAdicionalesContratados { get; set; } // Aquí se mostrarán los servicios adicionales contratados
+    }
 }
