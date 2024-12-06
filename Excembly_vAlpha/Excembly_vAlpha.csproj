@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Views\PoliticaPrivacidad\" />
     <Folder Include="Views\Tarjetas\" />
-    <Folder Include="Views\Pagos\" />
     <Folder Include="Views\Trabajos\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>

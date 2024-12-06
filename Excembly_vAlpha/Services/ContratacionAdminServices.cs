@@ -28,20 +28,54 @@ namespace Excembly_vAlpha.Services
             try
             {
                 var contrataciones = await _context.Contratacion
-                    .Include(c => c.Usuario)
+                    .Include(c => c.Usuario) // Incluimos la relación Usuario para obtener sus datos
                     .Include(c => c.Plan)
                     .Include(c => c.Servicio)
                     .Include(c => c.ServiciosAdicionalesContratados) // Incluye servicios adicionales
                         .ThenInclude(sac => sac.ServicioAdicional)
                     .ToListAsync();
 
-                return _mapper.Map<IEnumerable<ContratacionAdminViewModel>>(contrataciones);
+                // Mapeo manual adicional para incluir el NombreUsuario y ServiciosAdicionalesContratados
+                var contratacionViewModels = contrataciones.Select(c => new ContratacionAdminViewModel
+                {
+                    ContratacionId = c.ContratacionId,
+                    FechaContratacion = c.FechaContratacion,
+                    Estado = c.Estado,
+                    TipoServicio = c.TipoServicio,
+                    UsuarioId = c.UsuarioId,
+                    NombreUsuario = c.Usuario?.Nombre ?? "Usuario desconocido",
+                    ApellidoUsuario = c.Usuario?.Apellidos ?? "",
+                    CorreoUsuario = c.Usuario?.CorreoElectronico ?? "",
+                    TelefonoUsuario = c.Usuario?.Telefono ?? "",
+                    PlanContratado = c.Plan?.Nombre ?? "Sin plan",
+                    ServicioContratado = c.Servicio?.Nombre ?? "Sin servicio",
+                    ServiciosAdicionalesContratados = c.ServiciosAdicionalesContratados
+                        .Select(sac => sac.ServicioAdicional?.Nombre ?? "Servicio adicional desconocido")
+                        .ToList() // Aquí usamos la propiedad correcta
+                });
+
+                return contratacionViewModels;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {JsonConvert.SerializeObject(ex)}");
                 throw;
             }
+        }
+
+
+        public async Task<bool> MarcarComoCompletadoAsync(int contratacionId)
+        {
+            var contratacion = await _context.Contratacion.FindAsync(contratacionId);
+
+            if (contratacion == null)
+            {
+                return false;
+            }
+
+            contratacion.Estado = "Completado";
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         // 2. Filtrar contrataciones

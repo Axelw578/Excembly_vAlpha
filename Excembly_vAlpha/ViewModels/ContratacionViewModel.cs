@@ -7,8 +7,8 @@ namespace Excembly_vAlpha.ViewModels
     {
         public int ContratacionId { get; set; }
         public int UsuarioId { get; set; }
-        public string NombreUsuario { get; set; } = string.Empty;  // Nombre del usuario
-        public string CorreoUsuario { get; set; } = string.Empty;  // Correo del usuario
+        public string NombreUsuario { get; set; } = string.Empty; // Nombre del usuario
+        public string CorreoUsuario { get; set; } = string.Empty; // Correo del usuario
 
         // Información del plan contratado
         public int? PlanId { get; set; }
@@ -36,6 +36,9 @@ namespace Excembly_vAlpha.ViewModels
         public IEnumerable<PlanViewModel> PlanesDisponibles { get; set; } = new List<PlanViewModel>(); // Lista de planes disponibles
         public IEnumerable<ServicioViewModel> ServiciosDisponibles { get; set; } = new List<ServicioViewModel>(); // Lista de servicios disponibles
         public IEnumerable<ServicioAdicionalViewModel> ServiciosAdicionalesDisponibles { get; set; } = new List<ServicioAdicionalViewModel>(); // Lista de servicios adicionales disponibles
-    }
 
+        // ** Propiedades relacionadas con tarjetas **
+        public IEnumerable<TarjetaViewModel> TarjetasGuardadas { get; set; } = new List<TarjetaViewModel>(); // Tarjetas disponibles para el usuario
+        public int? TarjetaId { get; set; } // ID de la tarjeta seleccionada
+    }
 }

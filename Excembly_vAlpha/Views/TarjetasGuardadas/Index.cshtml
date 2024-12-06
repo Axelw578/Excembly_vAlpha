@@ -86,14 +86,16 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()  
-                body: JSON.stringify({ tarjetaId: tarjetaId })
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                body: JSON.stringify({ tarjetaId: tarjetaId }) // Cierre de llave añadido
             });
+
             const result = await response.json();
 
             if (result.success) {
                 alert("Tarjeta eliminada con éxito.");
-                location.reload(); 
+                location.reload();
             } else {
                 alert(result.message || "Error al eliminar la tarjeta.");
             }
@@ -101,6 +103,7 @@
             alert("Ocurrió un error al intentar eliminar la tarjeta.");
         }
     }
+
 </script>
 
 <script src="~/js/Tarjeta.js"></script>

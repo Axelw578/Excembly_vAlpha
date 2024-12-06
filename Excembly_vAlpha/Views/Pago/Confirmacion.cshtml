@@ -1,0 +1,52 @@
+﻿@model Excembly_vAlpha.Models.Pago
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Pago</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h3 class="text-center">¡Pago Realizado con Éxito!</h3>
+            </div>
+            <div class="card-body">
+                <p class="text-muted text-center">Detalles del pago</p>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>Número de Referencia:</strong> @Model.Referencia
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Fecha de Pago:</strong> @Model.FechaPago.ToString("dd/MM/yyyy HH:mm")
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Monto:</strong> @Model.Monto.ToString("C")
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Método de Pago:</strong> @Model.MetodoPago
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Estado:</strong> <span class="badge bg-success">@Model.Estado</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer text-center">
+                <button id="btn-redirect" class="btn btn-primary">Volver a Mis Contrataciones</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#btn-redirect').on('click', function () {
+                window.location.href = '/Contratacion/MisContrataciones'; // Cambia esta ruta si es necesario
+            });
+        });
+    </script>
+</body>
+</html>

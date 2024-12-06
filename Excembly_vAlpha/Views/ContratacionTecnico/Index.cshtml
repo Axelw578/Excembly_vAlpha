@@ -1,0 +1,76 @@
+﻿@model IEnumerable<Excembly_vAlpha.ViewModels.ContratacionAdminViewModel>
+
+@{
+    ViewData["Title"] = "Contrataciones de Usuarios";
+}
+
+<h1 class="mb-4">Mis Contrataciones</h1>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning" role="alert">
+        No tienes contrataciones activas.
+        <a href="@Url.Action("Crear", "ContratacionTecnico")" class="btn btn-primary mt-3">Agregar Nueva Contratación</a>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Usuario</th>
+                    <th>Plan</th>
+                    <th>Servicio</th>
+                    <th>Servicios Adicionales</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var contratacion in Model)
+                {
+                    <tr>
+                        <td>
+                            <strong>@contratacion.NombreUsuario @contratacion.ApellidoUsuario</strong><br />
+                            <small>Correo: @contratacion.CorreoUsuario</small><br />
+                            <small>Teléfono: @contratacion.TelefonoUsuario</small>
+                        </td>
+                        <td>@contratacion.PlanContratado</td>
+                        <td>@contratacion.ServicioContratado</td>
+                        <td>
+                            @if (contratacion.ServiciosAdicionalesContratados.Any())
+                            {
+                                <ul class="mb-0">
+                                    @foreach (var servicioAdicional in contratacion.ServiciosAdicionalesContratados)
+                                    {
+                                        <li>@servicioAdicional</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <em>Sin servicios adicionales</em>
+                            }
+                        </td>
+                        <td>@contratacion.Estado</td>
+                        <td>@contratacion.FechaContratacion.ToShortDateString()</td>
+                        <td>
+                            <a href="@Url.Action("Agregar", "Comentario", new { contratacionId = contratacion.ContratacionId })"
+                               class="btn btn-success btn-sm me-1">Agregar Comentario</a>
+
+                            @if (contratacion.Estado != "Completado")
+                            {
+                                <form asp-action="Completar" asp-controller="ContratacionTecnico" method="post" style="display:inline;">
+                                    <input type="hidden" name="contratacionId" value="@contratacion.ContratacionId" />
+                                    <button type="submit" class="btn btn-primary btn-sm">Marcar como Completado</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -45,8 +45,7 @@ namespace Excembly_vAlpha.Services
         {
             try
             {
-                // Lógica para actualizar la tarjeta en la base de datos
-                // Por ejemplo:
+
                 var tarjetaExistente = await _context.TarjetasGuardadas.FindAsync(tarjeta.TarjetaId);
                 if (tarjetaExistente == null)
                 {

@@ -32,8 +32,8 @@ namespace Excembly_vAlpha.ViewModels
         [Required(ErrorMessage = "El tipo de tarjeta es requerido")]
         public string TipoTarjeta { get; set; } // Débito o Crédito
 
-        public bool EsTarjetaSeleccionada { get; set; } // Indica si la tarjeta está seleccionada para un pago actual
+        public bool EsTarjetaSeleccionada { get; set; } // no se ocupa aun
 
-        public bool EsEdicion { get; set; } // NUEVA PROPIEDAD: Identifica si es edición o creación
+        public bool EsEdicion { get; set; } // no se ocupa aun
     }
 }

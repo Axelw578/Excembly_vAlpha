@@ -9,6 +9,7 @@ namespace Excembly_vAlpha.Services
     public interface IContratacionAdminServices
     {
         Task<IEnumerable<ContratacionAdminViewModel>> ObtenerTodasContratacionesAsync();
+        Task<bool> MarcarComoCompletadoAsync(int contratacionId);
         Task<IEnumerable<ContratacionAdminViewModel>> FiltrarContratacionesAsync(DateTime? fechaInicio, DateTime? fechaFin, int? usuarioId = null);
         Task<ContratacionAdminViewModel> ObtenerDetalleContratacionAsync(int contratacionId);
         Task<IEnumerable<PagoAdminViewModel>> ObtenerPagosPorContratacionAsync(int contratacionId);
