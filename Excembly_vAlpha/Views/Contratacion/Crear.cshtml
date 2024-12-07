@@ -46,7 +46,7 @@
                                name="ServiciosAdicionalesSeleccionados"
                                value="@servicioAdicional.ServicioId"
                                class="form-check-input"
-                        @(Model.ServiciosAdicionalesSeleccionados.Contains(servicioAdicional.ServicioId) ? "checked" : "") />
+                               @(Model.ServiciosAdicionalesSeleccionados.Contains(servicioAdicional.ServicioId) ? "checked" : "") />
                         <label for="ServicioAdicional_@servicioAdicional.ServicioId" class="form-check-label">
                             @servicioAdicional.NombreServicio
                         </label>

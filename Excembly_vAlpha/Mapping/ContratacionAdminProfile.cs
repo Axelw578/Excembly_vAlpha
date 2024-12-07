@@ -14,10 +14,12 @@ namespace Excembly_vAlpha.MappingProfiles
                 .ForMember(dest => dest.ApellidoUsuario, opt => opt.MapFrom(src => src.Usuario.Apellidos))
                 .ForMember(dest => dest.CorreoUsuario, opt => opt.MapFrom(src => src.Usuario.CorreoElectronico))
                 .ForMember(dest => dest.TelefonoUsuario, opt => opt.MapFrom(src => src.Usuario.Telefono))
-                .ForMember(dest => dest.PlanContratado, opt => opt.MapFrom(src => src.Plan != null ? src.Plan.Nombre : null))
+               .ForMember(dest => dest.PlanContratado, opt => opt.MapFrom(src => src.Plan != null ? src.Plan.Nombre : "No especificado"))
+.ForMember(dest => dest.ServicioContratado, opt => opt.MapFrom(src => src.Servicio != null ? src.Servicio.Nombre : "No especificado"))
                 .ForMember(dest => dest.ServicioContratado, opt => opt.MapFrom(src => src.Servicio != null ? src.Servicio.Nombre : null))
                 .ForMember(dest => dest.ServiciosAdicionalesContratados, opt => opt.MapFrom(src =>
                     src.ServiciosAdicionalesContratados.Select(sac => sac.ServicioAdicional.Nombre).ToList()));
+
 
             // Mapeo entre ContratacionAdminViewModelDTO y ContratacionAdminViewModel
             CreateMap<ContratacionAdminViewModelDTO, ContratacionAdminViewModel>()

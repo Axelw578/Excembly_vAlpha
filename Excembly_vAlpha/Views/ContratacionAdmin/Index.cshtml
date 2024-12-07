@@ -47,7 +47,7 @@
                     <td>@item.ContratacionId</td>
                     <td>@item.NombreUsuario</td>
                     <td>@item.ServicioContratado</td>
-                    <td>@item.PlanContratado ?? "N/A"</td>
+                    <td>@(!string.IsNullOrEmpty(item.PlanContratado) ? item.PlanContratado : "No especificado")</td>
                     <td>
                         @if (item.ServiciosAdicionalesContratados != null && item.ServiciosAdicionalesContratados.Any())
                         {
