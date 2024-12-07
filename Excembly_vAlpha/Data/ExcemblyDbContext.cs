@@ -219,16 +219,26 @@ namespace Excembly_vAlpha.Data
             // Configuración de Pago
             modelBuilder.Entity<Pago>()
                 .HasKey(p => p.PagoId);
+
             modelBuilder.Entity<Pago>()
                 .HasOne(p => p.Usuario)
                 .WithMany(u => u.Pagos)
                 .HasForeignKey(p => p.UsuarioId)
                 .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Pago>()
                 .HasOne(p => p.Cita)
                 .WithMany(c => c.Pagos)
                 .HasForeignKey(p => p.CitaId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Relación Pago -> TarjetaGuardada
+            modelBuilder.Entity<Pago>()
+                .HasOne(p => p.TarjetaGuardada)
+                .WithMany()
+                .HasForeignKey(p => p.TarjetaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             // Configuración de DispositivoPlanFamiliar
             modelBuilder.Entity<DispositivoPlanFamiliar>()

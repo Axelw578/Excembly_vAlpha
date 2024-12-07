@@ -102,6 +102,10 @@ namespace Excembly_vAlpha.Controllers
                 viewModel.NombreUsuario = nombreUsuario;
                 viewModel.CorreoUsuario = correoUsuario;
 
+                // Cargar las tarjetas guardadas del usuario
+                var tarjetasGuardadas = await _contratacionService.ObtenerTarjetasGuardadasDelUsuario(usuarioId);
+                viewModel.TarjetasGuardadas = _mapper.Map<List<TarjetaViewModel>>(tarjetasGuardadas);
+
                 return View(viewModel);
             }
             catch (Exception ex)
@@ -117,8 +121,13 @@ namespace Excembly_vAlpha.Controllers
                 return View("Error");
             }
         }
+
         [HttpPost]
-        public async Task<IActionResult> Crear(ContratacionViewModel contratacionViewModel, int? planId, List<int> serviciosAdicionalesSeleccionados)
+        public async Task<IActionResult> Crear(
+    ContratacionViewModel contratacionViewModel,
+    int? planId,
+    List<int> serviciosAdicionalesSeleccionados,
+    int? tarjetaId)
         {
             try
             {
@@ -139,7 +148,6 @@ namespace Excembly_vAlpha.Controllers
                 // Validar y asignar el plan o servicio principal
                 if (planId.HasValue)
                 {
-                    // Obtener el plan por ID
                     var plan = await _contratacionService.ObtenerPlanPorId(planId.Value);
                     if (plan == null)
                     {
@@ -147,13 +155,11 @@ namespace Excembly_vAlpha.Controllers
                         return View("Error");
                     }
 
-                    // Asignar el plan a la contratación
                     contratacion.PlanId = plan.PlanId;
                     contratacion.Estado = "Activa";
                 }
                 else if (contratacionViewModel.ServicioId.HasValue)
                 {
-                    // Si se pasa un servicio, obtenerlo por ID
                     var servicio = await _contratacionService.ObtenerServicioPorId(contratacionViewModel.ServicioId.Value);
                     if (servicio == null)
                     {
@@ -161,7 +167,6 @@ namespace Excembly_vAlpha.Controllers
                         return View("Error");
                     }
 
-                    // Asignar el servicio a la contratación
                     contratacion.ServicioId = servicio.ServicioId;
                     contratacion.Estado = "Activa";
                 }
@@ -179,7 +184,6 @@ namespace Excembly_vAlpha.Controllers
                     return View("Error");
                 }
 
-                // Obtener el ID de la contratación recién creada
                 var contratacionId = contratacion.ContratacionId;
 
                 // Asociar los servicios adicionales seleccionados
@@ -187,7 +191,6 @@ namespace Excembly_vAlpha.Controllers
                 {
                     foreach (var servicioAdicionalId in serviciosAdicionalesSeleccionados)
                     {
-                        // Obtener el servicio adicional por ID
                         var servicioAdicional = await _contratacionService.ObtenerServicioAdicionalPorId(servicioAdicionalId);
                         if (servicioAdicional == null)
                         {
@@ -195,7 +198,6 @@ namespace Excembly_vAlpha.Controllers
                             continue;
                         }
 
-                        // Crear la relación de servicio adicional contratado
                         var servicioAdicionalContratado = new ServicioAdicionalContratado
                         {
                             ContratacionId = contratacionId,
@@ -203,7 +205,6 @@ namespace Excembly_vAlpha.Controllers
                             DescuentoAplicado = servicioAdicional.Descuento
                         };
 
-                        // Guardar el servicio adicional contratado
                         var resultadoServicio = await _contratacionService.AgregarServicioAdicionalContratado(servicioAdicionalContratado);
                         if (!resultadoServicio)
                         {
@@ -212,17 +213,43 @@ namespace Excembly_vAlpha.Controllers
                     }
                 }
 
-                // Log exitoso y redirigir a la vista de detalles de la contratación
-                _logger.LogInformation($"Contratación creada exitosamente con ID: {contratacionId}");
+                // Registrar el pago
+                if (!tarjetaId.HasValue)
+                {
+                    _logger.LogWarning("No se seleccionó ninguna tarjeta guardada.");
+                    return View("Error");
+                }
+
+                var usuarioId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var pago = new Pago
+                {
+                    UsuarioId = usuarioId,
+                    ContratacionId = contratacionId,
+                    PlanId = planId,
+                    TarjetaId = tarjetaId.Value,
+                    Monto = planId.HasValue ? (await _contratacionService.ObtenerPlanPorId(planId.Value))?.Precio ?? 0 : 0,
+                    MetodoPago = "Tarjeta Guardada",
+                    Estado = "Pagado",
+                    Referencia = Guid.NewGuid().ToString() // Generar una referencia única
+                };
+
+                var pagoGuardado = await _contratacionService.RegistrarPago(pago);
+                if (!pagoGuardado)
+                {
+                    _logger.LogWarning("No se pudo registrar el pago.");
+                    return View("Error");
+                }
+
+                _logger.LogInformation($"Contratación y pago creados exitosamente. ID Contratación: {contratacionId}, ID Pago: {pago.PagoId}");
                 return RedirectToAction("Detalles", new { contratacionId });
             }
             catch (Exception ex)
             {
-                // Log de error
-                LogJsonError(ex, "Error al crear la contratación.");
+                LogJsonError(ex, "Error al crear la contratación y registrar el pago.");
                 return View("Error");
             }
         }
+
 
 
 
@@ -360,7 +387,7 @@ namespace Excembly_vAlpha.Controllers
                 ServiciosAdicionalesDisponibles = _mapper.Map<IEnumerable<ServicioAdicionalViewModel>>(serviciosAdicionalesDisponibles)
             };
         }
-
+         
         private void LogJsonError(Exception ex, string customMessage)
         {
             var errorDetails = new

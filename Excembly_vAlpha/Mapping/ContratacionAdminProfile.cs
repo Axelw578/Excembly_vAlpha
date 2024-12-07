@@ -80,6 +80,20 @@ namespace Excembly_vAlpha.MappingProfiles
             // Mapeo entre ContratacionAdminViewModel y DetalleContratacionAdminViewModel
             CreateMap<ContratacionAdminViewModel, DetalleContratacionAdminViewModel>()
                 .ForMember(dest => dest.Pagos, opt => opt.Ignore()); // Pagos se deben asignar manualmente
+
+            // Mapeo para TarjetaGuardada -> TarjetaViewModel
+            CreateMap<TarjetaGuardada, TarjetaViewModel>()
+                .ForMember(dest => dest.TarjetaId, opt => opt.MapFrom(src => src.TarjetaId))
+                .ForMember(dest => dest.NombreTitular, opt => opt.MapFrom(src => src.NombreTitular))
+                .ForMember(dest => dest.NumeroTarjeta, opt => opt.MapFrom(src => src.NumeroTarjeta))
+                .ForMember(dest => dest.MesExpiracion, opt => opt.MapFrom(src => src.FechaExpiracion.Month))
+                .ForMember(dest => dest.AñoExpiracion, opt => opt.MapFrom(src => src.FechaExpiracion.Year))
+                .ForMember(dest => dest.CVV, opt => opt.MapFrom(src => src.CVV))
+                .ForMember(dest => dest.TipoTarjeta, opt => opt.MapFrom(src => src.TipoTarjeta))
+                .ForMember(dest => dest.Banco, opt => opt.MapFrom(src => src.Banco))
+                .ForMember(dest => dest.Marca, opt => opt.MapFrom(src => src.Marca));
+
+
         }
     }
 }

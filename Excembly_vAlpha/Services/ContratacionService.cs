@@ -394,6 +394,33 @@ namespace Excembly_vAlpha.Services
             }
         }
 
+        public async Task<IEnumerable<TarjetaGuardada>> ObtenerTarjetasGuardadasDelUsuario(int usuarioId)
+        {
+            // Obtener las tarjetas guardadas del usuario desde la base de datos
+            var tarjetas = await Task.FromResult(
+                _context.TarjetasGuardadas
+                        .Where(t => t.UsuarioId == usuarioId)
+                        .ToList()
+            );
+
+            return tarjetas;
+        }
+
+        public async Task<bool> RegistrarPago(Pago pago)
+        {
+            try
+            {
+                _context.Pagos.Add(pago);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error al registrar el pago: {ex.Message}");
+                return false;
+            }
+        }
+
 
 
 

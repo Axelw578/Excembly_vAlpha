@@ -18,12 +18,11 @@ namespace Excembly_vAlpha.Models
         public string Referencia { get; set; }
         public int? CitaId { get; set; } // Si la referencia a Cita puede ser nula
 
-
-
         // Relaciones
-        public Cita Cita { get; set; } // Propiedad de navegación para la relación con Cita
+        public Cita Cita { get; set; }
         public Usuario Usuario { get; set; }
         public Contratacion Contratacion { get; set; }
-        public TarjetaGuardada TarjetaGuardada { get; set; }
+        public TarjetaGuardada TarjetaGuardada { get; set; } // Relación con TarjetaGuardada
     }
+
 }

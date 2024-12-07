@@ -20,12 +20,14 @@ namespace Excembly_vAlpha.Services
         Task<Servicio> ObtenerServicioPorId(int servicioId);
         Task<IEnumerable<ServicioAdicional>> ObtenerServiciosAdicionalesDisponibles();
 
-        // Actualización de firma con parámetro opcional planId
         Task<ServicioAdicional> ObtenerServicioAdicionalPorId(int servicioAdicionalId, int? planId = null);
 
         Task<bool> AgregarServicioAdicionalContratado(ServicioAdicionalContratado servicioAdicionalContratado);
 
-        // Nuevo método
         Task<ContratacionViewModel?> ObtenerDetallesDeContratacion(int contratacionId);
+
+        // Nuevo método
+        Task<IEnumerable<TarjetaGuardada>> ObtenerTarjetasGuardadasDelUsuario(int usuarioId);
+         Task<bool> RegistrarPago(Pago pago);
     }
 }

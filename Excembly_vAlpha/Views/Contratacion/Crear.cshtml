@@ -24,7 +24,6 @@
         </div>
 
         <!-- Selección del Plan -->
-        <!-- Selección del Plan -->
         <div class="mb-3">
             <label for="PlanId" class="form-label">Seleccionar Plan</label>
             <select id="PlanId" name="PlanId" class="form-select">
@@ -36,7 +35,7 @@
             </select>
         </div>
 
-        <!-- Servicios Adicionales (solo si se selecciona un Plan) -->
+        <!-- Servicios Adicionales -->
         <div class="mb-3" id="serviciosAdicionalesSection" style="display: @(Model.PlanId.HasValue ? "block" : "none")">
             <label class="form-label">Servicios Adicionales</label>
             <div id="serviciosAdicionales">
@@ -47,7 +46,7 @@
                                name="ServiciosAdicionalesSeleccionados"
                                value="@servicioAdicional.ServicioId"
                                class="form-check-input"
-                               @(Model.ServiciosAdicionalesSeleccionados.Contains(servicioAdicional.ServicioId) ? "checked" : "") />
+                        @(Model.ServiciosAdicionalesSeleccionados.Contains(servicioAdicional.ServicioId) ? "checked" : "") />
                         <label for="ServicioAdicional_@servicioAdicional.ServicioId" class="form-check-label">
                             @servicioAdicional.NombreServicio
                         </label>
@@ -75,6 +74,20 @@
             <select id="TipoServicio" name="TipoServicio" class="form-select">
                 <option value="Sucursal">Sucursal</option>
                 <option value="Domicilio">Domicilio</option>
+            </select>
+        </div>
+
+        <!-- Selección del Método de Pago -->
+        <div class="mb-3">
+            <label for="tarjetaId" class="form-label">Seleccionar Tarjeta de Pago</label>
+            <select id="tarjetaId" name="tarjetaId" class="form-control" required>
+                <option value="">Seleccione una tarjeta...</option>
+                @foreach (var tarjeta in Model.TarjetasGuardadas)
+                {
+                    <option value="@tarjeta.TarjetaId">
+                        @tarjeta.NumeroTarjeta (Expira: @tarjeta.MesExpiracion/@tarjeta.AñoExpiracion)
+                    </option>
+                }
             </select>
         </div>
 
