@@ -6,7 +6,7 @@
     <title>@ViewData["Title"] - Excembly</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
     <link rel="stylesheet" href="~/Excembly.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
@@ -28,20 +28,24 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
             <div class="container-fluid">
-                <!-- Logo a la izquierda -->
-                <div class="row align-items-center w-100">
-                    <div class="col-3 d-flex">
-                        <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Empresa" asp-action="Index">
-                            <i class="bi bi-wrench-adjustable"></i>
-                            <span class="ms-2">Excembly</span>
-                        </a>
-                    </div>
-                    <!-- Menú en el centro -->
-                    <div class="col-6 d-flex justify-content-center">
-                        <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Logo -->
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Empresa" asp-action="Index">
+                    <i class="bi bi-wrench-adjustable"></i>
+                    <span class="ms-2">Excembly</span>
+                </a>
+
+                <!-- Menú basado en roles -->
+                @if (User.Identity.IsAuthenticated)
+                {
+                    var rol = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+
+                    <!-- Menú para Usuario -->
+                    @if (rol == "Usuario")
+                    {
+                        <div class="col-6 d-flex justify-content-center" id="navbarNav">
                             <ul class="navbar-nav">
                                 <li class="nav-item">
-                                    <a class="nav-link active text-hover-orange " asp-area="" asp-controller="Empresa" asp-action="Index">Inicio</a>
+                                    <a class="nav-link active text-hover-orange" asp-area="" asp-controller="Empresa" asp-action="Index">Inicio</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-hover-orange" asp-area="" asp-controller="Servicios" asp-action="Index">Servicios</a>
@@ -54,40 +58,65 @@
                                 </li>
                             </ul>
                         </div>
+                    }
+
+                    <!-- Dropdown Menú para todos -->
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center text-hover-orange" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="@(User.FindFirst("URLFotoPerfil")?.Value ?? "/images/default-profile.png")" alt="Imagen de perfil" class="profile-image me-2" />
+                            <span>@(User.Identity.Name ?? "Usuario Anónimo")</span>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end bg-dark rounded">
+                            <li><a class="dropdown-item text-hover-orange" asp-area="" asp-controller="Cuenta" asp-action="Index">Perfil</a></li>
+                            @if (rol == "Usuario")
+                            {
+                                <li><a class="dropdown-item text-hover-orange" asp-area="" asp-controller="Contratacion" asp-action="Index">Mis Citas</a></li>
+                                <li><a class="dropdown-item text-hover-orange" asp-area="" asp-controller="TarjetasGuardadas" asp-action="Index">Mis Pagos</a></li>
+                                <li><a class="dropdown-item text-hover-orange" asp-area="" asp-controller="Direccion" asp-action="Index">Dirección</a></li>
+                            }
+                            else if (rol == "Técnico")
+                            {
+                                <li><a class="dropdown-item text-hover-orange" asp-area="" asp-controller="ContratacionTecnico" asp-action="Index">Contrataciones</a></li>
+                            }
+                            else if (rol == "Administrador")
+                            {
+                                <li><a class="dropdown-item text-hover-orange" asp-area="" asp-controller="ComentariosAdmin" asp-action="Index">Comentarios</a></li>
+                                <li><a class="dropdown-item text-hover-orange" asp-area="" asp-controller="ContratacionAdmin" asp-action="Index">Contrataciones</a></li>
+                            }
+                            <li>
+                                <form asp-controller="Login" asp-action="Logout" method="post">
+                                    <button type="submit" class="dropdown-item text-hover-orange">Cerrar Sesión</button>
+                                    @Html.AntiForgeryToken()
+                                </form>
+                            </li>
+                        </ul>
                     </div>
-                    <!-- Usuario e imagen a la derecha -->
-                    <div class="col-3 d-flex justify-content-end align-items-center">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <div class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle d-flex align-items-center text-hover-orange" href="#" id="navbarDropdown" role="button" data-bs-toggle="true" aria-expanded="false">
-                                    <img src="@User.FindFirst("URLFotoPerfil")?.Value" alt="Imagen de perfil" class="profile-image me-2" />
-                                    <span>@User.Identity.Name</span>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end bg-dark rounded">
-                                    <li><a class="dropdown-item text-hover-orange" asp-area="" asp-controller="Cuenta" asp-action="Index">Perfil</a></li>
-                                    <li><a class="dropdown-item text-hover-orange" asp-area="" asp-controller="Contratacion" asp-action="Index">Mis Citas</a></li>
-                                    <li><a class="dropdown-item text-hover-orange" asp-area="" asp-controller="TarjetasGuardadas" asp-action="Index">Mis Pagos</a></li>
-                                    <li><a class="dropdown-item text-hover-orange" asp-area="" asp-controller="Direccion" asp-action="Index">Dirección</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <form asp-controller="Login" asp-action="Logout" method="post">
-                                            <button type="submit" class="dropdown-item text-hover-orange">Cerrar Sesión</button>
-                                            @Html.AntiForgeryToken()
-                                        </form>
-                                    </li>
-                                </ul>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="d-flex">
-                                <a class="nav-link me-3" asp-area="" asp-controller="Login" asp-action="Index"><i class="bi bi-person-circle"></i> Iniciar Sesión</a>
-                                <a class="nav-link" asp-area="" asp-controller="Registro" asp-action="Registrar"><i class="bi bi-person-plus-fill"></i> Registrarse</a>
-                            </div>
-                        }
+                }
+                else
+                {
+                    <!-- Menú para no autenticados -->
+                    <div class="d-flex ms-auto">
+                        <div class="col-6 d-flex justify-content-center" id="navbarNav">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link active text-hover-orange" asp-area="" asp-controller="Empresa" asp-action="Index">Inicio</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-hover-orange" asp-area="" asp-controller="Servicios" asp-action="Index">Servicios</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-hover-orange" asp-area="" asp-controller="Planes" asp-action="Index">Planes</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-hover-orange" asp-area="" asp-controller="Home" asp-action="Privacy">Política de Privacidad</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <a class="nav-link me-3" asp-area="" asp-controller="Login" asp-action="Index"><i class="bi bi-person-circle"></i> Iniciar Sesión</a>
+                        <a class="nav-link" asp-area="" asp-controller="Registro" asp-action="Registrar"><i class="bi bi-person-plus-fill"></i> Registrarse</a>
                     </div>
-                </div>
+                }
             </div>
         </nav>
     </header>
@@ -99,76 +128,52 @@
         </div>
     </main>
 
-
-    <div class="container-fluid mt-5 p-0">
-        <footer class="text-center text-lg-start text-white" style="background-color: #212121">
-            <div class="container p-4 pb-0">
-                <div class="row">
-                    <!-- Columna: Nombre e imagen de la empresa -->
-                    <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3 d-flex align-items-center">
-                        <img src="https://c0.klipartz.com/pngpicture/527/496/gratis-png-mantenimiento-preventivo-orden-de-trabajo-empresa-maquina-negocio.png" alt="Logo de la empresa" class="img-fluid rounded me-2" style="width: 50px; height: 50px;">
-                        <h6 class="text-uppercase font-weight-bold">Excembly</h6>
-                    </div>
-                    <!-- Columna: Información de la empresa -->
-                    <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
-                        <h6 class="text-uppercase mb-4 font-weight-bold text-orange-dark">Acerca de</h6>
-                        <p>
-                            Excembly es una plataforma de mantenimiento preventivo que ayuda a mantener tus dispositivos en óptimas condiciones.
-                        </p>
-                    </div>
-                    <!-- Columna: Productos -->
-                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
-                        <h6 class="text-uppercase mb-4 font-weight-bold text-orange-dark">Productos</h6>
-                        <p><a class="text-white text-decoration-none" asp-area="" asp-controller="Home" asp-action="Privacy">Política de Privacidad</a></p>
-                        <p><a class="text-white text-decoration-none" asp-area="" asp-controller="Home" asp-action="Privacy">Términos y Condiciones</a></p>
-                    </div>
-                    <!-- Columna: Contacto -->
-                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
-                        <h6 class="text-uppercase mb-4 font-weight-bold text-orange-dark">Contacto</h6>
-                        <p><i class="fas fa-home me-2"></i> Veracruz, MX</p>
-                        <p><i class="fas fa-envelope me-2"></i> excembly@outlook.com</p>
-                        <p><i class="fas fa-phone me-2"></i> +52 22 9245 7076</p>
-                    </div>
-                    <!-- Columna: Redes sociales -->
-                    <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
-                        <h6 class="text-uppercase mb-4 font-weight-bold text-orange-dark">Síguenos</h6>
-                        <a href="https://www.facebook.com/profile.php?id=61566979198230" class="btn btn-outline-light btn-floating m-1"><i class="fab fa-facebook-f"></i></a>
-                    </div>
+    <footer class="text-center text-lg-start text-white" style="background-color: #212121;">
+        <div class="container p-4 pb-0">
+            <div class="row">
+                <!-- Columna: Nombre e imagen de la empresa -->
+                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3 d-flex align-items-center">
+                    <img src="https://c0.klipartz.com/pngpicture/527/496/gratis-png-mantenimiento-preventivo-orden-de-trabajo-empresa-maquina-negocio.png" alt="Logo de la empresa" class="img-fluid rounded me-2" style="width: 50px; height: 50px;">
+                    <h6 class="text-uppercase font-weight-bold">Excembly</h6>
                 </div>
-            </div>
-            <!-- Copyright -->
-            <div class="text-center p-3" style="background-color: rgba(244, 135, 0, 0.8);">
-                © 2024 Excembly. Todos los derechos reservados.
-            </div>
-        </footer>
-    </div>
 
-    <!-- Modal de inicio de sesión -->
-    <div class="modal fade" id="modalLogin" tabindex="-1" role="dialog" aria-labelledby="modalLoginLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLoginLabel">Iniciar Sesión</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <!-- Columna: Información de la empresa -->
+                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4 font-weight-bold text-orange-dark">Acerca de</h6>
+                    <p>Excembly es una plataforma de mantenimiento preventivo que ayuda a mantener tus dispositivos en óptimas condiciones.</p>
                 </div>
-                <div class="modal-body">
-                    <form asp-controller="Auth" asp-action="Login" method="post">
-                        <div class="form-group">
-                            <label for="email">Correo Electrónico</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Contraseña</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-                    </form>
+
+                <!-- Columna: Productos -->
+                <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4 font-weight-bold text-orange-dark">Productos</h6>
+                    <p><a class="text-white text-decoration-none" asp-area="" asp-controller="Home" asp-action="Privacy">Política de Privacidad</a></p>
+                    <p><a class="text-white text-decoration-none" asp-area="" asp-controller="Home" asp-action="Privacy">Términos y Condiciones</a></p>
+                </div>
+
+                <!-- Columna: Contacto -->
+                <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4 font-weight-bold text-orange-dark">Contacto</h6>
+                    <p><i class="fas fa-home me-2"></i> Veracruz, MX</p>
+                    <p><i class="fas fa-envelope me-2"></i> excembly@outlook.com</p>
+                    <p><i class="fas fa-phone me-2"></i> +52 22 9245 7076</p>
+                </div>
+
+                <!-- Columna: Redes sociales -->
+                <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4 font-weight-bold text-orange-dark">Síguenos</h6>
+                    <a href="https://www.facebook.com/profile.php?id=61566979198230" class="btn btn-outline-light btn-floating m-1">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(244, 135, 0, 0.8);">
+            © 2024 Excembly. Todos los derechos reservados.
+        </div>
+    </footer>
+
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

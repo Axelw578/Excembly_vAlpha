@@ -1,97 +1,82 @@
-﻿@model Excembly_vAlpha.ViewModels.DireccionViewModel 
- 
-@{ 
-    ViewData["Title"] = "Editar Dirección"; 
-} 
- 
-<!DOCTYPE html> 
-<html lang="es"> 
-<head> 
-    <meta charset="utf-8" /> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
-    <title>@ViewData["Title"]</title> 
-    <link href="~/css/editarDireccion.css" rel="stylesheet" /> 
-    <link 
-href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
-rel="stylesheet" /> 
-    <script 
-src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script> 
-    <script 
-src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.
- js"></script> 
-</head> 
-<body> 
-    <div class="container mt-5"> 
-        <div class="custom-container mt-5"> 
-        <h1 class="text-center">Editar Dirección</h1> 
-        <hr /> 
- 
-        <form asp-action="ActualizarDireccion" asp-controller="Direccion" 
-method="post" class="needs-validation" novalidate> 
-            @Html.HiddenFor(model => model.UsuarioId) 
-            @Html.HiddenFor(model => model.DireccionId) 
- 
-            <div class="mb-3"> 
-                <label asp-for="Colonia" class="form-label"></label> 
-                @Html.TextBoxFor(model => model.Colonia, new { @class = "formcontrol", @placeholder = "Ingresa tu colonia" }) 
-                <span class="text-danger">@Html.ValidationMessageFor(model => 
-model.Colonia)</span> 
-            </div> 
- 
-            <div class="mb-3"> 
-                <label asp-for="Calle" class="form-label"></label> 
-                @Html.TextBoxFor(model => model.Calle, new { @class = "formcontrol", @placeholder = "Ingresa tu calle" }) 
-                <span class="text-danger">@Html.ValidationMessageFor(model => 
-model.Calle)</span> 
-            </div> 
- 
-            <div class="mb-3"> 
-                <label asp-for="NumeroEdificio" class="form-label"></label> 
-                @Html.TextBoxFor(model => model.NumeroEdificio, new { @class = 
-"form-control", @placeholder = "Número de edificio o casa" }) 
-                <span class="text-danger">@Html.ValidationMessageFor(model => 
-model.NumeroEdificio)</span> 
-            </div> 
- 
-            <div class="mb-3"> 
-                <label asp-for="DescripcionEdificio" class="form
-label"></label> 
-                @Html.TextBoxFor(model => model.DescripcionEdificio, new { 
-@class = "form-control", @placeholder = "Descripción del edificio (opcional)" 
-}) 
-            </div> 
- 
-            <div class="mb-3"> 
-                <label asp-for="ReferenciaEdificio" class="form-label"></label> 
-                @Html.TextBoxFor(model => model.ReferenciaEdificio, new { 
-@class = "form-control", @placeholder = "Referencias del edificio (opcional)" 
-}) 
-            </div> 
- 
-            <button type="submit" class="btn btn-success w-100">Actualizar 
-Dirección</button> 
-        </form> 
-    </div> 
-    </div> 
- 
-    <script> 
-        // Habilitar validación de formularios con Bootstrap 
-        (() => { 
-            'use strict'; 
- 
-            const forms = document.querySelectorAll('.needs-validation'); 
- 
-            Array.from(forms).forEach(form => { 
-                form.addEventListener('submit', event => { 
-                    if (!form.checkValidity()) { 
-                        event.preventDefault(); 
-                        event.stopPropagation(); 
-                    } 
- 
-                    form.classList.add('was-validated'); 
-                }, false); 
-            }); 
-        })(); 
-    </script> 
-</body> 
-</html> 
+﻿@model Excembly_vAlpha.ViewModels.DireccionViewModel
+
+@{
+    ViewData["Title"] = "Editar Dirección";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/css/editarDireccion.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="custom-container mt-5">
+            <h1 class="text-center">Editar Dirección</h1>
+            <hr />
+
+            <form asp-action="ActualizarDireccion" asp-controller="Direccion"
+                  method="post" class="needs-validation" novalidate>
+                @Html.HiddenFor(model => model.UsuarioId)
+                @Html.HiddenFor(model => model.DireccionId)
+
+                <div class="mb-3">
+                    <label asp-for="Colonia" class="form-label"></label>
+                    @Html.TextBoxFor(model => model.Colonia, new { @class = "form-control", @placeholder = "Ingresa tu colonia" })
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.Colonia)</span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Calle" class="form-label"></label>
+                    @Html.TextBoxFor(model => model.Calle, new { @class = "form-control", @placeholder = "Ingresa tu calle" })
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.Calle)</span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="NumeroEdificio" class="form-label"></label>
+                    @Html.TextBoxFor(model => model.NumeroEdificio, new { @class = "form-control", @placeholder = "Número de edificio o casa" })
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.NumeroEdificio)</span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="DescripcionEdificio" class="form-label"></label>
+                    @Html.TextBoxFor(model => model.DescripcionEdificio, new { @class = "form-control", @placeholder = "Descripción del edificio (opcional)" })
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ReferenciaEdificio" class="form-label"></label>
+                    @Html.TextBoxFor(model => model.ReferenciaEdificio, new { @class = "form-control", @placeholder = "Referencias del edificio (opcional)" })
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Actualizar Dirección</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Habilitar validación de formularios con Bootstrap
+        (() => {
+            'use strict';
+
+            const forms = document.querySelectorAll('.needs-validation');
+
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+</body>
+</html>

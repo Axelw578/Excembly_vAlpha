@@ -1,6 +1,6 @@
-/* sites.css */
+/* Fondo del cuerpo */
 body {
-    background: linear-gradient(135deg, #000DFF, #6B73FF);
+    background: linear-gradient(135deg, #000DFF, #6B7);
     font-family: 'Arial', sans-serif;
 }
 
@@ -8,19 +8,65 @@ body {
 .navbar {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     animation: fadeIn 0.8s ease-in-out;
+    display: flex;
+    justify-content: space-between; /* Asegura el espacio entre las secciones */
+    align-items: center;
 }
 
-/* Enlaces del menú de navegación */
-.navbar-nav .nav-link {
-    color: #fff;
-    transition: color 0.3s ease;
-}
-
-    .navbar-nav .nav-link:hover {
-        color: #FFD700;
+    /* Contenedor de navegación */
+    .navbar .container-fluid {
+        display: flex;
+        justify-content: space-between; /* Separa el contenido a los extremos */
+        align-items: center;
     }
 
+/* Enlaces del menú de navegación */
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    margin-right: auto; /* Asegura que los enlaces ocupen el espacio necesario */
+}
+
+    .navbar-nav .nav-link {
+        color: #fff;
+        transition: color 0.3s ease, background-color 0.2s ease-in-out;
+        margin-right: 15px; /* Espaciado entre enlaces */
+    }
+
+        .navbar-nav .nav-link:hover {
+            color: #FFD700;
+            background-color: rgba(255, 215, 0, 0.1); /* Fondo amarillo claro al pasar el ratón */
+            border-radius: 5px; /* Bordes redondeados para el efecto */
+        }
+
+/* Estilos para la imagen de perfil */
+.profile-image {
+    width: 40px; /* Ajusta el tamaño de la imagen */
+    height: 40px; /* Ajusta el tamaño de la imagen */
+    border-radius: 50%; /* Hacer la imagen redonda */
+    object-fit: cover; /* Mantener la proporción de la imagen */
+    transition: transform 0.3s ease, border 0.3s ease;
+}
+
+    .profile-image:hover {
+        transform: scale(1.1); /* Efecto de zoom al pasar el ratón */
+        border-color: #FFD700;
+    }
+
+/* Información del usuario */
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-left: 10px; /* Espacio entre la imagen y el nombre */
+    color: #fff;
+    font-size: 14px;
+}
+
 /* Perfil de Usuario */
+.navbar .nav-item.dropdown {
+    margin-left: auto; /* Empuja el perfil hacia el extremo derecho */
+}
+
 .navbar .nav-link.dropdown-toggle {
     display: flex;
     align-items: center;
@@ -32,16 +78,6 @@ body {
         color: #FFD700;
     }
 
-.navbar .nav-link img {
-    border: 2px solid #fff;
-    transition: transform 0.3s ease, border 0.3s ease;
-}
-
-    .navbar .nav-link img:hover {
-        transform: scale(1.1);
-        border-color: #FFD700;
-    }
-
 /* Dropdown Styles */
 .navbar .dropdown-menu {
     background-color: #343a40;
@@ -50,6 +86,8 @@ body {
     opacity: 0;
     transform: translateY(-10px);
     animation: fadeInDropdown 0.5s ease forwards;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
     .navbar .dropdown-menu .dropdown-item {
@@ -60,6 +98,63 @@ body {
         .navbar .dropdown-menu .dropdown-item:hover {
             background-color: #495057;
             color: #FFD700;
+        }
+
+/* Menú de navegación: asegurando que el dropdown funcione */
+.navbar-nav .nav-item:hover .dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Botón desplegable: mejora visual al hacer hover */
+.navbar-toggler {
+    transition: transform 0.3s ease;
+}
+
+    .navbar-toggler:hover {
+        transform: rotate(90deg);
+    }
+
+/* Footer */
+footer {
+    background-color: #343a40;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+    footer p {
+        margin: 10px 0;
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    footer a {
+        color: #FFD700;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+        footer a:hover {
+            color: #FFF;
+        }
+
+    footer .btn-floating {
+        background-color: #495057;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+        footer .btn-floating:hover {
+            background-color: #FFD700;
+            transform: scale(1.1);
         }
 
 /* Animaciones */
@@ -85,7 +180,7 @@ body {
     }
 }
 
-/* Estilo para el formulario de búsqueda (si se implementa) */
+/* Estilo para el formulario de búsqueda */
 .form-control {
     transition: border-color 0.3s ease;
 }
@@ -104,44 +199,29 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Footer */
-footer {
-    background-color: #343a40;
-    color: #fff;
-    padding: 20px 0;
-}
-
-    footer p {
-        margin: 0;
-        animation: fadeIn 1s ease-in-out;
+/* Responsividad */
+@media (max-width: 768px) {
+    .navbar .nav-item.dropdown {
+        margin-left: 0; /* Eliminar margen en móviles */
     }
 
-/* Menú de navegación: asegurando que el dropdown funcione */
-.navbar-nav .nav-item:hover .dropdown-menu {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Botón desplegable: mejora visual al hacer hover */
-.navbar-toggler {
-    transition: transform 0.3s ease;
-}
-
-    .navbar-toggler:hover {
-        transform: rotate(90deg);
+    .navbar-nav .nav-link {
+        margin-right: 10px; /* Reducir espaciado en móviles */
     }
 
-/* Estilos para la imagen de perfil */
-.profile-image {
-    width: 40px; /* Ajusta el tamaño de la imagen */
-    height: 40px; /* Ajusta el tamaño de la imagen */
-    border-radius: 50%; /* Hacer la imagen redonda */
-    object-fit: cover; /* Mantener la proporción de la imagen */
+    .navbar .nav-link img {
+        width: 35px; /* Reducir tamaño de la imagen en móviles */
+        height: 35px;
+    }
 }
 
-.user-info {
-    display: flex;
-    align-items: center;
-    margin-left: 10px; /* Espacio entre la imagen y el nombre */
+@media (max-width: 576px) {
+    footer {
+        font-size: 12px;
+    }
+
+        footer .btn-floating {
+            width: 35px;
+            height: 35px;
+        }
 }

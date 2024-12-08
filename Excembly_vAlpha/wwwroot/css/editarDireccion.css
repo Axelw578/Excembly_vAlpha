@@ -1,11 +1,11 @@
 ﻿.custom-container {
     max-width: 700px;
-    margin: 20px auto;
-    background-color: #282828;
+    margin: 30px auto;
+    background-color: #282828; /* Fondo oscuro uniforme */
     color: #ffffff;
     padding: 40px;
     border-radius: 15px;
-    border: 2px solid #ffcf00;
+    border: 2px solid #ffcf00; /* Color amarillo brillante */
     box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.7);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -17,7 +17,7 @@
 
     .custom-container h1 {
         color: #ffcf00;
-        font-size: 2.8rem;
+        font-size: 2.5rem;
         margin-bottom: 20px;
         text-align: center;
         text-transform: uppercase;
@@ -32,9 +32,9 @@
     }
 
     .custom-container .form-control {
-        background-color: #1e1e2f;
+        background-color: #1e1e2f; /* Fondo uniforme en los campos de entrada */
         color: #ffffff;
-        border: 1px solid #444444;
+        border: 1px solid #444444; /* Bordes oscuros */
         border-radius: 10px;
         padding: 12px;
         font-size: 1rem;
@@ -43,11 +43,12 @@
 
         .custom-container .form-control:focus {
             border-color: #ffcf00;
-            box-shadow: 0 0 8px rgba(255, 207, 0, 0.8);
+            box-shadow: 0 0 8px rgba(255, 207, 0, 0.8); /* Resaltado amarillo */
         }
 
+    .custom-container .btn-primary,
     .custom-container .btn-success {
-        background-color: #ffcf00;
+        background-color: #ffcf00; /* Botones amarillos */
         color: #282828;
         border: none;
         padding: 15px;
@@ -59,6 +60,7 @@
         width: 100%;
     }
 
+        .custom-container .btn-primary:hover,
         .custom-container .btn-success:hover {
             background-color: #e6ba00;
             transform: scale(1.02);
@@ -73,6 +75,33 @@
     }
 
     .custom-container .text-danger {
-        color: #ff6b6b !important;
+        color: #ff6b6b !important; /* Color rojo para errores */
         font-size: 0.9rem;
     }
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .custom-container {
+        padding: 20px;
+    }
+
+        .custom-container h1 {
+            font-size: 2rem;
+        }
+}
+
+@media (max-width: 576px) {
+    .custom-container {
+        padding: 15px;
+    }
+
+        .custom-container h1 {
+            font-size: 1.8rem;
+        }
+
+        .custom-container .btn-primary,
+        .custom-container .btn-success {
+            font-size: 1rem;
+            padding: 10px;
+        }
+}

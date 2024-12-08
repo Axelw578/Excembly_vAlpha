@@ -1,12 +1,12 @@
 ﻿.custom-container {
     max-width: 700px;
     margin: 30px auto;
-    background-color: #282828;
-    color: #ffffff;
+    background-color: #282828; /* Fondo oscuro */
+    color: #ffffff; /* Texto blanco */
     padding: 40px;
     border-radius: 15px;
-    border: 2px solid #ffcf00;
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.7);
+    border: 2px solid #ffcf00; /* Bordes amarillos */
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.7); /* Sombra uniforme */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -16,7 +16,7 @@
     }
 
     .custom-container h1 {
-        color: #ffcf00;
+        color: #ffcf00; /* Título amarillo */
         font-size: 2.5rem;
         margin-bottom: 20px;
         text-align: center;
@@ -27,14 +27,14 @@
     .custom-container hr {
         border: none;
         height: 2px;
-        background-color: #ffcf00;
+        background-color: #ffcf00; /* Línea divisoria amarilla */
         margin: 20px 0;
     }
 
     .custom-container .form-control {
-        background-color: #1e1e2f;
-        color: #ffffff;
-        border: 1px solid #444444;
+        background-color: #1e1e2f; /* Fondo oscuro en los campos */
+        color: #ffffff; /* Texto blanco */
+        border: 1px solid #444444; /* Bordes grises */
         border-radius: 10px;
         padding: 12px;
         font-size: 1rem;
@@ -42,13 +42,13 @@
     }
 
         .custom-container .form-control:focus {
-            border-color: #ffcf00;
+            border-color: #ffcf00; /* Borde amarillo al enfocarse */
             box-shadow: 0 0 8px rgba(255, 207, 0, 0.8);
         }
 
     .custom-container .btn-primary {
-        background-color: #ffcf00;
-        color: #282828;
+        background-color: #ffcf00; /* Botón amarillo */
+        color: #282828; /* Texto oscuro */
         border: none;
         padding: 15px;
         font-size: 1.1rem;
@@ -60,19 +60,47 @@
     }
 
         .custom-container .btn-primary:hover {
-            background-color: #e6ba00;
+            background-color: #e6ba00; /* Resalte amarillo más oscuro */
             transform: scale(1.02);
             box-shadow: 0 5px 15px rgba(255, 207, 0, 0.6);
         }
 
     .custom-container .form-label {
-        font-weight: bold;
-        margin-bottom: 5px;
-        font-size: 1rem;
-        color: #ffffff;
+        font-weight: bold; /* Negrita para destacar */
+        margin-bottom: 5px; /* Espacio entre el label y el campo */
+        font-size: 1rem; /* Tamaño del texto */
+        color: #ffcf00; /* Texto amarillo para que resalte */
+        display: block; /* Asegura que se muestre en una línea separada */
     }
 
+
     .custom-container .text-danger {
-        color: #ff6b6b !important;
+        color: #ff6b6b !important; /* Mensajes de error en rojo claro */
         font-size: 0.9rem;
     }
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .custom-container {
+        padding: 20px;
+    }
+
+        .custom-container h1 {
+            font-size: 2rem;
+        }
+}
+
+@media (max-width: 576px) {
+    .custom-container {
+        padding: 15px;
+    }
+
+        .custom-container h1 {
+            font-size: 1.8rem;
+        }
+
+        .custom-container .btn-primary {
+            font-size: 1rem;
+            padding: 10px;
+        }
+}
