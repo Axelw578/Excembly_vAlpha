@@ -13,33 +13,70 @@
 
         <h6 class="mt-3">Información del Plan</h6>
         <p>Plan: @Model.NombrePlan</p>
-        <p>Precio: @Model.PrecioPlan</p>
+        <p>Precio: $@Model.PrecioPlan</p>
 
         <h6 class="mt-3">Información del Servicio</h6>
         <p>Servicio: @Model.NombreServicio</p>
-        <p>Precio: @Model.PrecioServicio</p>
+        <p>Precio: $@Model.PrecioServicio</p>
+
+        <h6 class="mt-3">Servicios Contratados</h6>
+        @if (Model.ServiciosContratados != null && Model.ServiciosContratados.Any())
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Servicio</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var servicio in Model.ServiciosContratados)
+                    {
+                        <tr>
+                            <td>@servicio.NombreServicio</td>
+                            <td>$@servicio.PrecioServicio</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No hay servicios contratados.</p>
+        }
 
         <h6 class="mt-3">Servicios Adicionales Contratados</h6>
         @if (Model.ServiciosAdicionalesContratados != null && Model.ServiciosAdicionalesContratados.Any())
         {
-            <ul>
-                @foreach (var servicioAdicional in Model.ServiciosAdicionalesContratados)
-                {
-                    <li>
-                        @servicioAdicional.NombreServicio -
-                        @servicioAdicional.PrecioOriginal -
-                        @servicioAdicional.PrecioConDescuento
-                    </li>
-                }
-            </ul>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre del Servicio</th>
+                        <th>Precio Original</th>
+                        <th>Precio con Descuento</th>
+                        <th>Descuento Aplicado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var servicioAdicional in Model.ServiciosAdicionalesContratados)
+                    {
+                        <tr>
+                            <td>@servicioAdicional.NombreServicio</td>
+                            <td>$@servicioAdicional.PrecioOriginal</td>
+                            <td>$@servicioAdicional.PrecioConDescuento</td>
+                            <td>@(servicioAdicional.Descuento * 100)%</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         }
         else
         {
             <p>No hay servicios adicionales contratados.</p>
         }
 
-
-        <h6 class="mt-3">Estado: @Model.Estado</h6>
+        <h6 class="mt-3">Estado de la Contratación</h6>
+        <p>@Model.Estado</p>
         <p>Fecha de Contratación: @Model.FechaContratacion.ToShortDateString()</p>
 
         @if (Model.FechaCancelacion.HasValue)

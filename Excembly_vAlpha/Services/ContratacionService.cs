@@ -52,8 +52,10 @@ namespace Excembly_vAlpha.Services
         {
             try
             {
-                var contratacion = await Task.Run(() =>
-                    _context.Contratacion.FirstOrDefault(c => c.ContratacionId == contratacionId));
+                var contratacion = await _context.Contratacion
+                    .Include(c => c.ServiciosContratados)
+                        .ThenInclude(sc => sc.Servicio)
+                    .FirstOrDefaultAsync(c => c.ContratacionId == contratacionId);
 
                 if (contratacion == null)
                 {
@@ -69,6 +71,7 @@ namespace Excembly_vAlpha.Services
                 throw;
             }
         }
+
 
         public async Task<bool> AgregarContratacion(Contratacion contratacion)
         {
@@ -131,7 +134,7 @@ namespace Excembly_vAlpha.Services
         }
 
 
-        public async Task<bool> SeleccionarPlanOServicio(int contratacionId, int? planId, int? servicioId, List<int>? serviciosAdicionalesIds)
+        public async Task<bool> SeleccionarPlanOServicio(int contratacionId, int? planId, List<int>? serviciosIds, List<int>? serviciosAdicionalesIds)
         {
             try
             {
@@ -150,10 +153,10 @@ namespace Excembly_vAlpha.Services
                     return false;
                 }
 
-                // Validar exclusividad entre plan y servicio individual
-                if (planId.HasValue && servicioId.HasValue)
+                // Validar exclusividad entre plan y servicios independientes
+                if (planId.HasValue && serviciosIds != null && serviciosIds.Any())
                 {
-                    _logger.LogWarning($"No se puede seleccionar un plan y un servicio individual al mismo tiempo. Contratación ID: {contratacionId}");
+                    _logger.LogWarning($"No se puede seleccionar un plan y servicios independientes al mismo tiempo. Contratación ID: {contratacionId}");
                     return false;
                 }
 
@@ -162,16 +165,52 @@ namespace Excembly_vAlpha.Services
                 {
                     contratacion.PlanId = planId.Value;
 
-                    // Eliminar servicios adicionales anteriores asociados a este plan
+                    // Eliminar servicios y servicios adicionales anteriores asociados a este plan
+                    var serviciosAnteriores = _context.ServicioContratado
+                        .Where(sc => sc.ContratacionId == contratacionId);
+                    _context.ServicioContratado.RemoveRange(serviciosAnteriores);
+
                     var serviciosAdicionalesAnteriores = _context.ServicioAdicionalContratado
                         .Where(sac => sac.ContratacionId == contratacionId);
                     _context.ServicioAdicionalContratado.RemoveRange(serviciosAdicionalesAnteriores);
                 }
 
-                // Si se seleccionó un servicio individual
-                if (servicioId.HasValue)
+                // Si se seleccionaron servicios independientes
+                if (serviciosIds != null && serviciosIds.Any())
                 {
-                    contratacion.ServicioId = servicioId.Value;
+                    foreach (var servicioId in serviciosIds.Distinct())
+                    {
+                        // Verificar que el servicio exista
+                        var servicio = await _context.Servicios
+                            .FirstOrDefaultAsync(s => s.ServicioId == servicioId);
+
+                        if (servicio != null)
+                        {
+                            // Verificar si el servicio ya está asociado
+                            var servicioExistente = await _context.ServicioContratado
+                                .FirstOrDefaultAsync(sc => sc.ContratacionId == contratacionId && sc.ServicioId == servicioId);
+
+                            if (servicioExistente != null)
+                            {
+                                _logger.LogWarning($"El servicio con ID: {servicioId} ya está asociado a la contratación con ID: {contratacionId}");
+                                continue; // Evitar agregar el mismo servicio
+                            }
+
+                            // Crear una entrada en ServicioContratado
+                            var servicioContratado = new ServicioContratado
+                            {
+                                ContratacionId = contratacionId,
+                                ServicioId = servicio.ServicioId
+                            };
+
+                            await _context.ServicioContratado.AddAsync(servicioContratado);
+                            _logger.LogInformation($"Servicio con ID: {servicioId} agregado a la contratación con ID: {contratacionId}");
+                        }
+                        else
+                        {
+                            _logger.LogWarning($"El servicio con ID: {servicioId} no existe.");
+                        }
+                    }
                 }
 
                 // Asociar servicios adicionales seleccionados manualmente
@@ -198,7 +237,7 @@ namespace Excembly_vAlpha.Services
                             // Crear una entrada en ServicioAdicionalContratado
                             var servicioAdicionalContratado = new ServicioAdicionalContratado
                             {
-                                ContratacionId = contratacionId, // Ligar con la contratación
+                                ContratacionId = contratacionId,
                                 ServicioAdicionalId = servicioAdicional.Id,
                                 DescuentoAplicado = servicioAdicional.Descuento
                             };
@@ -217,13 +256,13 @@ namespace Excembly_vAlpha.Services
                 _context.Contratacion.Update(contratacion);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation($"Plan o servicio actualizado exitosamente en la contratación con ID: {contratacionId}");
+                _logger.LogInformation($"Plan o servicios actualizados exitosamente en la contratación con ID: {contratacionId}");
                 return true;
             }
             catch (Exception ex)
             {
                 string errorJson = JsonConvert.SerializeObject(ex, Formatting.Indented);
-                _logger.LogError($"Error al seleccionar plan o servicio para la contratación con ID: {contratacionId}. Detalles: {errorJson}");
+                _logger.LogError($"Error al seleccionar plan o servicios para la contratación con ID: {contratacionId}. Detalles: {errorJson}");
                 return false;
             }
         }
@@ -233,9 +272,8 @@ namespace Excembly_vAlpha.Services
         {
             try
             {
+                // Cargar los detalles básicos de la contratación
                 var contratacion = await _context.Contratacion
-                    .Include(c => c.ServiciosAdicionalesContratados)
-                        .ThenInclude(sac => sac.ServicioAdicional)
                     .Include(c => c.Plan)
                     .Include(c => c.Servicio)
                     .FirstOrDefaultAsync(c => c.ContratacionId == contratacionId);
@@ -246,8 +284,25 @@ namespace Excembly_vAlpha.Services
                     return null;
                 }
 
-                // Mapear entidad al ViewModel
+                // Mapear contratación al ViewModel
                 var contratacionViewModel = _mapper.Map<ContratacionViewModel>(contratacion);
+
+                // Cargar y mapear servicios contratados
+                contratacionViewModel.ServiciosContratados = await ObtenerServiciosContratadosPorContratacionId(contratacionId);
+
+                // Cargar y mapear servicios adicionales contratados
+                var serviciosAdicionalesContratados = await ObtenerServiciosAdicionalesContratadosPorContratacionId(contratacionId);
+
+                // Transformar cada ServicioAdicionalContratadoViewModel en ServicioAdicionalViewModel
+                contratacionViewModel.ServiciosAdicionalesContratados = serviciosAdicionalesContratados
+                    .Select(sac => new ServicioAdicionalViewModel
+                    {
+                        ServicioId = sac.ServicioAdicionalId,
+                        NombreServicio = sac.ServicioAdicionalNombre,
+                        PrecioOriginal = sac.ServicioAdicionalPrecio,
+                        PrecioConDescuento = sac.DescuentoAplicado,
+                        Descuento = sac.DescuentoAplicado
+                    });
 
                 // Cargar datos adicionales si es necesario
                 contratacionViewModel.PlanesDisponibles = _mapper.Map<IEnumerable<PlanViewModel>>(await ObtenerPlanesDisponibles());
@@ -265,6 +320,25 @@ namespace Excembly_vAlpha.Services
         }
 
 
+
+
+
+        // para guardar servicios independientes
+        public async Task<bool> AgregarServicioContratado(ServicioContratado servicioContratado)
+        {
+            try
+            {
+                await _context.ServicioContratado.AddAsync(servicioContratado);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                string errorJson = JsonConvert.SerializeObject(ex, Formatting.Indented);
+                _logger.LogError(ex, "Error al agregar el servicio contratado.");
+                return false;
+            }
+        }
 
 
         //para seleccionar
@@ -418,6 +492,45 @@ namespace Excembly_vAlpha.Services
             {
                 _logger.LogError($"Error al registrar el pago: {ex.Message}");
                 return false;
+            }
+        }
+
+        // para dertalles
+        public async Task<IEnumerable<ServicioContratadoViewModel>> ObtenerServiciosContratadosPorContratacionId(int contratacionId)
+        {
+            try
+            {
+                var serviciosContratados = await _context.ServicioContratado
+                    .Where(sc => sc.ContratacionId == contratacionId)
+                    .Include(sc => sc.Servicio)
+                    .ToListAsync();
+
+                return _mapper.Map<IEnumerable<ServicioContratadoViewModel>>(serviciosContratados);
+            }
+            catch (Exception ex)
+            {
+                string errorJson = JsonConvert.SerializeObject(ex, Formatting.Indented);
+                _logger.LogError($"Error al obtener los servicios contratados para la contratación ID: {contratacionId}. Detalles: {errorJson}");
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<ServicioAdicionalContratadoViewModel>> ObtenerServiciosAdicionalesContratadosPorContratacionId(int contratacionId)
+        {
+            try
+            {
+                var serviciosAdicionalesContratados = await _context.ServicioAdicionalContratado
+                    .Where(sac => sac.ContratacionId == contratacionId)
+                    .Include(sac => sac.ServicioAdicional)
+                    .ToListAsync();
+
+                return _mapper.Map<IEnumerable<ServicioAdicionalContratadoViewModel>>(serviciosAdicionalesContratados);
+            }
+            catch (Exception ex)
+            {
+                string errorJson = JsonConvert.SerializeObject(ex, Formatting.Indented);
+                _logger.LogError($"Error al obtener los servicios adicionales contratados para la contratación ID: {contratacionId}. Detalles: {errorJson}");
+                throw;
             }
         }
 

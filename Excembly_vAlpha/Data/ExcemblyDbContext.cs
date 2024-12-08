@@ -36,11 +36,31 @@ namespace Excembly_vAlpha.Data
         public DbSet<ServicioAdicionalContratado> ServicioAdicionalContratado { get; set; }
         public DbSet<ServicioAdicional> ServicioAdicional { get; set; }
         public DbSet<Comentario> Comentario { get; set; }
+        public DbSet<ServicioContratado> ServicioContratado { get; set; } = null!;
 
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+
+            // Configuración de ServicioContratado
+            modelBuilder.Entity<ServicioContratado>(entity =>
+            {
+                entity.ToTable("ServicioContratado");
+
+                entity.HasKey(sc => sc.Id);
+
+                entity.HasOne(sc => sc.Contratacion)
+                    .WithMany(c => c.ServiciosContratados)
+                    .HasForeignKey(sc => sc.ContratacionId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(sc => sc.Servicio)
+                    .WithMany()
+                    .HasForeignKey(sc => sc.ServicioId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
             // Configuración para AsignacionTecnico
             modelBuilder.Entity<AsignacionTecnico>(entity =>

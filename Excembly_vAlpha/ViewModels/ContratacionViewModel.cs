@@ -26,8 +26,12 @@ namespace Excembly_vAlpha.ViewModels
         // Propiedad para los servicios adicionales seleccionados (solo IDs)
         public List<int> ServiciosAdicionalesSeleccionados { get; set; } = new List<int>();
 
-        // ** Nueva propiedad para los servicios independientes seleccionados (solo IDs) **
+        // Propiedad para los servicios independientes seleccionados (solo IDs)
         public List<int> ServiciosSeleccionados { get; set; } = new List<int>();
+
+        // Nueva propiedad para servicios contratados independientes
+        public IEnumerable<ServicioContratadoViewModel> ServiciosContratados { get; set; } = new List<ServicioContratadoViewModel>();
+
 
         // Estado y fechas de la contratación
         public string Estado { get; set; } = "Activa";
@@ -43,5 +47,7 @@ namespace Excembly_vAlpha.ViewModels
         // Propiedades relacionadas con tarjetas
         public IEnumerable<TarjetaViewModel> TarjetasGuardadas { get; set; } = new List<TarjetaViewModel>(); // Tarjetas disponibles para el usuario
         public int? TarjetaId { get; set; } // ID de la tarjeta seleccionada
+
+
     }
 }
