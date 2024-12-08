@@ -42,13 +42,14 @@ namespace Excembly_vAlpha.Controllers
         {
             try
             {
-                var contrataciones = await _contratacionService.ObtenerTodasContratacionesAsync();
+                // Obtener contrataciones activas y activas de todos los clientes
+                var contrataciones = await _contratacionService.ObtenerContratacionesActivasAsync();
                 return View(contrataciones);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {JsonConvert.SerializeObject(ex)}");
-                return View("Error", new { message = "Hubo un problema al cargar las contrataciones." });
+                return View("Error", new { message = "Hubo un problema al cargar las contrataciones activas." });
             }
         }
 
@@ -57,6 +58,25 @@ namespace Excembly_vAlpha.Controllers
         public IActionResult RedirigirAgregarComentario(int contratacionId)
         {
             return RedirectToAction("Agregar", "Comentario", new { contratacionId });
+        }
+
+        //Filtrar Tecnico
+        [HttpGet]
+        public async Task<IActionResult> Filtrar(DateTime? fechaInicio, DateTime? fechaFin, int? usuarioId)
+        {
+            try
+            {
+                // Obtener contrataciones activas y activas con los filtros aplicados
+                var contratacionesFiltradas = await _contratacionService.FiltrarContratacionesActivasAsync(fechaInicio, fechaFin, usuarioId);
+
+                // Devuelve la vista con los resultados filtrados
+                return View("Index", contratacionesFiltradas);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {JsonConvert.SerializeObject(ex)}");
+                return View("Error", new { message = "Hubo un problema al filtrar las contrataciones activas." });
+            }
         }
     }
 }

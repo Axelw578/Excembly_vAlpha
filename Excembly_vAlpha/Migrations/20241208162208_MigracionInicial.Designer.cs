@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Excembly_vAlpha.Migrations
 {
     [DbContext(typeof(ExcemblyDbContext))]
-    [Migration("20241125013702_Actualizacion3")]
-    partial class Actualizacion3
+    [Migration("20241208162208_MigracionInicial")]
+    partial class MigracionInicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,6 +70,9 @@ namespace Excembly_vAlpha.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AsignacionId"));
 
+                    b.Property<int>("ContratacionId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Estado")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -77,7 +80,7 @@ namespace Excembly_vAlpha.Migrations
                     b.Property<DateTime>("FechaAsignacion")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("ServicioId")
+                    b.Property<int?>("ServicioId")
                         .HasColumnType("int");
 
                     b.Property<int>("TecnicoId")
@@ -87,6 +90,8 @@ namespace Excembly_vAlpha.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("AsignacionId");
+
+                    b.HasIndex("ContratacionId");
 
                     b.HasIndex("ServicioId");
 
@@ -385,9 +390,6 @@ namespace Excembly_vAlpha.Migrations
                     b.Property<int?>("ServicioId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TarjetaGuardadaTarjetaId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("TarjetaId")
                         .HasColumnType("int");
 
@@ -400,7 +402,7 @@ namespace Excembly_vAlpha.Migrations
 
                     b.HasIndex("ContratacionId");
 
-                    b.HasIndex("TarjetaGuardadaTarjetaId");
+                    b.HasIndex("TarjetaId");
 
                     b.HasIndex("UsuarioId");
 
@@ -614,6 +616,29 @@ namespace Excembly_vAlpha.Migrations
                     b.ToTable("ServicioAdicionalContratado");
                 });
 
+            modelBuilder.Entity("Excembly_vAlpha.Models.ServicioContratado", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ContratacionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServicioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContratacionId");
+
+                    b.HasIndex("ServicioId");
+
+                    b.ToTable("ServicioContratado", (string)null);
+                });
+
             modelBuilder.Entity("Excembly_vAlpha.Models.TarjetaGuardada", b =>
                 {
                     b.Property<int>("TarjetaId")
@@ -806,11 +831,15 @@ namespace Excembly_vAlpha.Migrations
 
             modelBuilder.Entity("Excembly_vAlpha.Models.AsignacionTecnico", b =>
                 {
-                    b.HasOne("Excembly_vAlpha.Models.Servicio", "Servicio")
-                        .WithMany("AsignacionesTecnicos")
-                        .HasForeignKey("ServicioId")
+                    b.HasOne("Excembly_vAlpha.Models.Contratacion", "Contratacion")
+                        .WithMany("AsignacionesTecnico")
+                        .HasForeignKey("ContratacionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Excembly_vAlpha.Models.Servicio", null)
+                        .WithMany("AsignacionesTecnicos")
+                        .HasForeignKey("ServicioId");
 
                     b.HasOne("Excembly_vAlpha.Models.Tecnico", "Tecnico")
                         .WithMany("AsignacionesTecnico")
@@ -824,7 +853,7 @@ namespace Excembly_vAlpha.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Servicio");
+                    b.Navigation("Contratacion");
 
                     b.Navigation("Tecnico");
 
@@ -960,9 +989,8 @@ namespace Excembly_vAlpha.Migrations
 
                     b.HasOne("Excembly_vAlpha.Models.TarjetaGuardada", "TarjetaGuardada")
                         .WithMany()
-                        .HasForeignKey("TarjetaGuardadaTarjetaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TarjetaId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Excembly_vAlpha.Models.Usuario", "Usuario")
                         .WithMany("Pagos")
@@ -1077,6 +1105,25 @@ namespace Excembly_vAlpha.Migrations
                     b.Navigation("ServicioAdicional");
                 });
 
+            modelBuilder.Entity("Excembly_vAlpha.Models.ServicioContratado", b =>
+                {
+                    b.HasOne("Excembly_vAlpha.Models.Contratacion", "Contratacion")
+                        .WithMany("ServiciosContratados")
+                        .HasForeignKey("ContratacionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Excembly_vAlpha.Models.Servicio", "Servicio")
+                        .WithMany()
+                        .HasForeignKey("ServicioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Contratacion");
+
+                    b.Navigation("Servicio");
+                });
+
             modelBuilder.Entity("Excembly_vAlpha.Models.TarjetaGuardada", b =>
                 {
                     b.HasOne("Excembly_vAlpha.Models.Usuario", "Usuario")
@@ -1150,9 +1197,13 @@ namespace Excembly_vAlpha.Migrations
 
             modelBuilder.Entity("Excembly_vAlpha.Models.Contratacion", b =>
                 {
+                    b.Navigation("AsignacionesTecnico");
+
                     b.Navigation("Comentarios");
 
                     b.Navigation("ServiciosAdicionalesContratados");
+
+                    b.Navigation("ServiciosContratados");
                 });
 
             modelBuilder.Entity("Excembly_vAlpha.Models.Plan", b =>

@@ -217,7 +217,96 @@ namespace Excembly_vAlpha.Services
                 throw;
             }
         }
+        public async Task<IEnumerable<ContratacionAdminViewModel>> FiltrarContratacionesActivasAsync(DateTime? fechaInicio, DateTime? fechaFin, int? usuarioId)
+        {
+            try
+            {
+                // Base: solo contrataciones activas y activas
+                var query = _context.Contratacion
+                    .Include(c => c.Usuario)
+                    .Include(c => c.Plan)
+                    .Include(c => c.Servicio)
+                    .Include(c => c.ServiciosAdicionalesContratados)
+                        .ThenInclude(sac => sac.ServicioAdicional)
+                    .Where(c => c.Estado == "Activo" || c.Estado == "Activa") // Incluir "Activo" y "Activa"
+                    .AsQueryable();
 
+                // Filtros adicionales
+                if (fechaInicio.HasValue)
+                    query = query.Where(c => c.FechaContratacion >= fechaInicio.Value);
 
+                if (fechaFin.HasValue)
+                    query = query.Where(c => c.FechaContratacion <= fechaFin.Value);
+
+                if (usuarioId.HasValue)
+                    query = query.Where(c => c.UsuarioId == usuarioId.Value);
+
+                var contrataciones = await query.ToListAsync();
+
+                // Mapear los resultados al ViewModel
+                return contrataciones.Select(c => new ContratacionAdminViewModel
+                {
+                    ContratacionId = c.ContratacionId,
+                    FechaContratacion = c.FechaContratacion,
+                    Estado = c.Estado,
+                    TipoServicio = c.TipoServicio,
+                    UsuarioId = c.UsuarioId,
+                    NombreUsuario = c.Usuario?.Nombre ?? "Usuario desconocido",
+                    ApellidoUsuario = c.Usuario?.Apellidos ?? "",
+                    CorreoUsuario = c.Usuario?.CorreoElectronico ?? "",
+                    TelefonoUsuario = c.Usuario?.Telefono ?? "",
+                    PlanContratado = c.Plan?.Nombre ?? "Sin plan",
+                    ServicioContratado = c.Servicio?.Nombre ?? "Sin servicio",
+                    ServiciosAdicionalesContratados = c.ServiciosAdicionalesContratados
+                        .Select(sac => sac.ServicioAdicional?.Nombre ?? "Servicio adicional desconocido")
+                        .ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {JsonConvert.SerializeObject(ex)}");
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<ContratacionAdminViewModel>> ObtenerContratacionesActivasAsync()
+        {
+            try
+            {
+                // Filtrar contrataciones activas y activas
+                var contrataciones = await _context.Contratacion
+                    .Include(c => c.Usuario)
+                    .Include(c => c.Plan)
+                    .Include(c => c.Servicio)
+                    .Include(c => c.ServiciosAdicionalesContratados)
+                        .ThenInclude(sac => sac.ServicioAdicional)
+                    .Where(c => c.Estado == "Activo" || c.Estado == "Activa") // Incluir "Activo" y "Activa"
+                    .ToListAsync();
+
+                // Mapear al modelo de vista
+                return contrataciones.Select(c => new ContratacionAdminViewModel
+                {
+                    ContratacionId = c.ContratacionId,
+                    FechaContratacion = c.FechaContratacion,
+                    Estado = c.Estado,
+                    TipoServicio = c.TipoServicio,
+                    UsuarioId = c.UsuarioId,
+                    NombreUsuario = c.Usuario?.Nombre ?? "Usuario desconocido",
+                    ApellidoUsuario = c.Usuario?.Apellidos ?? "",
+                    CorreoUsuario = c.Usuario?.CorreoElectronico ?? "",
+                    TelefonoUsuario = c.Usuario?.Telefono ?? "",
+                    PlanContratado = c.Plan?.Nombre ?? "Sin plan",
+                    ServicioContratado = c.Servicio?.Nombre ?? "Sin servicio",
+                    ServiciosAdicionalesContratados = c.ServiciosAdicionalesContratados
+                        .Select(sac => sac.ServicioAdicional?.Nombre ?? "Servicio adicional desconocido")
+                        .ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {JsonConvert.SerializeObject(ex)}");
+                throw;
+            }
+        }
     }
 }

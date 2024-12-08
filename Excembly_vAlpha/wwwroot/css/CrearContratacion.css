@@ -1,72 +1,91 @@
-﻿/* Contenedor seleccionable */
-.selectable-card {
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+﻿/* Contenedor Personalizado */
+.custom-container {
+    max-width: 800px; /* Ajustar el ancho */
+    background-color: #333333; /* Fondo oscuro */
+    color: #f1f1f1; /* Texto claro */
+    border-radius: 15px; /* Bordes redondeados */
+    padding: 30px; /* Espaciado interno */
+    margin: 30px auto; /* Centrado horizontal */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Sombra suave */
+}
+
+/* Título */
+.custom-title {
+    color: #feca1b; /* Amarillo brillante */
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+/* Estilo para inputs readonly */
+.form-control[readonly] {
+    background-color: #444444; /* Fondo oscuro igual al resto de los inputs */
+    color: #f1f1f1; /* Texto claro */
+    border: 1px solid #555555; /* Borde igual al resto */
+    cursor: not-allowed; /* Indica que no es editable */
+}
+
+/* Etiquetas del formulario */
+.form-label {
+    font-weight: bold;
+    color: #f1f1f1; /* Texto claro */
+    margin-bottom: 5px;
+}
+
+/* Inputs y Selects */
+.form-control, .form-select {
+    background-color: #444444; /* Fondo oscuro */
+    color: #f1f1f1; /* Texto claro */
+    border: 1px solid #555555; /* Borde oscuro */
+    border-radius: 10px; /* Bordes redondeados */
     padding: 10px;
+    font-size: 14px;
+    transition: all 0.3s ease; /* Transición suave */
 }
 
-    /* Efecto de hover (zoom) */
-    .selectable-card:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    .form-control:focus, .form-select:focus {
+        border-color: #feca1b; /* Amarillo brillante en foco */
+        box-shadow: 0 0 5px rgba(254, 202, 27, 0.5);
+        outline: none;
     }
 
-    /* Estilo para la tarjeta seleccionada */
-    .selectable-card.selected-card {
-        background-color: #e9f5ff;
-        border: 2px solid #007bff;
-        border-radius: 10px;
+    /* Select deshabilitado */
+    .form-select[disabled] {
+        background-color: #555555; /* Fondo gris */
+        color: #bbbbbb; /* Texto claro */
+        cursor: not-allowed; /* Cursor no permitido */
     }
 
-    /* Imagen de las opciones */
-    .selectable-card img {
-        border-radius: 5px;
-        width: 50px;
-        height: 50px;
-        object-fit: cover;
-    }
-
-    /* Estilo de texto */
-    .selectable-card strong {
-        font-size: 1.1rem;
-        color: #333;
-    }
-
-    .selectable-card p {
-        font-size: 0.9rem;
-        color: #666;
-    }
-
-/* Estilo del botón */
-button.btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
-    transition: background-color 0.2s ease-in-out;
-}
-
-    button.btn-primary:hover {
-        background-color: #0056b3;
-    }
-
-/* Ajuste para las listas */
-.list-group-item {
+/* Botón de Guardar */
+.btn-primary {
+    background-color: #feca1b; /* Amarillo brillante */
+    color: #333333; /* Texto oscuro */
     border: none;
-    margin-bottom: 8px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px; /* Bordes redondeados */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones suaves */
+    display: block;
+    margin: 20px auto 0; /* Centrar el botón */
 }
 
-/* Servicios individuales */
-.individual-service {
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    cursor: pointer;
+    .btn-primary:hover {
+        background-color: #e5b917; /* Amarillo más oscuro en hover */
+        transform: translateY(-2px); /* Animación de elevación */
+    }
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .custom-container {
+        padding: 20px;
+    }
+
+    .btn-primary {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+
+    .form-control, .form-select {
+        font-size: 13px;
+    }
 }
-
-    .individual-service:hover {
-        background-color: #e0f7fa;
-        transform: scale(1.02);
-    }
-
-    .individual-service.selected-service {
-        background-color: #b2ebf2;
-    }

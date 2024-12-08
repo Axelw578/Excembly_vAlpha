@@ -15,6 +15,9 @@ namespace Excembly_vAlpha.Services
         Task<IEnumerable<PagoAdminViewModel>> ObtenerPagosPorContratacionAsync(int contratacionId);
         Task<bool> AsignarTecnicoAsync(int contratacionId, int tecnicoId);
         Task<IEnumerable<Tecnico>> ObtenerTecnicosAsync();
+        Task<IEnumerable<ContratacionAdminViewModel>> ObtenerContratacionesActivasAsync();
+        Task<IEnumerable<ContratacionAdminViewModel>> FiltrarContratacionesActivasAsync(DateTime? fechaInicio, DateTime? fechaFin, int? usuarioId);
+
 
     }
 }

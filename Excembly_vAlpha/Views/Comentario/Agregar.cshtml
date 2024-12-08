@@ -3,23 +3,29 @@
 @{
     ViewData["Title"] = "Agregar Comentario";
 }
+<link rel="stylesheet" href="~/css/Comentario.css">
+<div class="custom-container">
+    <!-- Encabezado -->
+    <div class="header-title">Agregar Comentario</div>
 
-<h1>Agregar Comentario</h1>
-
-<form asp-action="Agregar" method="post">
-    <div class="form-group">
-        <input type="hidden" asp-for="ContratacionId" />
-    </div>
-    <div class="form-group">
-        <label asp-for="Opinion" class="form-label">Tu Opinión</label>
-        <textarea asp-for="Opinion" class="form-control" rows="4"></textarea>
-        <span asp-validation-for="Opinion" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="FotoUrl" class="form-label">Foto (opcional)</label>
-        <input asp-for="FotoUrl" class="form-control" type="text" />
-        <span asp-validation-for="FotoUrl" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary mt-3">Agregar Comentario</button>
-    <a asp-action="Detalles" asp-controller="Contratacion" asp-route-contratacionId="@Model.ContratacionId" class="btn btn-secondary mt-3">Cancelar</a>
-</form>
+    <!-- Formulario de Comentarios -->
+    <form asp-action="Agregar" method="post">
+        <div class="form-group">
+            <input type="hidden" asp-for="ContratacionId" />
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="Opinion" class="form-label">Tu Opinión</label>
+            <textarea asp-for="Opinion" class="form-control" rows="4" placeholder="Escribe tu opinión aquí..."></textarea>
+            <span asp-validation-for="Opinion" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="FotoUrl" class="form-label">Foto (opcional)</label>
+            <input asp-for="FotoUrl" class="form-control" type="text" placeholder="URL de la foto" />
+            <span asp-validation-for="FotoUrl" class="text-danger"></span>
+        </div>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Agregar Comentario</button>
+            <a asp-action="Index" asp-controller="ContratacionTecnico" asp-route-contratacionId="@Model.ContratacionId" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>

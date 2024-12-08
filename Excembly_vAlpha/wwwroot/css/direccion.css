@@ -1,57 +1,83 @@
-﻿/* Contenedor compartido */
-.common-container {
-    max-width: 900px; /* Ancho máximo uniforme */
-    margin: 0 auto; /* Centrar horizontalmente */
-    padding: 2rem; /* Espaciado interno */
-    background-color: #1a1a1a; /* Fondo oscuro */
-    border-radius: 10px; /* Bordes redondeados */
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3); /* Sombra */
-    text-align: center; /* Centrar contenido del encabezado */
+﻿/* Contenedor principal */
+.custom-container {
+    max-width: 800px;
+    background-color: #333333; /* Fondo oscuro */
+    color: #f1f1f1; /* Texto claro */
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Sombra suave */
 }
 
-    /* Título en el encabezado */
-    .common-container h1 {
-        color: #ffc107; /* Texto amarillo */
-        font-size: 1.8rem;
+/* Título principal */
+.custom-header {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #feca1b; /* Amarillo brillante */
+}
+
+/* Tarjeta */
+.custom-card {
+    background-color: #444444; /* Fondo oscuro */
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra suave */
+}
+
+    .custom-card .card-header {
+        background-color: #555555; /* Fondo más oscuro */
+        color: #feca1b; /* Amarillo brillante */
         font-weight: bold;
-        text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+        border-radius: 10px 10px 0 0;
     }
 
-/* Diseño de la tarjeta */
-.card {
-    border-radius: 15px;
-    overflow: hidden;
-    background-color: #ffffff;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-}
+    .custom-card .card-footer {
+        background-color: #555555; /* Fondo más oscuro */
+        border-radius: 0 0 10px 10px;
+    }
 
-.card-header {
-    font-size: 1.4rem;
+/* Botones */
+.btn-primary, .btn-warning {
     font-weight: bold;
-    background: linear-gradient(90deg, #ffa726, #fb8c00);
-    color: #ffffff;
-    padding: 1rem;
-}
-
-/* Cuerpo de la tarjeta */
-.card-body p {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    line-height: 1.5;
-}
-
-/* Botón */
-.btn-warning {
-    background-color: #ff7043;
     border: none;
-    font-weight: bold;
-    color: #ffffff;
-    padding: 0.8rem 1.5rem;
-    border-radius: 6px;
-    transition: background-color 0.3s ease, transform 0.2s;
+    border-radius: 10px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #feca1b;
+    color: #333333;
+}
+
+    .btn-primary:hover {
+        background-color: #e5b917;
+        transform: translateY(-2px);
+    }
+
+.btn-warning {
+    background-color: #ff7f50;
+    color: #333333;
 }
 
     .btn-warning:hover {
-        background-color: #f4511e;
+        background-color: #e67340;
         transform: translateY(-2px);
+    }
+
+/* Alertas */
+.custom-alert {
+    background-color: #444444;
+    color: #f1f1f1;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+}
+
+    /* Íconos grandes */
+    .custom-alert i {
+        font-size: 2rem;
+        color: #feca1b;
     }

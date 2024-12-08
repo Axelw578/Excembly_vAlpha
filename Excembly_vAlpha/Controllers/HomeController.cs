@@ -1,6 +1,7 @@
 using Excembly_vAlpha.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace Excembly_vAlpha.Controllers
 {
@@ -11,6 +12,29 @@ namespace Excembly_vAlpha.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+        }
+
+        [HttpGet]
+        public IActionResult Dashboard()
+        {
+            // Obtener el rol del usuario autenticado
+            var rol = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            // Redirigir según el rol
+            switch (rol)
+            {
+                case "Usuario":
+                    return View("~/Views/Empresa/Index.cshtml");
+
+                case "Técnico":
+                    return View("~/Views/ContratacionTecnico/Index.cshtml");
+
+                case "Administrador":
+                    return View("~/Views/ContratacionAdmin/Index.cshtml");
+
+                default:
+                    return RedirectToAction("Index", "Login");
+            }
         }
 
         public IActionResult Index()

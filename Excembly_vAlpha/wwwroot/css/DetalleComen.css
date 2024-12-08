@@ -1,0 +1,71 @@
+﻿/* Contenedor principal */
+.custom-container {
+    max-width: 800px;
+    background-color: #333333; /* Fondo oscuro */
+    color: #f1f1f1; /* Texto claro */
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px auto; /* Centrado horizontal */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Sombra suave */
+}
+
+/* Encabezado del título */
+.custom-title {
+    background-color: #444444; /* Fondo oscuro */
+    padding: 15px;
+    text-align: center;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    color: #feca1b; /* Amarillo brillante */
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Estilo de la tarjeta */
+.custom-card {
+    background-color: #444444; /* Fondo oscuro */
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    color: #f1f1f1; /* Texto claro */
+}
+
+    .custom-card .card-header {
+        background-color: #555555; /* Fondo más oscuro */
+        color: #feca1b; /* Amarillo brillante */
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 10px 10px 0 0;
+    }
+
+/* Botón de volver */
+.btn-secondary {
+    background-color: #feca1b;
+    color: #333333;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+    .btn-secondary:hover {
+        background-color: #e5b917;
+        transform: translateY(-2px);
+    }
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .custom-container {
+        padding: 20px;
+    }
+
+    .custom-title {
+        font-size: 20px;
+    }
+
+    .btn-secondary {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+}

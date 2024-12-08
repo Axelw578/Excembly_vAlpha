@@ -519,20 +519,35 @@ namespace Excembly_vAlpha.Services
         {
             try
             {
-                var serviciosAdicionalesContratados = await _context.ServicioAdicionalContratado
-                    .Where(sac => sac.ContratacionId == contratacionId)
-                    .Include(sac => sac.ServicioAdicional)
+                var serviciosAdicionales = await _context.ServicioAdicionalContratado
+                    .Include(s => s.ServicioAdicional) // Incluye información del servicio adicional
+                    .ThenInclude(sa => sa.Servicio)    // Incluye el servicio relacionado
+                    .Where(s => s.ContratacionId == contratacionId)
                     .ToListAsync();
 
-                return _mapper.Map<IEnumerable<ServicioAdicionalContratadoViewModel>>(serviciosAdicionalesContratados);
+                // Log para verificar los datos obtenidos
+                _logger.LogInformation($"Servicios adicionales encontrados: {serviciosAdicionales.Count} para la contratación {contratacionId}");
+
+                if (serviciosAdicionales == null || !serviciosAdicionales.Any())
+                {
+                    _logger.LogWarning($"No se encontraron servicios adicionales contratados para la contratación con ID {contratacionId}.");
+                    return Enumerable.Empty<ServicioAdicionalContratadoViewModel>();
+                }
+
+                // Log detallado de los servicios adicionales
+                _logger.LogInformation($"Detalles de los servicios adicionales contratados: {JsonConvert.SerializeObject(serviciosAdicionales, Formatting.Indented)}");
+
+                return _mapper.Map<IEnumerable<ServicioAdicionalContratadoViewModel>>(serviciosAdicionales);
             }
             catch (Exception ex)
             {
                 string errorJson = JsonConvert.SerializeObject(ex, Formatting.Indented);
-                _logger.LogError($"Error al obtener los servicios adicionales contratados para la contratación ID: {contratacionId}. Detalles: {errorJson}");
+                _logger.LogError($"Error al obtener servicios adicionales contratados para la contratación con ID {contratacionId}. Detalles: {errorJson}");
                 throw;
             }
         }
+
+
 
 
 

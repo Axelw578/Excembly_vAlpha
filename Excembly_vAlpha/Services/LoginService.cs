@@ -64,7 +64,7 @@ namespace Excembly_vAlpha.Services
             try
             {
                 var usuario = await _context.Usuarios
-                    .Include(u => u.Rol)
+                    .Include(u => u.Rol) // Incluye el Rol
                     .FirstOrDefaultAsync(u => u.CorreoElectronico == correo);
 
                 if (usuario == null)
@@ -72,7 +72,6 @@ namespace Excembly_vAlpha.Services
                     return (null, "El correo no está registrado.");
                 }
 
-                // Validar contraseña
                 if (usuario.Contraseña != contraseña)
                 {
                     return (null, "Contraseña incorrecta.");
@@ -82,15 +81,7 @@ namespace Excembly_vAlpha.Services
             }
             catch (Exception ex)
             {
-                // Registrar el error en consola
-                Console.WriteLine("Error al iniciar sesión:");
-                Console.WriteLine(JsonConvert.SerializeObject(new
-                {
-                    Error = ex.Message,
-                    Detalles = ex.InnerException?.Message,
-                    Fecha = DateTime.Now
-                }, Formatting.Indented));
-
+                Console.WriteLine("Error al iniciar sesión:", ex);
                 return (null, "Error al intentar iniciar sesión.");
             }
         }

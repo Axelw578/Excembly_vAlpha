@@ -1,76 +1,105 @@
-﻿@model IEnumerable<Excembly_vAlpha.ViewModels.ContratacionAdminViewModel>
+﻿Index.cshtml
+@model IEnumerable<Excembly_vAlpha.ViewModels.ContratacionAdminViewModel>
 
 @{
     ViewData["Title"] = "Contrataciones de Usuarios";
 }
+<link rel="stylesheet" href="~/css/ContraTec.css">
+<div class="custom-container">
+    <!-- Encabezado -->
+    <div class="header-title">Mis Contrataciones</div>
 
-<h1 class="mb-4">Mis Contrataciones</h1>
+    <!-- Formulario de Filtros -->
+    <form id="filtroForm" method="get" action="@Url.Action("Filtrar", "ContratacionTecnico")">
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
+                <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="fechaFin" class="form-label">Fecha de Fin</label>
+                <input type="date" id="fechaFin" name="fechaFin" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="usuarioId" class="form-label">Usuario</label>
+                <input type="number" id="usuarioId" name="usuarioId" class="form-control" placeholder="ID de usuario" />
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            </div>
+        </div>
+    </form>
 
-@if (Model == null || !Model.Any())
-{
-    <div class="alert alert-warning" role="alert">
-        No tienes contrataciones activas.
-        <a href="@Url.Action("Crear", "ContratacionTecnico")" class="btn btn-primary mt-3">Agregar Nueva Contratación</a>
-    </div>
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table table-striped align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Usuario</th>
-                    <th>Plan</th>
-                    <th>Servicio</th>
-                    <th>Servicios Adicionales</th>
-                    <th>Estado</th>
-                    <th>Fecha</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var contratacion in Model)
-                {
+    <!-- Mensaje de Sin Datos -->
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-warning" role="alert">
+            No tienes contrataciones activas.
+            <a href="@Url.Action("Crear", "ContratacionTecnico")" class="btn btn-primary mt-3">Agregar Nueva Contratación</a>
+        </div>
+    }
+    else
+    {
+        <!-- Tabla de Contrataciones -->
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead class="table-dark">
                     <tr>
-                        <td>
-                            <strong>@contratacion.NombreUsuario @contratacion.ApellidoUsuario</strong><br />
-                            <small>Correo: @contratacion.CorreoUsuario</small><br />
-                            <small>Teléfono: @contratacion.TelefonoUsuario</small>
-                        </td>
-                        <td>@contratacion.PlanContratado</td>
-                        <td>@contratacion.ServicioContratado</td>
-                        <td>
-                            @if (contratacion.ServiciosAdicionalesContratados.Any())
-                            {
-                                <ul class="mb-0">
-                                    @foreach (var servicioAdicional in contratacion.ServiciosAdicionalesContratados)
-                                    {
-                                        <li>@servicioAdicional</li>
-                                    }
-                                </ul>
-                            }
-                            else
-                            {
-                                <em>Sin servicios adicionales</em>
-                            }
-                        </td>
-                        <td>@contratacion.Estado</td>
-                        <td>@contratacion.FechaContratacion.ToShortDateString()</td>
-                        <td>
-                            <a href="@Url.Action("Agregar", "Comentario", new { contratacionId = contratacion.ContratacionId })"
-                               class="btn btn-success btn-sm me-1">Agregar Comentario</a>
-
-                            @if (contratacion.Estado != "Completado")
-                            {
-                                <form asp-action="Completar" asp-controller="ContratacionTecnico" method="post" style="display:inline;">
-                                    <input type="hidden" name="contratacionId" value="@contratacion.ContratacionId" />
-                                    <button type="submit" class="btn btn-primary btn-sm">Marcar como Completado</button>
-                                </form>
-                            }
-                        </td>
+                        <th>Usuario</th>
+                        <th>Plan</th>
+                        <th>Servicio</th>
+                        <th>Servicios Adicionales</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-}
+                </thead>
+                <tbody>
+                    @foreach (var contratacion in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@contratacion.NombreUsuario @contratacion.ApellidoUsuario</strong><br />
+                                <small>Correo: @contratacion.CorreoUsuario</small><br />
+                                <small>Teléfono: @contratacion.TelefonoUsuario</small>
+                            </td>
+                            <td>@contratacion.PlanContratado</td>
+                            <td>@contratacion.ServicioContratado</td>
+                            <td>
+                                @if (contratacion.ServiciosAdicionalesContratados.Any())
+                                {
+                                    <ul class="mb-0">
+                                        @foreach (var servicioAdicional in contratacion.ServiciosAdicionalesContratados)
+                                        {
+                                            <li>@servicioAdicional</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <em>Sin servicios adicionales</em>
+                                }
+                            </td>
+                            <td>@contratacion.Estado</td>
+                            <td>@contratacion.FechaContratacion.ToShortDateString()</td>
+                            <td>
+                                <!-- Botón para agregar comentario -->
+                                <a href="@Url.Action("Agregar", "Comentario", new { contratacionId = contratacion.ContratacionId })"
+                                   class="btn btn-success btn-sm me-1">Agregar Comentario</a>
+
+                                <!-- Botón para marcar como completado -->
+                                @if (contratacion.Estado != "Completado")
+                                {
+                                    <form method="post" action="@Url.Action("Completar", "ContratacionTecnico")" style="display:inline;">
+                                        <input type="hidden" name="contratacionId" value="@contratacion.ContratacionId" />
+                                        <button type="submit" class="btn btn-primary btn-sm">Marcar como Completado</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

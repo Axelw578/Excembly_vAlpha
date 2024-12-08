@@ -1,148 +1,150 @@
-﻿/* Estilo de la alerta cuando no hay contrataciones */
-.alert-warning {
-    background-color: #fff3cd;
-    border-color: #ffeeba;
-    color: #856404;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    font-size: 1.2rem;
-    padding: 20px;
+﻿/* Contenedor General */
+.custom-container {
+    max-width: 1100px; /* Ajustar el ancho */
+    background-color: #333333; /* Fondo oscuro */
+    color: #f1f1f1; /* Texto claro */
+    border-radius: 15px; /* Bordes redondeados */
+    padding: 30px; /* Espaciado interno */
+    margin: 30px auto; /* Centrado horizontal */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Sombra suave */
 }
 
-/* Imagen para mostrar cuando no hay contrataciones */
-.no-contracts-image {
-    max-width: 20%;
-    height: auto;
-    margin-top: 20px;
-    margin-bottom: 30px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    border-radius: 10px;
-}
-
-/* Botón para crear nueva contratación centrado */
-.text-center .btn {
-    display: inline-block;
-    margin-top: 20px;
-    margin-bottom: 40px;
-}
-
-/* Estilo para el título */
-.titulo-container {
-    background-color: #007bff;
-    color: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-/* Espaciado y sombra para tarjetas */
-.card {
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    border: none;
-    margin-bottom: 20px;
-}
-
-/* Encabezados dentro de las tarjetas */
-.card-header {
-    font-size: 1.25rem;
-    font-weight: bold;
-    padding: 10px 15px;
-    border-bottom: 2px solid #eaeaea;
-}
-
-/* Listas dentro de las tarjetas */
-.list-group-item {
-    border: none;
-    border-bottom: 1px solid #eaeaea;
-    padding: 10px 15px;
-    font-size: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-    /* Imágenes dentro de listas */
-    .list-group-item img {
-        border-radius: 5px;
-        margin-right: 15px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Destacar precios con descuento */
-    .list-group-item .text-success {
+    /* Encabezado del Título */
+    .custom-container .header-title {
+        background-color: #444444; /* Fondo oscuro */
+        padding: 15px;
+        text-align: center;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        color: #feca1b; /* Amarillo brillante */
+        font-size: 24px;
         font-weight: bold;
-        color: #28a745;
     }
 
-    .list-group-item .text-muted {
-        color: #6c757d;
-        text-decoration: line-through;
-    }
-
-/* Badges de descuento */
-.badge {
-    font-size: 0.9rem;
-    padding: 5px 10px;
-    border-radius: 20px;
+/* Tabla */
+.table {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px; /* Espaciado entre filas */
+    background-color: #444444; /* Fondo oscuro */
+    color: #f1f1f1; /* Texto claro */
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-/* Estilo para botones principales */
+    .table th {
+        background-color: #555555; /* Encabezado oscuro */
+        color: #f1f1f1;
+        text-align: left;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .table td {
+        padding: 10px;
+        color: #f1f1f1;
+        border-top: 1px solid #555555; /* Líneas divisorias */
+        font-size: 14px;
+        background-color: #333333; /* Fondo individual para celdas */
+    }
+
+.table-hover tbody tr:hover {
+    background-color: #555555; /* Hover más oscuro */
+    cursor: pointer;
+}
+
+/* Badges de Estado */
+.badge {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 5px;
+    color: #fff;
+}
+
+.badge-success {
+    background-color: #28a745; /* Verde éxito */
+}
+
+.badge-secondary {
+    background-color: #6c757d; /* Gris neutro */
+}
+
+/* Botones */
+.btn {
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
 .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #feca1b; /* Amarillo brillante */
+    color: #333333;
+    border: none;
 }
 
     .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
+        background-color: #e5b917; /* Hover más oscuro */
+        transform: translateY(-2px); /* Animación al flotar */
     }
 
-.btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
+.btn-danger {
+    background-color: #dc3545; /* Rojo para cancelar */
+    color: #ffffff;
+    border: none;
 }
 
-    .btn-secondary:hover {
-        background-color: #5a6268;
-        border-color: #545b62;
+    .btn-danger:hover {
+        background-color: #c82333; /* Hover rojo oscuro */
+        transform: translateY(-2px); /* Animación */
     }
 
-/* Estilo para imágenes redondeadas */
-img.rounded {
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 10px;
+.btn-success {
+    background-color: #28a745; /* Verde éxito */
+    color: #ffffff;
+    border: none;
 }
 
-/* Contenedor general */
-.container {
-    max-width: 900px;
-    margin: auto;
-}
+    .btn-success:hover {
+        background-color: #218838; /* Hover verde oscuro */
+        transform: translateY(-2px);
+    }
 
-/* Espaciado general para títulos */
-h3 {
-    margin-bottom: 15px;
+/* Mensaje de no datos */
+.alert-warning {
+    background-color: #ffc107; /* Amarillo de alerta */
+    color: #333333; /* Texto oscuro */
     font-weight: bold;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
 }
 
-/* Ajuste para pantallas pequeñas */
-@media (max-width: 576px) {
-    .list-group-item {
-        flex-direction: column;
-        align-items: flex-start;
+    /* Links dentro del mensaje */
+    .alert-warning a {
+        color: #333333; /* Texto oscuro */
+        text-decoration: none;
+        font-weight: bold;
     }
 
-        .list-group-item img {
-            margin-bottom: 10px;
+        .alert-warning a:hover {
+            text-decoration: underline;
+            color: #444444; /* Hover más oscuro */
         }
 
+/* Responsividad */
+@media (max-width: 768px) {
+    .custom-container {
+        padding: 15px;
+    }
+
+    .table th, .table td {
+        font-size: 12px; /* Texto más pequeño */
+    }
+
     .btn {
-        width: 100%;
+        padding: 8px 10px; /* Reducir tamaño de botones */
     }
 }

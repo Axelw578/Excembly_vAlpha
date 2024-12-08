@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Excembly_vAlpha.Migrations
 {
     /// <inheritdoc />
-    public partial class EXCEMBLY_vALPHA : Migration
+    public partial class MigracionInicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -172,7 +172,9 @@ namespace Excembly_vAlpha.Migrations
                     Telefono = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     RolId = table.Column<int>(type: "int", nullable: true),
-                    FechaRegistro = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    FechaRegistro = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    FotoPerfilUrl = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -255,19 +257,35 @@ namespace Excembly_vAlpha.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
                     TecnicoId = table.Column<int>(type: "int", nullable: false),
+                    DireccionId = table.Column<int>(type: "int", nullable: true),
                     FechaCita = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    EstadoContratacion = table.Column<string>(type: "longtext", nullable: false)
+                    FechaCitaModificada = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    EstadoCita = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Domicilio = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Comentarios = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Imagen = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    FechaContratacion = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    ContratacionId = table.Column<int>(type: "int", nullable: true),
+                    FechaCancelacion = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    MotivoCancelacion = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PlanId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Citas", x => x.CitaId);
+                    table.ForeignKey(
+                        name: "FK_Citas_Direcciones_DireccionId",
+                        column: x => x.DireccionId,
+                        principalTable: "Direcciones",
+                        principalColumn: "DireccionId");
+                    table.ForeignKey(
+                        name: "FK_Citas_Planes_PlanId",
+                        column: x => x.PlanId,
+                        principalTable: "Planes",
+                        principalColumn: "PlanId");
                     table.ForeignKey(
                         name: "FK_Citas_Tecnicos_TecnicoId",
                         column: x => x.TecnicoId,
@@ -329,6 +347,10 @@ namespace Excembly_vAlpha.Migrations
                     CVV = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     TipoTarjeta = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Banco = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Marca = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -340,43 +362,6 @@ namespace Excembly_vAlpha.Migrations
                         principalTable: "Usuarios",
                         principalColumn: "UsuarioId",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "AsignacionesTecnicos",
-                columns: table => new
-                {
-                    AsignacionId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UsuarioId = table.Column<int>(type: "int", nullable: false),
-                    TecnicoId = table.Column<int>(type: "int", nullable: false),
-                    ServicioId = table.Column<int>(type: "int", nullable: false),
-                    FechaAsignacion = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Estado = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AsignacionesTecnicos", x => x.AsignacionId);
-                    table.ForeignKey(
-                        name: "FK_AsignacionesTecnicos_Servicios_ServicioId",
-                        column: x => x.ServicioId,
-                        principalTable: "Servicios",
-                        principalColumn: "ServicioId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_AsignacionesTecnicos_Tecnicos_TecnicoId",
-                        column: x => x.TecnicoId,
-                        principalTable: "Tecnicos",
-                        principalColumn: "TecnicoId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_AsignacionesTecnicos_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "Usuarios",
-                        principalColumn: "UsuarioId",
-                        onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -406,70 +391,11 @@ namespace Excembly_vAlpha.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ServiciosAdicionales",
+                name: "PlanPersonalizado",
                 columns: table => new
                 {
-                    PlanId = table.Column<int>(type: "int", nullable: false),
-                    ServicioId = table.Column<int>(type: "int", nullable: false),
-                    Descuento = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ServiciosAdicionales", x => new { x.PlanId, x.ServicioId });
-                    table.ForeignKey(
-                        name: "FK_ServiciosAdicionales_Planes_PlanId",
-                        column: x => x.PlanId,
-                        principalTable: "Planes",
-                        principalColumn: "PlanId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ServiciosAdicionales_Servicios_ServicioId",
-                        column: x => x.ServicioId,
-                        principalTable: "Servicios",
-                        principalColumn: "ServicioId",
-                        onDelete: ReferentialAction.Restrict);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Pagos",
-                columns: table => new
-                {
-                    PagoId = table.Column<int>(type: "int", nullable: false)
+                    PlanPersonalizadoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UsuarioId = table.Column<int>(type: "int", nullable: false),
-                    CitaId = table.Column<int>(type: "int", nullable: false),
-                    FechaPago = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Monto = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    MetodoPago = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Estado = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Referencia = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pagos", x => x.PagoId);
-                    table.ForeignKey(
-                        name: "FK_Pagos_Citas_CitaId",
-                        column: x => x.CitaId,
-                        principalTable: "Citas",
-                        principalColumn: "CitaId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Pagos_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "Usuarios",
-                        principalColumn: "UsuarioId",
-                        onDelete: ReferentialAction.Restrict);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "PlanesPersonalizados",
-                columns: table => new
-                {
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
                     CitaId = table.Column<int>(type: "int", nullable: false),
                     ServicioId = table.Column<int>(type: "int", nullable: false),
@@ -479,25 +405,58 @@ namespace Excembly_vAlpha.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PlanesPersonalizados", x => new { x.UsuarioId, x.CitaId, x.ServicioId });
+                    table.PrimaryKey("PK_PlanPersonalizado", x => x.PlanPersonalizadoId);
                     table.ForeignKey(
-                        name: "FK_PlanesPersonalizados_Citas_CitaId",
+                        name: "FK_PlanPersonalizado_Citas_CitaId",
                         column: x => x.CitaId,
                         principalTable: "Citas",
                         principalColumn: "CitaId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PlanesPersonalizados_Servicios_ServicioId",
+                        name: "FK_PlanPersonalizado_Servicios_ServicioId",
                         column: x => x.ServicioId,
                         principalTable: "Servicios",
                         principalColumn: "ServicioId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PlanesPersonalizados_Usuarios_UsuarioId",
+                        name: "FK_PlanPersonalizado_Usuarios_UsuarioId",
                         column: x => x.UsuarioId,
                         principalTable: "Usuarios",
                         principalColumn: "UsuarioId",
                         onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "serviciosadicionales",
+                columns: table => new
+                {
+                    PlanId = table.Column<int>(type: "int", nullable: false),
+                    ServicioId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Descuento = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    CitaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_serviciosadicionales", x => new { x.PlanId, x.ServicioId });
+                    table.ForeignKey(
+                        name: "FK_serviciosadicionales_Citas_CitaId",
+                        column: x => x.CitaId,
+                        principalTable: "Citas",
+                        principalColumn: "CitaId");
+                    table.ForeignKey(
+                        name: "FK_serviciosadicionales_Planes_PlanId",
+                        column: x => x.PlanId,
+                        principalTable: "Planes",
+                        principalColumn: "PlanId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_serviciosadicionales_Servicios_ServicioId",
+                        column: x => x.ServicioId,
+                        principalTable: "Servicios",
+                        principalColumn: "ServicioId",
+                        onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -544,6 +503,245 @@ namespace Excembly_vAlpha.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "Contratacion",
+                columns: table => new
+                {
+                    ContratacionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    PlanId = table.Column<int>(type: "int", nullable: true),
+                    ServicioId = table.Column<int>(type: "int", nullable: true),
+                    PlanPersonalizadoId = table.Column<int>(type: "int", nullable: true),
+                    CitaId = table.Column<int>(type: "int", nullable: true),
+                    FechaContratacion = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Estado = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FechaCancelacion = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    TipoServicio = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Contratacion", x => x.ContratacionId);
+                    table.ForeignKey(
+                        name: "FK_Contratacion_Citas_CitaId",
+                        column: x => x.CitaId,
+                        principalTable: "Citas",
+                        principalColumn: "CitaId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Contratacion_PlanPersonalizado_PlanPersonalizadoId",
+                        column: x => x.PlanPersonalizadoId,
+                        principalTable: "PlanPersonalizado",
+                        principalColumn: "PlanPersonalizadoId");
+                    table.ForeignKey(
+                        name: "FK_Contratacion_Planes_PlanId",
+                        column: x => x.PlanId,
+                        principalTable: "Planes",
+                        principalColumn: "PlanId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Contratacion_Servicios_ServicioId",
+                        column: x => x.ServicioId,
+                        principalTable: "Servicios",
+                        principalColumn: "ServicioId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Contratacion_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "UsuarioId",
+                        onDelete: ReferentialAction.Restrict);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "AsignacionesTecnicos",
+                columns: table => new
+                {
+                    AsignacionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    TecnicoId = table.Column<int>(type: "int", nullable: false),
+                    ServicioId = table.Column<int>(type: "int", nullable: true),
+                    ContratacionId = table.Column<int>(type: "int", nullable: false),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    FechaAsignacion = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Estado = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AsignacionesTecnicos", x => x.AsignacionId);
+                    table.ForeignKey(
+                        name: "FK_AsignacionesTecnicos_Contratacion_ContratacionId",
+                        column: x => x.ContratacionId,
+                        principalTable: "Contratacion",
+                        principalColumn: "ContratacionId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AsignacionesTecnicos_Servicios_ServicioId",
+                        column: x => x.ServicioId,
+                        principalTable: "Servicios",
+                        principalColumn: "ServicioId");
+                    table.ForeignKey(
+                        name: "FK_AsignacionesTecnicos_Tecnicos_TecnicoId",
+                        column: x => x.TecnicoId,
+                        principalTable: "Tecnicos",
+                        principalColumn: "TecnicoId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AsignacionesTecnicos_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "UsuarioId",
+                        onDelete: ReferentialAction.Restrict);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Comentario",
+                columns: table => new
+                {
+                    ComentarioId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    ContratacionId = table.Column<int>(type: "int", nullable: false),
+                    Opinion = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FechaComentario = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    FotoUrl = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comentario", x => x.ComentarioId);
+                    table.ForeignKey(
+                        name: "FK_Comentario_Contratacion_ContratacionId",
+                        column: x => x.ContratacionId,
+                        principalTable: "Contratacion",
+                        principalColumn: "ContratacionId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Comentario_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "UsuarioId",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Pagos",
+                columns: table => new
+                {
+                    PagoId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    ContratacionId = table.Column<int>(type: "int", nullable: true),
+                    ServicioId = table.Column<int>(type: "int", nullable: true),
+                    PlanId = table.Column<int>(type: "int", nullable: true),
+                    TarjetaId = table.Column<int>(type: "int", nullable: true),
+                    FechaPago = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Monto = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    MetodoPago = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Estado = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Referencia = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CitaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pagos", x => x.PagoId);
+                    table.ForeignKey(
+                        name: "FK_Pagos_Citas_CitaId",
+                        column: x => x.CitaId,
+                        principalTable: "Citas",
+                        principalColumn: "CitaId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Pagos_Contratacion_ContratacionId",
+                        column: x => x.ContratacionId,
+                        principalTable: "Contratacion",
+                        principalColumn: "ContratacionId");
+                    table.ForeignKey(
+                        name: "FK_Pagos_TarjetasGuardadas_TarjetaId",
+                        column: x => x.TarjetaId,
+                        principalTable: "TarjetasGuardadas",
+                        principalColumn: "TarjetaId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Pagos_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "UsuarioId",
+                        onDelete: ReferentialAction.Restrict);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "ServicioAdicionalContratado",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ContratacionId = table.Column<int>(type: "int", nullable: false),
+                    ServicioAdicionalId = table.Column<int>(type: "int", nullable: false),
+                    PlanId = table.Column<int>(type: "int", nullable: false),
+                    DescuentoAplicado = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ServicioAdicionalContratado", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ServicioAdicionalContratado_Contratacion_ContratacionId",
+                        column: x => x.ContratacionId,
+                        principalTable: "Contratacion",
+                        principalColumn: "ContratacionId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ServicioAdicionalContratado_serviciosadicionales_ServicioAdi~",
+                        columns: x => new { x.ServicioAdicionalId, x.PlanId },
+                        principalTable: "serviciosadicionales",
+                        principalColumns: new[] { "PlanId", "ServicioId" },
+                        onDelete: ReferentialAction.Restrict);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "ServicioContratado",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ContratacionId = table.Column<int>(type: "int", nullable: false),
+                    ServicioId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ServicioContratado", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ServicioContratado_Contratacion_ContratacionId",
+                        column: x => x.ContratacionId,
+                        principalTable: "Contratacion",
+                        principalColumn: "ContratacionId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ServicioContratado_Servicios_ServicioId",
+                        column: x => x.ServicioId,
+                        principalTable: "Servicios",
+                        principalColumn: "ServicioId",
+                        onDelete: ReferentialAction.Restrict);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AsignacionesTecnicos_ContratacionId",
+                table: "AsignacionesTecnicos",
+                column: "ContratacionId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AsignacionesTecnicos_ServicioId",
                 table: "AsignacionesTecnicos",
@@ -565,6 +763,16 @@ namespace Excembly_vAlpha.Migrations
                 column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Citas_DireccionId",
+                table: "Citas",
+                column: "DireccionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Citas_PlanId",
+                table: "Citas",
+                column: "PlanId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Citas_TecnicoId",
                 table: "Citas",
                 column: "TecnicoId");
@@ -572,6 +780,42 @@ namespace Excembly_vAlpha.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Citas_UsuarioId",
                 table: "Citas",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comentario_ContratacionId",
+                table: "Comentario",
+                column: "ContratacionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comentario_UsuarioId",
+                table: "Comentario",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contratacion_CitaId",
+                table: "Contratacion",
+                column: "CitaId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contratacion_PlanId",
+                table: "Contratacion",
+                column: "PlanId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contratacion_PlanPersonalizadoId",
+                table: "Contratacion",
+                column: "PlanPersonalizadoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contratacion_ServicioId",
+                table: "Contratacion",
+                column: "ServicioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contratacion_UsuarioId",
+                table: "Contratacion",
                 column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
@@ -590,23 +834,58 @@ namespace Excembly_vAlpha.Migrations
                 column: "CitaId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Pagos_ContratacionId",
+                table: "Pagos",
+                column: "ContratacionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pagos_TarjetaId",
+                table: "Pagos",
+                column: "TarjetaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Pagos_UsuarioId",
                 table: "Pagos",
                 column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PlanesPersonalizados_CitaId",
-                table: "PlanesPersonalizados",
-                column: "CitaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PlanesPersonalizados_ServicioId",
-                table: "PlanesPersonalizados",
+                name: "IX_PlanesServicios_ServicioId",
+                table: "PlanesServicios",
                 column: "ServicioId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PlanesServicios_ServicioId",
-                table: "PlanesServicios",
+                name: "IX_PlanPersonalizado_CitaId",
+                table: "PlanPersonalizado",
+                column: "CitaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlanPersonalizado_ServicioId",
+                table: "PlanPersonalizado",
+                column: "ServicioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlanPersonalizado_UsuarioId",
+                table: "PlanPersonalizado",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServicioAdicionalContratado_ContratacionId",
+                table: "ServicioAdicionalContratado",
+                column: "ContratacionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServicioAdicionalContratado_ServicioAdicionalId_PlanId",
+                table: "ServicioAdicionalContratado",
+                columns: new[] { "ServicioAdicionalId", "PlanId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServicioContratado_ContratacionId",
+                table: "ServicioContratado",
+                column: "ContratacionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServicioContratado_ServicioId",
+                table: "ServicioContratado",
                 column: "ServicioId");
 
             migrationBuilder.CreateIndex(
@@ -615,8 +894,13 @@ namespace Excembly_vAlpha.Migrations
                 column: "TipoServicioId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiciosAdicionales_ServicioId",
-                table: "ServiciosAdicionales",
+                name: "IX_serviciosadicionales_CitaId",
+                table: "serviciosadicionales",
+                column: "CitaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_serviciosadicionales_ServicioId",
+                table: "serviciosadicionales",
                 column: "ServicioId");
 
             migrationBuilder.CreateIndex(
@@ -668,13 +952,13 @@ namespace Excembly_vAlpha.Migrations
                 name: "BitacoraEventos");
 
             migrationBuilder.DropTable(
+                name: "Comentario");
+
+            migrationBuilder.DropTable(
                 name: "DispositivosPlanFamiliar");
 
             migrationBuilder.DropTable(
                 name: "Pagos");
-
-            migrationBuilder.DropTable(
-                name: "PlanesPersonalizados");
 
             migrationBuilder.DropTable(
                 name: "PlanesServicios");
@@ -683,22 +967,34 @@ namespace Excembly_vAlpha.Migrations
                 name: "PoliticasPrivacidad");
 
             migrationBuilder.DropTable(
-                name: "ServiciosAdicionales");
+                name: "ServicioAdicionalContratado");
 
             migrationBuilder.DropTable(
-                name: "TarjetasGuardadas");
+                name: "ServicioContratado");
 
             migrationBuilder.DropTable(
                 name: "Trabajos");
 
             migrationBuilder.DropTable(
-                name: "Planes");
+                name: "TarjetasGuardadas");
+
+            migrationBuilder.DropTable(
+                name: "serviciosadicionales");
+
+            migrationBuilder.DropTable(
+                name: "Contratacion");
+
+            migrationBuilder.DropTable(
+                name: "PlanPersonalizado");
 
             migrationBuilder.DropTable(
                 name: "Citas");
 
             migrationBuilder.DropTable(
                 name: "Servicios");
+
+            migrationBuilder.DropTable(
+                name: "Planes");
 
             migrationBuilder.DropTable(
                 name: "Tecnicos");

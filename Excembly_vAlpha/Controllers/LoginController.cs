@@ -40,29 +40,49 @@ namespace Excembly_vAlpha.Controllers
             {
                 var usuario = resultado.Usuario;
 
-                // Crea claims del usuario, incluyendo UsuarioId y la URL de la imagen de perfil
+                // Crear los claims del usuario
                 var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, usuario.Nombre),
-                    new Claim(ClaimTypes.Surname, usuario.Apellidos),
-                    new Claim(ClaimTypes.Email, usuario.CorreoElectronico),
-                    new Claim(ClaimTypes.NameIdentifier, usuario.UsuarioId.ToString()),  // Claim para el UsuarioId
-                    new Claim("URLFotoPerfil", usuario.FotoPerfilUrl ?? "/img/default-user.png")
-                };
+        {
+            new Claim(ClaimTypes.Name, usuario.Nombre),
+            new Claim(ClaimTypes.Surname, usuario.Apellidos),
+            new Claim(ClaimTypes.Email, usuario.CorreoElectronico),
+            new Claim(ClaimTypes.NameIdentifier, usuario.UsuarioId.ToString()), // UsuarioId
+            new Claim("URLFotoPerfil", usuario.FotoPerfilUrl ?? "/img/default-user.png"),
+            new Claim(ClaimTypes.Role, usuario.Rol.TipoRol) // Rol del usuario
+        };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
                 {
-                    IsPersistent = true, // Mantener la sesión activa
+                    IsPersistent = true // Mantener la sesión activa
                 };
 
-                // Inicia la sesión con las claims del usuario
+                // Inicia sesión con las claims del usuario
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                return RedirectToAction("Index", "Home"); // Redirige al controlador Home
+                // Redirigir según el rol del usuario
+                switch (usuario.RolId)
+                {
+                    case 1: // Usuario
+                        TempData["Bienvenida"] = $"¡Bienvenido, {usuario.Nombre}!";
+                        return RedirectToAction("Index", "Empresa", new { area = "Usuario" });
+
+                    case 2: // Técnico
+                        TempData["Bienvenida"] = $"¡Bienvenido Técnico, {usuario.Nombre}!";
+                        return RedirectToAction("Index", "ContratacionTecnico", new { area = "Tecnico" });
+
+                    case 3: // Administrador
+                        TempData["Bienvenida"] = $"¡Bienvenido Administrador, {usuario.Nombre}!";
+                        return RedirectToAction("Index", "ContratacionAdmin", new { area = "Admin" });
+
+                    default: // Rol no reconocido
+                        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                        TempData["Error"] = "Rol no válido.";
+                        return RedirectToAction("Index");
+                }
             }
 
-            // Si hay error, lo agrega al estado del modelo y vuelve a mostrar la vista de inicio de sesión
+            // Si hay error, mostrar el mensaje
             ModelState.AddModelError("", resultado.Message);
             return View("~/Views/Login/Index.cshtml", model);
         }

@@ -1,0 +1,188 @@
+﻿/* Contenedor General */
+.custom-container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: #333333; /* Fondo oscuro */
+    color: #f1f1f1; /* Texto claro */
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Sombra suave */
+}
+
+/* Título de la sección */
+.header-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 15px;
+    background-color: #444444;
+    color: #feca1b; /* Amarillo */
+    border-radius: 10px;
+}
+
+/* Formulario de Filtros */
+#filtroForm {
+    margin-bottom: 30px;
+}
+
+    #filtroForm .form-label {
+        font-weight: bold;
+        color: #f1f1f1;
+    }
+
+    #filtroForm .form-control {
+        border-radius: 10px;
+        background-color: #444444; /* Fondo oscuro */
+        color: #f1f1f1;
+        border: 1px solid #555555; /* Borde */
+        padding: 10px;
+        font-size: 14px;
+    }
+
+        #filtroForm .form-control:focus {
+            border-color: #feca1b; /* Enfoque amarillo */
+            outline: none;
+            box-shadow: 0 0 5px rgba(254, 202, 27, 0.5);
+        }
+
+    #filtroForm button {
+        background-color: #feca1b; /* Botón amarillo */
+        color: #333333;
+        font-weight: bold;
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+        #filtroForm button:hover {
+            background-color: #e5b917; /* Botón amarillo más oscuro */
+            transform: translateY(-2px);
+        }
+
+/* Mensaje de Sin Datos */
+.alert-warning {
+    background-color: #ffcc00;
+    color: #333333;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+    .alert-warning a {
+        color: #333333;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .alert-warning a:hover {
+            color: #000000;
+            text-decoration: underline;
+        }
+
+/* Tabla */
+.table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: separate;
+    border-spacing: 0 10px; /* Espaciado entre filas */
+    background-color: #444444; /* Fondo oscuro */
+    color: #f1f1f1; /* Texto claro */
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+    .table th {
+        background-color: #555555; /* Fondo de encabezado */
+        color: #f1f1f1;
+        text-align: left;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .table td {
+        background-color: #333333; /* Fondo de celdas */
+        color: #f1f1f1;
+        padding: 10px;
+        font-size: 14px;
+        border-top: 1px solid #555555; /* Líneas separadoras */
+    }
+
+.table-hover tbody tr:hover {
+    background-color: #555555; /* Resaltado al pasar el cursor */
+    cursor: pointer;
+}
+
+/* Badges de Estado */
+.badge {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 5px;
+    color: #fff;
+}
+
+.badge-success {
+    background-color: #28a745; /* Verde para estados positivos */
+}
+
+.badge-secondary {
+    background-color: #6c757d; /* Gris para estados secundarios */
+}
+
+/* Botones */
+.btn {
+    font-size: 14px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    padding: 10px 15px;
+}
+
+.btn-primary {
+    background-color: #feca1b;
+    color: #333333;
+    border: none;
+}
+
+    .btn-primary:hover {
+        background-color: #e5b917;
+        transform: translateY(-2px);
+    }
+
+.btn-success {
+    background-color: #28a745;
+    color: #ffffff;
+    border: none;
+}
+
+    .btn-success:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+    }
+
+/* Responsive Ajustes */
+@media (max-width: 768px) {
+    .custom-container {
+        padding: 20px;
+    }
+
+    .header-title {
+        font-size: 20px;
+    }
+
+    #filtroForm .form-control {
+        font-size: 12px;
+    }
+
+    .btn {
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+
+    .table th,
+    .table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
