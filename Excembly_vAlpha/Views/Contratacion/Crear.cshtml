@@ -3,28 +3,40 @@
 @{
     ViewData["Title"] = "Crear Contratación";
 }
+<link rel="stylesheet" href="~/css/CrearContratacion.css">
 
-<div class="container mt-4">
-    <h2>Crear Contratación</h2>
+<div class="custom-container mt-4">
+    <h2 class="custom-title">Crear Contratación</h2>
 
     <form method="post" asp-action="Crear">
-        <!-- Campo oculto para ID de contratación -->
-        <input type="hidden" id="ContratacionId" name="ContratacionId" value="@Model.ContratacionId" />
-
         <!-- Información del Usuario -->
-        <input type="hidden" asp-for="UsuarioId" />
-        <div class="mb-3">
-            <label for="NombreUsuario" class="form-label">Nombre del Usuario</label>
-            <input type="text" id="NombreUsuario" name="NombreUsuario" value="@Model.NombreUsuario" class="form-control" readonly />
+        <div class="info-section">
+            <div class="mb-3">
+                <label for="NombreUsuario" class="form-label">Nombre del Usuario</label>
+                <input type="text" id="NombreUsuario" name="NombreUsuario" value="@Model.NombreUsuario" class="form-control" readonly />
+            </div>
+
+            <div class="mb-3">
+                <label for="CorreoUsuario" class="form-label">Correo del Usuario</label>
+                <input type="email" id="CorreoUsuario" name="CorreoUsuario" value="@Model.CorreoUsuario" class="form-control" readonly />
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label for="CorreoUsuario" class="form-label">Correo del Usuario</label>
-            <input type="email" id="CorreoUsuario" name="CorreoUsuario" value="@Model.CorreoUsuario" class="form-control" readonly />
+        <!-- Selección entre Plan y Servicio -->
+        <div class="tipo-contratacion-section mb-3">
+            <label class="form-label">Seleccionar Tipo de Contratación</label>
+            <div>
+                <input type="radio" id="radioPlan" name="tipoContratacion" value="plan" class="form-check-input" checked>
+                <label for="radioPlan" class="form-check-label">Plan</label>
+            </div>
+            <div>
+                <input type="radio" id="radioServicio" name="tipoContratacion" value="servicio" class="form-check-input">
+                <label for="radioServicio" class="form-check-label">Servicio Independiente</label>
+            </div>
         </div>
 
         <!-- Selección del Plan -->
-        <div class="mb-3">
+        <div class="mb-3" id="planSection">
             <label for="PlanId" class="form-label">Seleccionar Plan</label>
             <select id="PlanId" name="PlanId" class="form-select">
                 <option value="">Seleccione un plan</option>
@@ -35,93 +47,97 @@
             </select>
         </div>
 
-        <!-- Servicios Adicionales -->
-        <div class="mb-3" id="serviciosAdicionalesSection" style="display: none;">
-            <label class="form-label">Servicios Adicionales</label>
-            <div>
-                @foreach (var servicioAdicional in Model.ServiciosAdicionalesDisponibles)
-                {
-                    <div class="form-check">
-                        <input type="checkbox" id="ServicioAdicional_@servicioAdicional.ServicioId"
-                               name="ServiciosAdicionalesSeleccionados"
-                               value="@servicioAdicional.ServicioId"
-                               class="form-check-input" />
-                        <label for="ServicioAdicional_@servicioAdicional.ServicioId" class="form-check-label">
-                            @servicioAdicional.NombreServicio
-                        </label>
-                        <span class="badge bg-secondary ms-2">@servicioAdicional.PrecioConDescuento.ToString("C")</span>
-                    </div>
-                }
-            </div>
-        </div>
 
         <!-- Selección de Servicios Independientes -->
-        <div class="mb-3">
+        <div class="mb-3 servicios-independientes-section" id="servicioSection" style="display: none;">
             <label class="form-label">Seleccionar Servicios Independientes</label>
-            <div>
-                @foreach (var servicio in Model.ServiciosDisponibles)
-                {
-                    <div class="form-check">
-                        <input type="checkbox" id="ServicioIndependiente_@servicio.ServicioId"
-                               name="ServiciosSeleccionados"
-                               value="@servicio.ServicioId"
-                               class="form-check-input" />
-                        <label for="ServicioIndependiente_@servicio.ServicioId" class="form-check-label">
-                            @servicio.Nombre
-                        </label>
-                        <span class="badge bg-secondary ms-2">@servicio.Precio.ToString("C")</span>
-                    </div>
-                }
-            </div>
-        </div>
-
-        <!-- Selección de Tipo de Servicio -->
-        <div class="mb-3">
-            <label for="TipoServicio" class="form-label">Tipo de Servicio</label>
-            <select id="TipoServicio" name="TipoServicio" class="form-select">
-                <option value="Sucursal">Sucursal</option>
-                <option value="Domicilio">Domicilio</option>
-            </select>
+            @foreach (var servicio in Model.ServiciosDisponibles)
+            {
+                <div class="form-check">
+                    <input type="checkbox" id="Servicio_@servicio.ServicioId"
+                           name="ServiciosSeleccionados"
+                           value="@servicio.ServicioId"
+                           class="form-check-input" />
+                    <label for="Servicio_@servicio.ServicioId" class="form-check-label">
+                        @servicio.Nombre - @servicio.Precio.ToString("C")
+                    </label>
+                </div>
+            }
         </div>
 
         <!-- Selección del Método de Pago -->
         <div class="mb-3">
             <label for="tarjetaId" class="form-label">Seleccionar Tarjeta de Pago</label>
-            <select id="tarjetaId" name="tarjetaId" class="form-control" required>
-                <option value="">Seleccione una tarjeta...</option>
-                @foreach (var tarjeta in Model.TarjetasGuardadas)
-                {
-                    <option value="@tarjeta.TarjetaId">
-                        @tarjeta.NumeroTarjeta (Expira: @tarjeta.MesExpiracion/@tarjeta.AñoExpiracion)
-                    </option>
-                }
-            </select>
+
+            @if (Model.TarjetasGuardadas != null && Model.TarjetasGuardadas.Any())
+            {
+                <select id="tarjetaId" name="tarjetaId" class="form-control" required>
+                    <option value="">Seleccione una tarjeta...</option>
+                    @foreach (var tarjeta in Model.TarjetasGuardadas)
+                    {
+                        <option value="@tarjeta.TarjetaId">
+                            @tarjeta.NumeroTarjeta (Expira: @tarjeta.MesExpiracion/@tarjeta.AñoExpiracion)
+                        </option>
+                    }
+                    <option value="nueva">Agregar una nueva tarjeta</option> <!-- Opción adicional -->
+                </select>
+            }
+            else
+            {
+                <div class="custom-alert">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    No tienes tarjetas guardadas.
+                    <a href="@Url.Action("AgregarTarjeta", "TarjetasGuardadas")" class="custom-alert-link">Haz clic aquí para agregar una nueva tarjeta</a>.
+                </div>
+            }
         </div>
 
         <!-- Botón de Envío -->
         <button type="submit" class="btn btn-primary">Guardar Contratación</button>
     </form>
 </div>
-
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const planSelector = document.getElementById("PlanId");
+            const radioPlan = document.getElementById("radioPlan");
+            const radioServicio = document.getElementById("radioServicio");
+            const planSection = document.getElementById("planSection");
+            const servicioSection = document.getElementById("servicioSection");
+            const tipoServicioSelector = document.getElementById("TipoServicio");
             const serviciosAdicionalesSection = document.getElementById("serviciosAdicionalesSection");
 
-            // Mostrar/ocultar los servicios adicionales según el plan seleccionado
-            planSelector.addEventListener("change", function () {
-                if (planSelector.value) {
+            // Actualizar la visibilidad de secciones y tipo de servicio
+            function actualizarTipoContratacion() {
+                if (radioPlan.checked) {
+                    planSection.style.display = "block";
                     serviciosAdicionalesSection.style.display = "block";
-                } else {
+                    servicioSection.style.display = "none";
+                    tipoServicioSelector.value = "Domicilio";
+                } else if (radioServicio.checked) {
+                    planSection.style.display = "none";
                     serviciosAdicionalesSection.style.display = "none";
+                    servicioSection.style.display = "block";
+                    tipoServicioSelector.value = "Sucursal";
+                }
+            }
+
+            // Escuchar cambios en los radio buttons
+            radioPlan.addEventListener("change", actualizarTipoContratacion);
+            radioServicio.addEventListener("change", actualizarTipoContratacion);
+
+            // Inicializar el estado al cargar la página
+            actualizarTipoContratacion();
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const tarjetaSelect = document.getElementById("tarjetaId");
+
+            tarjetaSelect.addEventListener("change", function () {
+                if (tarjetaSelect.value === "nueva") {
+                    // Redirige al usuario a la página para agregar una nueva tarjeta
+                    window.location.href = '@Url.Action("AgregarTarjeta", "TarjetasGuardadas")';
                 }
             });
-
-            // Inicializar la visibilidad de los servicios adicionales
-            if (planSelector.value) {
-                serviciosAdicionalesSection.style.display = "block";
-            }
         });
+
     </script>
 }

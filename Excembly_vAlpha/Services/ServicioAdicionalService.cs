@@ -26,7 +26,7 @@ namespace Excembly_vAlpha.Services
         {
             try
             {
-                var serviciosAdicionales = await _context.ServicioAdicional
+                var serviciosAdicionales = await _context.ServiciosAdicionales
                     .Where(sa => sa.PlanId == planId)
                     .Include(sa => sa.Servicio)
                     .ToListAsync();
@@ -64,7 +64,7 @@ namespace Excembly_vAlpha.Services
         {
             try
             {
-                var serviciosAdicionales = await _context.ServicioAdicional
+                var serviciosAdicionales = await _context.ServiciosAdicionales
                     .Where(sa => servicioAdicionalIds.Contains(sa.Id))
                     .Include(sa => sa.Servicio)
                     .ToListAsync();

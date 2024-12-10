@@ -4,6 +4,7 @@ using Excembly_vAlpha.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Excembly_vAlpha.Migrations
 {
     [DbContext(typeof(ExcemblyDbContext))]
-    partial class ExcemblyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241209014935_jajajs")]
+    partial class jajajs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,7 +196,7 @@ namespace Excembly_vAlpha.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Cita");
+                    b.ToTable("Citas");
                 });
 
             modelBuilder.Entity("Excembly_vAlpha.Models.Comentario", b =>
@@ -560,11 +563,11 @@ namespace Excembly_vAlpha.Migrations
 
             modelBuilder.Entity("Excembly_vAlpha.Models.ServicioAdicionalContratado", b =>
                 {
-                    b.Property<int>("ServicioAdicionalId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("PlanId")
-                        .HasColumnType("int");
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ContratacionId")
                         .HasColumnType("int");
@@ -572,12 +575,17 @@ namespace Excembly_vAlpha.Migrations
                     b.Property<decimal>("DescuentoAplicado")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("PlanId")
                         .HasColumnType("int");
 
-                    b.HasKey("ServicioAdicionalId", "PlanId");
+                    b.Property<int>("ServicioAdicionalId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ContratacionId");
+
+                    b.HasIndex("ServicioAdicionalId", "PlanId");
 
                     b.ToTable("ServicioAdicionalContratado");
                 });

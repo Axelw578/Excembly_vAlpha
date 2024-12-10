@@ -2,74 +2,106 @@
 
 @{
     ViewData["Title"] = "Empresa";
+
+    var p_misionvision = Model.MisionVision.Split(new[] { "Vision:" }, StringSplitOptions.None);
+    var mision = p_misionvision[0].Replace("Mision:", "").Trim();
+    var vision = p_misionvision.Length > 1 ? p_misionvision[1].Trim() : "";
+
+    var p_serv = Model.Aclaracion.Split(new[] { "Servicios en el Establecimiento:" }, StringSplitOptions.None);
+    var serv_dom = p_serv[0].Replace("Servicios a Domicilio:", "").Trim();
+    var serv_est = p_serv.Length > 1 ? p_serv[1].Trim() : "";
 }
 
-<!-- Enlace al archivo CSS -->
-<link rel="stylesheet" href="~/css/empresa.css" />
-<!-- Enlace al archivo JavaScript -->
-<script src="~/js/empresa.js"></script>
-
-<!-- Sección con imagen de fondo y texto centrado -->
-<section class="section section-lg section-main-bunner section-main-bunner-filter text-center">
-    <div class="hero-container">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/empresa.css" />
+    <script src="~/js/empresa.js"></script>
+</head>
+<body>
+    <!-- Banner Excembly -->
+    <section class="section section-lg section-main-bunner section-main-bunner-filter text-center">
         <div class="main-bunner-img">
             <div class="overlay"></div>
         </div>
-    </div>
-    <div class="main-bunner-inner">
-        <div class="container">
-            <div class="banner-content">
-                <h1 class="box-default-title">Excembly</h1>
-                <div class="box-default-decor"></div>
-                <p class="big box-default-text">Descubre más sobre nuestra misión, visión y servicios.</p>
+        <div class="main-bunner-inner">
+            <div class="container">
+                <div class="banner-content img-fluid">
+                    <h1 class="box-default-title gradient-text">Excembly</h1>
+                    <div class="box-default-decor"></div>
+                    <p class="big main-mini-text">Descubre más sobre nosotros :)</p>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<div class="container mt-4">
     <!-- Misión y Visión -->
-    <div class="info-box fade-in-left animate-on-scroll">
-        <h2>Misión y Visión</h2>
-        <p>@Model.MisionVision</p>
-    </div>
-
-    <!-- Contenedor principal para Mapa, Domicilio y Horario -->
-    <div class="info-box main-container fade-in-left animate-on-scroll">
-        <!-- Mapa a la izquierda -->
-        <div class="col-left">
-            <iframe src="@Model.ImagenMapa" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
-
-        <!-- Contenedor derecho para Domicilio y Horario -->
-        <div class="col-right">
-            <!-- Domicilio en la parte superior -->
-            <div class="info-box-inner">
-                <h2>Domicilio</h2>
-                <p>@Model.DomicilioTienda</p>
+    <div id="Contenedor-base" class="container mt-auto">
+        <div class="info-box row fade-in-top animate-on-scroll">
+            <div class="col-8">
+                <div class="row">
+                    <h2 class="titles-cst">Misión</h2>
+                    <p style="text-align: justify;">@mision</p>
+                </div>
+                <div class="row">
+                    <h2 class="titles-cst">Visión</h2>
+                    <p style="text-align: justify;">@vision</p>
+                </div>
             </div>
-            <!-- Horario en la parte inferior -->
-            <div class="info-box-inner">
-                <h2>Horario</h2>
-                <p>@Model.HorarioTienda</p>
-            </div>
-
-            <div class="info-box-inner">
-                <h2>Aclaración</h2>
-                <p>@Model.Aclaracion</p>
+            <div class="col fade-in-right animate-on-scroll">
+                <img src="https://i.ibb.co/d7hTqzS/ElAxel.jpg" alt="Imagen Representativa" class="img-card" />
             </div>
         </div>
-    </div>
 
-    <!-- Aclaración -->
-    <div class="info-box fade-in-right animate-on-scroll">
-        <h2>Politicas de cancelación</h2>
-        <p>@Model.PoliticaCancelacion</p>
-    </div>
+        <!-- Mapa, Domicilio y Horario -->
+        <div class="info-box fade-in-left animate-on-scroll">
+            <div class="row info-box">
+                <h4 class="titles-cst shadow-sm p-3 bg-body rounded text-center"><strong>ENCUÉNTRANOS AQUÍ</strong></h4>
+                <div class="col-lg-7" style="height: 350px; overflow: hidden;">
+                    <iframe class="img-card" src="@Model.ImagenMapa" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+                <div class="col">
+                    <div>
+                        <h2>Domicilio</h2>
+                        <p>@Model.DomicilioTienda</p>
+                    </div>
+                    <div>
+                        <h2>Horario</h2>
+                        <p>@Model.HorarioTienda</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row info-box">
+                <div class="col shadow-sm p-3 bg-body rounded">
+                    <h3 class="titles-cst">Aclaración Servicios a Domicilio:</h3>
+                    <p style="text-align: justify;">@serv_dom</p>
+                </div>
+                <div class="col shadow-sm p-3 bg-body rounded">
+                    <h3 class="titles-cst">Aclaración Servicios en el Establecimiento:</h3>
+                    <p style="text-align: justify;">@serv_est</p>
+                </div>
+            </div>
+        </div>
 
-    <!-- Contenedor donde se cargará la vista parcial de reseñas -->
-    <div id="reseñasContainer" class="mt-4">
-        <h2 class="text-center">Reseñas de clientes</h2>
-        <!-- Aquí se cargará el contenido de la vista parcial -->
+        <!-- Vista parcial de reseñas -->
+        <div id="reseñasContainer" class="mt-4 fade-in-right animate-on-scroll"></div>
+
+        <!-- Políticas de cancelación acordeón -->
+        <div class="accordion fade-in-bottom animate-on-scroll" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header titles-cst" id="headingPolicies">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePolicies" aria-expanded="false" aria-controls="collapsePolicies">
+                        Políticas de Cancelación
+                    </button>
+                </h2>
+                <div id="collapsePolicies" class="accordion-collapse collapse" aria-labelledby="headingPolicies" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p>@Model.PoliticaCancelacion</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</body>
+</html>

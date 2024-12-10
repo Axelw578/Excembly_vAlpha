@@ -13,7 +13,7 @@ namespace Excembly_vAlpha.ViewModels
         public Direccion Direccion { get; set; }
         public int? PlanId { get; set; }
         public Plan Plan { get; set; }
-        public ICollection<ServicioAdicional> ServiciosAdicionales { get; set; }
+        public ICollection<ServicioAdicionales> ServiciosAdicionales { get; set; }
         public DateTime FechaCita { get; set; }
         public DateTime? FechaCitaModificada { get; set; }
         public string EstadoCita { get; set; }

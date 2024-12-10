@@ -13,7 +13,6 @@ namespace Excembly_vAlpha.Data
         }
 
 
-
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Direccion> Direcciones { get; set; }
         public DbSet<Rol> Roles { get; set; }
@@ -21,7 +20,10 @@ namespace Excembly_vAlpha.Data
         public DbSet<TipoServicio> TiposServicio { get; set; }
         public DbSet<Plan> Planes { get; set; }
         public DbSet<PlanServicio> PlanesServicios { get; set; }
-        public DbSet<ServicioAdicional> ServiciosAdicionales { get; set; }
+
+        // ADICIONALES
+        public DbSet<ServicioAdicionales> ServiciosAdicionales { get; set; }
+
         public DbSet<Tecnico> Tecnicos { get; set; }
         public DbSet<Trabajo> Trabajos { get; set; }
         public DbSet<Cita> Citas { get; set; }
@@ -33,9 +35,12 @@ namespace Excembly_vAlpha.Data
         public DbSet<PoliticaPrivacidad> PoliticasPrivacidad { get; set; }
         public DbSet<AsignacionTecnico> AsignacionesTecnicos { get; set; }
         public DbSet<Contratacion> Contratacion{ get; set; }
+
         public DbSet<ServicioAdicionalContratado> ServicioAdicionalContratado { get; set; }
-        public DbSet<ServicioAdicional> ServicioAdicional { get; set; }
+
         public DbSet<Comentario> Comentario { get; set; }
+
+        // CONTRADO
         public DbSet<ServicioContratado> ServicioContratado { get; set; } = null!;
 
 
@@ -43,6 +48,11 @@ namespace Excembly_vAlpha.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+
+
+            // Configurar el nombre de la tabla para el modelo ServicioAdicionales
+            modelBuilder.Entity<ServicioAdicionales>()
+                .ToTable("serviciosadicionales");
 
             // Configuración de ServicioContratado
             modelBuilder.Entity<ServicioContratado>(entity =>
@@ -61,6 +71,7 @@ namespace Excembly_vAlpha.Data
                     .HasForeignKey(sc => sc.ServicioId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
+
 
             // Configuración para AsignacionTecnico
             modelBuilder.Entity<AsignacionTecnico>(entity =>
@@ -203,19 +214,19 @@ namespace Excembly_vAlpha.Data
             // Configuración de PlanServicio (Llave Compuesta)
 
             // Configuración de ServicioAdicional
-            modelBuilder.Entity<ServicioAdicional>()
+            modelBuilder.Entity<ServicioAdicionales>()
                 .ToTable("serviciosadicionales"); // Nombre de la tabla
 
-            modelBuilder.Entity<ServicioAdicional>()
+            modelBuilder.Entity<ServicioAdicionales>()
                 .HasKey(sa => new { sa.PlanId, sa.ServicioId });
 
-            modelBuilder.Entity<ServicioAdicional>()
+            modelBuilder.Entity<ServicioAdicionales>()
                 .HasOne(sa => sa.Plan)
                 .WithMany(p => p.ServiciosAdicionales)
                 .HasForeignKey(sa => sa.PlanId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ServicioAdicional>()
+            modelBuilder.Entity<ServicioAdicionales>()
                 .HasOne(sa => sa.Servicio)
                 .WithMany(s => s.ServiciosAdicionales)
                 .HasForeignKey(sa => sa.ServicioId)

@@ -39,7 +39,7 @@ namespace Excembly_vAlpha.Models
         public ICollection<PlanPersonalizado> PlanesPersonalizados { get; set; }
 
         // Servicios adicionales contratados
-        public ICollection<ServicioAdicional> ServiciosAdicionales { get; set; }
+        public ICollection<ServicioAdicionales> ServiciosAdicionales { get; set; }
 
         // Propiedad de navegación para los pagos realizados
         public ICollection<Pago> Pagos { get; set; }

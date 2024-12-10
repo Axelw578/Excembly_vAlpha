@@ -3,53 +3,52 @@
 @{
     ViewData["Title"] = "Mis Contrataciones";
 }
+<link rel="stylesheet" href="~/css/contratacion.css">
 
-<h1 class="mb-4">Mis Contrataciones</h1>
+<div class="custom-container">
+    <div class="header-title">Mis Contrataciones</div>
 
-@if (Model == null || !Model.Any())
-{
-    <div class="alert alert-warning" role="alert">
-        No tienes contrataciones activas.
-        <a href="@Url.Action("Crear", "Contratacion")" class="btn btn-primary mt-3">Agregar Nueva Contratación</a>
-    </div>
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table table-striped align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Plan</th>
-                    <th>Servicio</th>
-                    <th>Estado</th>
-                    <th>Fecha</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var contratacion in Model)
-                {
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert-warning">
+            No tienes contrataciones activas.
+            <a href="@Url.Action("Crear", "Contratacion")" class="btn btn-primary mt-3">Agregar Nueva Contratación</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
                     <tr>
-                        <td>@contratacion.NombrePlan</td>
-                        <td>@contratacion.NombreServicio</td>
-                        <td>@contratacion.Estado</td>
-                        <td>@contratacion.FechaContratacion.ToShortDateString()</td>
-                        <td>
-                            <a href="@Url.Action("Detalles", "Contratacion", new { contratacionId = contratacion.ContratacionId })"
-                               class="btn btn-info btn-sm me-1">Detalles</a>
-                            <a href="@Url.Action("Editar", "Contratacion", new { contratacionId = contratacion.ContratacionId })"
-                               class="btn btn-warning btn-sm me-1">Editar</a>
-                            <form asp-action="Cancelar" asp-controller="Contratacion" method="post" style="display:inline;">
-                                <input type="hidden" name="contratacionId" value="@contratacion.ContratacionId" />
-                                <button type="submit" class="btn btn-danger btn-sm me-1">Cancelar</button>
-                            </form>
-                            <a href="@Url.Action("Agregar", "Comentario", new { contratacionId = contratacion.ContratacionId })"
-                               class="btn btn-success btn-sm">Agregar Comentario</a>
-                        </td>-
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    <a href="@Url.Action("Crear", "Contratacion")" class="btn btn-success mt-3">Agregar Nueva Contratación</a>
-}
+                </thead>
+                <tbody>
+                    @foreach (var contratacion in Model)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge @(contratacion.Estado == "Activo" ? "badge-success" : "badge-secondary")">
+                                    @contratacion.Estado
+                                </span>
+                            </td>
+                            <td>@contratacion.FechaContratacion.ToShortDateString()</td>
+                            <td>
+                                <a href="@Url.Action("Detalles", "Contratacion", new { contratacionId = contratacion.ContratacionId })"
+                                   class="btn btn-primary btn-sm me-1">Detalles</a>
+                                <form asp-action="Cancelar" asp-controller="Contratacion" method="post" style="display:inline;">
+                                    <input type="hidden" name="contratacionId" value="@contratacion.ContratacionId" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Cancelar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <a href="@Url.Action("Crear", "Contratacion")" class="btn btn-success mt-3">Agregar Nueva Contratación</a>
+    }
+</div>

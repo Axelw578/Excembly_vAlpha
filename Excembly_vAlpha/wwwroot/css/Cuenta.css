@@ -17,31 +17,32 @@
     text-align: center;
 }
 
-.perfil-usuario-avatar img {
-    width: 100%;
-    height: 100%; /* Asegura que cubra toda la altura del contenedor */
-    object-fit: cover; /* Cubre completamente el contenedor circular */
-    object-position: center; /* Centra la imagen */
-    border-radius: 50%; /* Mantiene la forma circular */
-    transition: transform 0.3s ease; /* Suaviza un efecto hover */
-}
-
 .perfil-usuario-avatar {
-    width: 180px;
+    width: 180px; /* Tamaño del contenedor circular */
     height: 180px;
     margin: 0 auto;
-    border-radius: 50%; /* Hace que el contenedor sea circular */
-    overflow: hidden; /* Oculta cualquier parte de la imagen que sobresalga */
-    border: 6px solid rgba(255, 255, 255, 0.8); /* Borde con transparencia */
+    border-radius: 50%; /* Hace el contenedor circular */
+    overflow: hidden; /* Oculta cualquier parte de la imagen/GIF que sobresalga */
+    border: 6px solid rgba(255, 255, 255, 0.8); /* Borde blanco translúcido */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); /* Sombra para destacar */
+    background-color: #f0f0f0; /* Fondo por defecto si no hay imagen */
+    display: flex; /* Centra la imagen dentro del contenedor */
+    align-items: center;
+    justify-content: center;
 }
 
-
-    .perfil-usuario-avatar img:hover {
-        transform: scale(1.05); /* Efecto de zoom al pasar el ratón */
+    .perfil-usuario-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Asegura que el GIF cubra completamente el contenedor */
+        object-position: center; /* Centra la imagen/GIF dentro del contenedor */
+        transition: transform 0.3s ease; /* Efecto de zoom al pasar el ratón */
+        border-radius: 50%; /* Mantiene la forma circular incluso para los GIFs */
     }
 
-
+        .perfil-usuario-avatar img:hover {
+            transform: scale(1.05); /* Efecto de zoom suave al pasar el ratón */
+        }
 
 /* Cuerpo del perfil */
 .perfil-usuario-body {

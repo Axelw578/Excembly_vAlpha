@@ -89,3 +89,37 @@
         font-size: 13px;
     }
 }
+
+.custom-alert {
+    background-color: #333333; /* Amarillo de tu diseño */
+    color: #f1f1f1; /* Texto oscuro */
+    padding: 15px;
+    border: 1px solid #FFC107; /* Borde amarillo un poco más oscuro */
+    border-radius: 10px; /* Bordes redondeados */
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    margin-top: 10px;
+}
+
+    .custom-alert i {
+        font-size: 1.5rem;
+        margin-right: 10px;
+        color: #feca1b; /* Ícono oscuro */
+    }
+
+.custom-alert-link {
+    font-weight: bold;
+    color: #feca1b; /* Azul de tu diseño */
+    margin-left: 5px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+    .custom-alert-link:hover {
+        color: #c8a31a; /* Verde de tu gradiente */
+    }
+
+ext-decoration: underline;
+}

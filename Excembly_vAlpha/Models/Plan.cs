@@ -14,7 +14,7 @@ namespace Excembly_vAlpha.Models
         public ICollection<PlanServicio> PlanServicios { get; set; }
 
         // Relación con los servicios adicionales
-        public ICollection<ServicioAdicional> ServiciosAdicionales { get; set; }
+        public ICollection<ServicioAdicionales> ServiciosAdicionales { get; set; }
 
         // Relación con citas para control de contrataciones específicas
         public ICollection<Cita> Citas { get; set; }

@@ -15,6 +15,6 @@
 
         // Relaciones de navegación
         public Contratacion Contratacion { get; set; }
-        public ServicioAdicional ServicioAdicional { get; set; }
+        public ServicioAdicionales ServicioAdicional { get; set; }
     }
 }

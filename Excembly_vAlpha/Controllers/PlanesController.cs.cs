@@ -50,7 +50,7 @@ namespace Excembly_vAlpha.Controllers
             }
 
             // Redirige a la acción Crear del controlador Contratación pasando el planId
-            return RedirectToAction("Crear", "Contratacion", new { planId = id });
+            return RedirectToAction("Index", "Contratacion", new { planId = id });
         }
 
 

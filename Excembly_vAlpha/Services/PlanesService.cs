@@ -134,7 +134,7 @@ namespace Excembly_vAlpha.Services
         // Método para obtener todos los IDs de los servicios adicionales asociados a los planes
         public List<int> ObtenerTodosLosServiciosAdicionalesIds()
         {
-            return _context.Set<ServicioAdicional>()
+            return _context.Set<ServicioAdicionales>()
                            .Select(sa => sa.ServicioId)
                            .Distinct()
                            .ToList();
@@ -158,7 +158,7 @@ namespace Excembly_vAlpha.Services
         // Método para recuperar solo el ID de un servicio adicional específico
         public int RecuperarServicioAdicionalId(int servicioId)
         {
-            var servicioAdicional = _context.Set<ServicioAdicional>().Find(servicioId);
+            var servicioAdicional = _context.Set<ServicioAdicionales>().Find(servicioId);
             return servicioAdicional != null ? servicioAdicional.ServicioId : 0;
         }
     }

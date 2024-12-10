@@ -9,14 +9,13 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     animation: fadeIn 0.8s ease-in-out;
     display: flex;
-    justify-content: space-between; /* Asegura el espacio entre las secciones */
+    justify-content: space-between;
     align-items: center;
 }
 
-    /* Contenedor de navegación */
     .navbar .container-fluid {
         display: flex;
-        justify-content: space-between; /* Separa el contenido a los extremos */
+        justify-content: space-between;
         align-items: center;
     }
 
@@ -24,32 +23,34 @@ body {
 .navbar-nav {
     display: flex;
     align-items: center;
-    margin-right: auto; /* Asegura que los enlaces ocupen el espacio necesario */
+    margin-right: auto;
 }
 
     .navbar-nav .nav-link {
-        color: #fff;
-        transition: color 0.3s ease, background-color 0.2s ease-in-out;
-        margin-right: 15px; /* Espaciado entre enlaces */
+        color: rgba(255, 255, 255, 0.8); /* Color inicial del texto */
+        background-color: transparent;
+        margin-right: 15px;
+        display: inline-block;
+        transition: color 0.3s ease, background-color 0.3s ease;
     }
 
         .navbar-nav .nav-link:hover {
-            color: #FFD700;
-            background-color: rgba(255, 215, 0, 0.1); /* Fondo amarillo claro al pasar el ratón */
-            border-radius: 5px; /* Bordes redondeados para el efecto */
+            color: #FFD700; /* Efecto hover */
+            background-color: rgba(255, 215, 0, 0.1);
+            border-radius: 5px; /* Bordes redondeados */
         }
 
-/* Estilos para la imagen de perfil */
+/* Imágenes de perfil */
 .profile-image {
-    width: 40px; /* Ajusta el tamaño de la imagen */
-    height: 40px; /* Ajusta el tamaño de la imagen */
-    border-radius: 50%; /* Hacer la imagen redonda */
-    object-fit: cover; /* Mantener la proporción de la imagen */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
     transition: transform 0.3s ease, border 0.3s ease;
 }
 
     .profile-image:hover {
-        transform: scale(1.1); /* Efecto de zoom al pasar el ratón */
+        transform: scale(1.1); /* Efecto de zoom */
         border-color: #FFD700;
     }
 
@@ -57,20 +58,20 @@ body {
 .user-info {
     display: flex;
     align-items: center;
-    margin-left: 10px; /* Espacio entre la imagen y el nombre */
+    margin-left: 10px;
     color: #fff;
     font-size: 14px;
 }
 
-/* Perfil de Usuario */
+/* Dropdown en la barra de navegación */
 .navbar .nav-item.dropdown {
-    margin-left: auto; /* Empuja el perfil hacia el extremo derecho */
+    margin-left: auto;
 }
 
 .navbar .nav-link.dropdown-toggle {
     display: flex;
     align-items: center;
-    color: #fff;
+    color: rgba(255, 255, 255, 0.8);
     transition: color 0.3s ease;
 }
 
@@ -78,17 +79,17 @@ body {
         color: #FFD700;
     }
 
-/* Dropdown Styles */
 .navbar .dropdown-menu {
     background-color: #343a40;
     border-radius: 0.5rem;
     border: none;
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-20px) translateX(-250px); /* Mueve el menú 20px a la izquierda */
     animation: fadeInDropdown 0.5s ease forwards;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
+
 
     .navbar .dropdown-menu .dropdown-item {
         color: #fff;
@@ -100,14 +101,13 @@ body {
             color: #FFD700;
         }
 
-/* Menú de navegación: asegurando que el dropdown funcione */
 .navbar-nav .nav-item:hover .dropdown-menu {
     display: block;
     opacity: 1;
     transform: translateY(0);
 }
 
-/* Botón desplegable: mejora visual al hacer hover */
+/* Botón desplegable */
 .navbar-toggler {
     transition: transform 0.3s ease;
 }
@@ -157,7 +157,7 @@ footer {
             transform: scale(1.1);
         }
 
-/* Animaciones */
+/* Transiciones */
 @keyframes fadeIn {
     0% {
         opacity: 0;
@@ -202,15 +202,16 @@ footer {
 /* Responsividad */
 @media (max-width: 768px) {
     .navbar .nav-item.dropdown {
-        margin-left: 0; /* Eliminar margen en móviles */
+        margin-left: 0;
+        display: inline-block;
     }
 
     .navbar-nav .nav-link {
-        margin-right: 10px; /* Reducir espaciado en móviles */
+        margin-right: 10px;
     }
 
     .navbar .nav-link img {
-        width: 35px; /* Reducir tamaño de la imagen en móviles */
+        width: 35px;
         height: 35px;
     }
 }
@@ -223,5 +224,42 @@ footer {
         footer .btn-floating {
             width: 35px;
             height: 35px;
+        }
+}
+/* Contenedor de enlaces de autenticación */
+.auth-links {
+    display: flex; /* Asegura que los enlaces estén uno al lado del otro */
+    align-items: center; /* Centra verticalmente */
+    margin-left: auto; /* Empuja el div al extremo derecho */
+}
+
+    /* Estilo exclusivo para los enlaces dentro del contenedor */
+    .auth-links .nav-link {
+        color: #fff; /* Color inicial del texto */
+        font-weight: normal; /* Peso del texto */
+        background-color: transparent;
+        transition: color 0.3s ease, background-color 0.3s ease;
+    }
+
+        .auth-links .nav-link:hover {
+            color: #FFD700; /* Cambia el color del texto al pasar el ratón */
+            background-color: rgba(255, 215, 0, 0.1); /* Agrega un fondo ligero */
+            border-radius: 5px; /* Bordes redondeados */
+        }
+
+        /* Íconos dentro de los enlaces */
+        .auth-links .nav-link i {
+            margin-right: 5px; /* Espacio entre el ícono y el texto */
+            font-size: 18px; /* Tamaño del ícono */
+        }
+
+/* Responsividad */
+@media (max-width: 576px) {
+    .auth-links .nav-link {
+        font-size: 14px; /* Reduce el tamaño del texto en pantallas pequeñas */
+    }
+
+        .auth-links .nav-link i {
+            font-size: 16px; /* Reduce el tamaño del ícono */
         }
 }

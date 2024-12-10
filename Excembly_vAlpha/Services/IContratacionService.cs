@@ -18,9 +18,9 @@ namespace Excembly_vAlpha.Services
         Task<Plan> ObtenerPlanPorId(int planId);
         Task<IEnumerable<Servicio>> ObtenerServiciosDisponibles();
         Task<Servicio> ObtenerServicioPorId(int servicioId);
-        Task<IEnumerable<ServicioAdicional>> ObtenerServiciosAdicionalesDisponibles();
+        Task<IEnumerable<ServicioAdicionales>> ObtenerServiciosAdicionalesDisponibles();
 
-        Task<ServicioAdicional> ObtenerServicioAdicionalPorId(int servicioAdicionalId, int? planId = null);
+        Task<ServicioAdicionales> ObtenerServicioAdicionalPorId(int servicioAdicionalId, int? planId = null);
 
         Task<bool> AgregarServicioAdicionalContratado(ServicioAdicionalContratado servicioAdicionalContratado);
 
@@ -30,7 +30,12 @@ namespace Excembly_vAlpha.Services
         Task<IEnumerable<TarjetaGuardada>> ObtenerTarjetasGuardadasDelUsuario(int usuarioId);
          Task<bool> RegistrarPago(Pago pago);
 
-        Task<bool> AgregarServicioContratado(ServicioContratado servicioContratado)
-        ;
+        Task<bool> AgregarServicioContratado(ServicioContratado servicioContratado);
+
+
+        Task<IEnumerable<ServicioAdicionalContratadoViewModel>> ObtenerServiciosAdicionalesContratadosPorContratacionId(int contratacionId);
+
+
+
     }
 }

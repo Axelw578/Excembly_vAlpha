@@ -45,11 +45,11 @@ builder.Services.AddScoped<DireccionService, DireccionService>();
 builder.Services.AddScoped<TarjetaService, TarjetaService>();
 builder.Services.AddScoped<PoliticaService, PoliticaService>();
 builder.Services.AddScoped<ServicioAdicionalService, ServicioAdicionalService>();
-builder.Services.AddScoped<CitasService, CitasService>();
 builder.Services.AddScoped<CuentaService, CuentaService>();
 builder.Services.AddScoped<IContratacionService, ContratacionService>();
 builder.Services.AddScoped<IContratacionAdminServices, ContratacionAdminServices>();
 builder.Services.AddScoped<IComentarioAdminService, ComentarioAdminService>();
+
 
 
 

@@ -1,0 +1,42 @@
+﻿@model List<Excembly_vAlpha.ViewModels.ServicioAdicionalContratadoViewModel>
+
+@{
+    ViewData["Title"] = "Servicios Adicionales Contratados";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre del Servicio</th>
+                <th>Precio</th>
+                <th>Descuento Aplicado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.ServicioAdicionalNombre</td>
+                    <td>@item.ServicioAdicionalPrecio.ToString("C")</td>
+                    <td>@item.DescuentoAplicado.ToString("C")</td>
+                    <td>
+                        <!-- Botones de acción, ajusta según tus necesidades -->
+                        <a href="#" class="btn btn-primary btn-sm">Detalles</a>
+                        <a href="#" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No hay servicios adicionales contratados para esta contratación.</p>
+}

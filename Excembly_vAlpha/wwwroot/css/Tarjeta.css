@@ -79,21 +79,21 @@
         margin-top: 15px;
     }
 
-/* Botón agregar */
+/* Botón agregar con texto y título gris claro */
 .btn-agregar {
     background: linear-gradient(145deg, #ffcc33, #ffc107);
-    color: #212529;
+    color: #ffffff; /* Texto gris claro */
     border: none;
     border-radius: 20px;
-    padding: 20px 60px;
+    padding: 15px 40px;
     font-size: 20px;
     font-family: 'Raleway', sans-serif;
     font-weight: bold;
     text-transform: uppercase;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
     transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }
@@ -106,16 +106,17 @@
 
     .btn-agregar i {
         font-size: 36px;
-        margin-bottom: 10px;
-        color: #1e1e2f;
+        margin-right: 10px;
+        color: rgb(0, 0, 0); /* Ícono gris claro */
     }
 
     .btn-agregar span {
         font-family: 'Raleway', sans-serif;
         font-size: 18px;
         letter-spacing: 1.2px;
-        color: #1e1e2f;
+        color: rgba(0, 0, 0); /* Texto gris claro */
     }
+
 
 /* Textos */
 h5, .card-footer span {

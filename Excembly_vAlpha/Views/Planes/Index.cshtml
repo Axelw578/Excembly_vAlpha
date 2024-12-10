@@ -20,51 +20,51 @@
                 <div class="header">@plan.Nombre</div>
 
                 <!-- Precio normal del plan (sin tachado) -->
-                <div class="precio-original-texto">Precio normal: @plan.Precio.ToString("C")</div>
 
                 <!-- Subtotal y Total -->
-                <div class="subtotal">Subtotal: <span class="subtotal-valor">@plan.Precio.ToString("C")</span></div>
-                <div class="total">Total: <span class="total-valor">@plan.Precio.ToString("C")</span></div>
+               <div class="total">Total: <span class="total-valor">@plan.Precio.ToString("C")</span></div>
 
+                <!-- Detalles del plan -->
                 <div class="detalles">
-                    <p><strong>Incluye:</strong></p>
-                    <ul>
-                        @foreach (var servicio in plan.ServiciosIncluidos)
-                        {
-                            <li>@servicio</li>
-                        }
-                    </ul>
-
-                    @if (plan.ServiciosAdicionales?.Any() == true)
+                    <h3>Incluye:</h3>
+                    @if (plan.PlanId == 1)
                     {
-                        <p><strong>Servicios Adicionales:</strong></p>
+                        <!-- Plan Básico -->
                         <ul>
-                            @foreach (var adicional in plan.ServiciosAdicionales)
-                            {
-                                <li>
-                                    <input type="checkbox" name="serviciosAdicionalesSeleccionados" class="adicional-checkbox"
-                                           data-servicio-id="@adicional.ServicioId"
-                                           data-precio="@adicional.PrecioConDescuento" />
-                                    @adicional.NombreServicio -
-                                    <!-- Solo aplicamos tachado en los servicios adicionales -->
-                                    <span class="precio-original">@adicional.PrecioOriginal.ToString("C")</span>
-                                    <span class="precio-con-descuento">@adicional.PrecioConDescuento.ToString("C")</span>
-                                    (Descuento: @adicional.Descuento.ToString("P"))
-                                </li>
-                            }
+                            <li>Mantenimiento Físico Preventivo: Limpieza interna de componentes.</li>
+                            <li>Mantenimiento de Software Básico: Optimización del sistema operativo y eliminación de archivos temporales.</li>
+                            <li>Evaluación de Componentes: Revisión básica del estado de los componentes con recomendaciones preventivas.</li>
+                            <li>Recomendaciones de Rendimiento y Durabilidad (Servicio Exclusivo).</li>
                         </ul>
                     }
-                    else
+                    else if (plan.PlanId == 2)
                     {
-                        <p>No incluye servicios adicionales. Los servicios adicionales pueden ser contratados por un costo adicional.</p>
+                        <!-- Plan Estándar -->
+                        <ul>
+                            <li>Todo lo del Plan Básico.</li>
+                            <li>Revisión de Discos Duros y Unidades SSD: Diagnóstico y monitoreo.</li>
+                            <li>Actualización de Drivers y Software.</li>
+                            <li>Servicios Exclusivos: Monitoreo y Diagnóstico Presencial.</li>
+                        </ul>
+                    }
+                    else if (plan.PlanId == 3)
+                    {
+                        <!-- Plan Familiar -->
+                        <ul>
+                            <li>Todo lo del Plan Estándar para hasta 3 dispositivos.</li>
+                            <li>Seguridad Avanzada de Dispositivos.</li>
+                            <li>Limpieza y Desinfección Profesional de Periféricos.</li>
+                            <li>Servicios Exclusivos: Monitoreo Presencial o Remoto.</li>
+                        </ul>
                     }
                 </div>
 
                 <!-- Botón para contratar -->
-                <button class="btn btn-primary mt-2 contratar-btn" title="Haz clic para contratar este plan"
-                        data-plan-id="@plan.PlanId">
+                <a href="@Url.Action("Contratar", "Planes", new { id = plan.PlanId })"
+                   class="btn btn-contratar"
+                   title="Haz clic para contratar este servicio">
                     Contratar
-                </button>
+                </a>
 
             </div>
         }
@@ -76,7 +76,6 @@
 
     <script>
         $(document).ready(function () {
-            // Al hacer clic en "Contratar"
             $('.contratar-btn').click(function () {
                 var planId = $(this).data('plan-id');
                 var serviciosAdicionalesSeleccionados = [];
@@ -87,9 +86,13 @@
                 });
 
                 // Redirigir al controlador Contratacion/Crear con los parámetros planId y serviciosAdicionalesSeleccionados
-                var url = '@Url.Action("Crear", "Contratacion")' +
-                    '?planId=' + planId +
-                    '&serviciosAdicionalesSeleccionados=' + serviciosAdicionalesSeleccionados.join(',');
+                var url = '@Url.Action("Contratar", "Planes")' +
+                    '?id=' + planId;
+
+                // Agregar servicios adicionales si están seleccionados
+                if (serviciosAdicionalesSeleccionados.length > 0) {
+                    url += '&serviciosAdicionalesSeleccionados=' + serviciosAdicionalesSeleccionados.join(',');
+                }
 
                 // Redirigir a la URL
                 window.location.href = url;

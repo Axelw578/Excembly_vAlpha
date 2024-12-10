@@ -14,7 +14,7 @@ namespace Excembly_vAlpha.Models
 
         public TipoServicio TipoServicio { get; set; }
         public ICollection<PlanServicio> PlanServicios { get; set; }
-        public ICollection<ServicioAdicional> ServiciosAdicionales { get; set; }
+        public ICollection<ServicioAdicionales> ServiciosAdicionales { get; set; }
         public ICollection<PlanPersonalizado> PlanesPersonalizados { get; set; }
         public ICollection<AsignacionTecnico> AsignacionesTecnicos { get; set; }
         public ICollection<Trabajo> Trabajos { get; set; }

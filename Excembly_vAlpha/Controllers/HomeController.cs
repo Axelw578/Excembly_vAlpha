@@ -20,13 +20,13 @@ namespace Excembly_vAlpha.Controllers
             // Obtener el rol del usuario autenticado
             var rol = User.FindFirst(ClaimTypes.Role)?.Value;
 
-            // Redirigir según el rol
+            // Redirigir seg n el rol
             switch (rol)
             {
                 case "Usuario":
                     return View("~/Views/Empresa/Index.cshtml");
 
-                case "Técnico":
+                case "T cnico":
                     return View("~/Views/ContratacionTecnico/Index.cshtml");
 
                 case "Administrador":

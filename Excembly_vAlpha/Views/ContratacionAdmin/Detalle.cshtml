@@ -21,24 +21,9 @@
 
     <div class="detalle-informacion">
         <h4>Contratación ID: <span>@Model.ContratacionId</span></h4>
-        <p><strong>Usuario:</strong> <span>@Model.NombreUsuario</span></p>
-        <p><strong>Correo:</strong> <span>@Model.CorreoUsuario</span></p>
+
         <p><strong>Servicio:</strong> <span>@Model.ServicioContratado</span></p>
-        <p><strong>Plan:</strong> <span>@Model.PlanContratado ?? "N/A"</span></p>
-        <p><strong>Servicios Adicionales:</strong></p>
-        <ul>
-            @if (Model.ServiciosAdicionalesContratados != null && Model.ServiciosAdicionalesContratados.Any())
-            {
-                @foreach (var servicio in Model.ServiciosAdicionalesContratados)
-                {
-                    <li>@servicio</li>
-                }
-            }
-            else
-            {
-                <li>No hay servicios adicionales contratados.</li>
-            }
-        </ul>
+        <p><strong>Plan:</strong> <span>@Model.PlanContratado"</span></p>
         <p><strong>Estado:</strong> <span class="estado @Model.Estado.ToLower()">@Model.Estado</span></p>
         <p><strong>Fecha Contratación:</strong> <span>@Model.FechaContratacion.ToShortDateString()</span></p>
     </div>

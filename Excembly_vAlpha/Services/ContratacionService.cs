@@ -410,7 +410,7 @@ namespace Excembly_vAlpha.Services
             }
         }
 
-        public async Task<IEnumerable<ServicioAdicional>> ObtenerServiciosAdicionalesDisponibles()
+        public async Task<IEnumerable<ServicioAdicionales>> ObtenerServiciosAdicionalesDisponibles()
         {
             try
             {
@@ -424,7 +424,7 @@ namespace Excembly_vAlpha.Services
             }
         }
 
-        public async Task<ServicioAdicional> ObtenerServicioAdicionalPorId(int id, int? planId = null)
+        public async Task<ServicioAdicionales> ObtenerServicioAdicionalPorId(int id, int? planId = null)
         {
             try
             {
@@ -520,10 +520,10 @@ namespace Excembly_vAlpha.Services
             try
             {
                 var serviciosAdicionales = await _context.ServicioAdicionalContratado
-                    .Include(s => s.ServicioAdicional) // Incluye información del servicio adicional
-                    .ThenInclude(sa => sa.Servicio)    // Incluye el servicio relacionado
-                    .Where(s => s.ContratacionId == contratacionId)
-                    .ToListAsync();
+    .Include(s => s.ServicioAdicional) // Incluye información del servicio adicional
+    .ThenInclude(sa => sa.Servicio)    // Incluye el servicio relacionado
+    .Where(s => s.ContratacionId == contratacionId)
+    .ToListAsync();
 
                 // Log para verificar los datos obtenidos
                 _logger.LogInformation($"Servicios adicionales encontrados: {serviciosAdicionales.Count} para la contratación {contratacionId}");
@@ -546,6 +546,12 @@ namespace Excembly_vAlpha.Services
                 throw;
             }
         }
+
+
+
+
+
+
 
 
 

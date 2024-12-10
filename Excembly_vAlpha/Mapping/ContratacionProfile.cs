@@ -37,7 +37,7 @@ namespace Excembly_vAlpha.Mapping
                 .ForMember(dest => dest.ServiciosAdicionales, opt => opt.MapFrom(src => src.ServiciosAdicionales));
 
             // Mapeo de ServicioAdicional a ServicioAdicionalViewModel
-            CreateMap<ServicioAdicional, ServicioAdicionalViewModel>()
+            CreateMap<ServicioAdicionales, ServicioAdicionalViewModel>()
                 .ForMember(dest => dest.NombreServicio, opt => opt.MapFrom(src => src.Nombre))
                 .ForMember(dest => dest.PrecioOriginal, opt => opt.MapFrom(src => src.Servicio.Precio))
                 .ForMember(dest => dest.PrecioConDescuento, opt => opt.MapFrom(src => src.Servicio.Precio * (1 - src.Descuento)))

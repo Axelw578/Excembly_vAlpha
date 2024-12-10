@@ -24,19 +24,24 @@ namespace Excembly_vAlpha.Controllers
         // Acción para contratar un servicio
         public IActionResult Contratar(int id)
         {
+            // Verificar si el usuario está autenticado
             if (!User.Identity.IsAuthenticated)
             {
-                // Redirige a la página de registro con la URL de retorno
-                return RedirectToAction("Registrar", "Registro", new { returnUrl = Url.Action("Contratar", "Servicios", new { id = id }) });
+                // Redirigir a la página de inicio de sesión y pasar la URL de retorno
+                return RedirectToAction("Index", "Login", new { returnUrl = Url.Action("Contratar", "Servicios", new { id }) });
             }
 
+            // Obtener el servicio por ID
             var servicio = _serviciosService.ObtenerServicioPorId(id);
             if (servicio == null)
             {
                 return NotFound();
             }
 
-            return View("Contratacion", servicio);
+            // Si el usuario está autenticado, redirigir a la vista de contratación
+            return RedirectToAction("Index", "Contratacion", new { servicioId = id });
         }
+
+
     }
 }

@@ -1,115 +1,83 @@
 ﻿/* Contenedor principal */
-.common-container {
-    max-width: 900px; /* Ancho máximo del contenedor */
-    margin: 30px auto; /* Centrado */
-    padding: 2rem; /* Espaciado interno */
-    background-color: #2b2b2b; /* Fondo gris oscuro */
-    border-radius: 10px; /* Bordes redondeados */
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4); /* Sombra */
-    text-align: center; /* Centrar contenido del encabezado */
+.custom-container {
+    max-width: 800px;
+    background-color: #333333; /* Fondo oscuro */
+    color: #f1f1f1; /* Texto claro */
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Sombra suave */
 }
 
-    /* Título principal */
-    .common-container h1 {
-        color: #ffc107; /* Amarillo brillante */
-        font-size: 2.2rem; /* Tamaño aumentado */
-        font-weight: bold;
-        text-shadow: 0px 3px 6px rgba(0, 0, 0, 0.5); /* Sombra al texto */
-        margin-bottom: 10px; /* Espaciado adicional debajo del título */
-    }
+/* Título principal */
+.custom-header {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #feca1b; /* Amarillo brillante */
+}
 
 /* Tarjeta */
-.card {
-    margin-top: 10px; /* Espaciado superior */
-    border-radius: 15px; /* Bordes redondeados */
-    overflow: hidden; /* Ocultar contenido fuera del borde */
-    background-color: #ffffff; /* Fondo blanco */
-    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2); /* Sombra */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-    .card:hover {
-        transform: translateY(-5px); /* Efecto de elevación al pasar el cursor */
-        box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.3); /* Sombra más intensa */
-    }
-
-/* Encabezado de la tarjeta */
-.card-header {
-    font-size: 0.5rem;
-    font-weight: bold;
-    background: linear-gradient(90deg, #ffa726, #ff9800); /* Gradiente */
-    color: #ffffff; /* Texto blanco */
-    padding: 1rem; /* Espaciado interno */
-    text-align: center;
-}
-
-/* Cuerpo de la tarjeta */
-.card-body {
-    padding: 1.5rem; /* Espaciado interno */
-}
-
-    .card-body p {
-        font-size: 1.1rem; /* Tamaño del texto */
-        margin-bottom: 1rem; /* Espaciado entre párrafos */
-        line-height: 1.8; /* Espaciado entre líneas */
-        color: #444444; /* Texto gris oscuro */
-    }
-
-    .card-body .icon {
-        margin-right: 8px; /* Espaciado entre el ícono y el texto */
-        color: #ffa726; /* Color del ícono */
-    }
-
-/* Botón */
-.btn-warning {
-    background-color: #ff7043; /* Naranja */
+.custom-card {
+    background-color: #444444; /* Fondo oscuro */
     border: none;
-    font-weight: bold; /* Texto en negrita */
-    color: #ffffff; /* Texto blanco */
-    padding: 0.8rem 2rem; /* Tamaño del botón */
-    border-radius: 10px; /* Bordes redondeados */
-    font-size: 1rem; /* Tamaño de texto */
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra suave */
+}
+
+    .custom-card .card-header {
+        background-color: #555555; /* Fondo más oscuro */
+        color: #feca1b; /* Amarillo brillante */
+        font-weight: bold;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .custom-card .card-footer {
+        background-color: #555555; /* Fondo más oscuro */
+        border-radius: 0 0 10px 10px;
+    }
+
+/* Botones */
+.btn-primary, .btn-warning {
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #feca1b;
+    color: #333333;
+}
+
+    .btn-primary:hover {
+        background-color: #e5b917;
+        transform: translateY(-2px);
+    }
+
+.btn-warning {
+    background-color: #ff7f50;
+    color: #333333;
 }
 
     .btn-warning:hover {
-        background-color: #f4511e; /* Naranja más oscuro al pasar el cursor */
-        transform: scale(1.05); /* Efecto de zoom */
-        box-shadow: 0px 5px 15px rgba(255, 112, 67, 0.4); /* Sombra */
+        background-color: #e67340;
+        transform: translateY(-2px);
     }
 
-/* Espaciado extra para tarjetas */
-.card + .card {
-    margin-top: 30px; /* Espacio entre múltiples tarjetas */
+/* Alertas */
+.custom-alert {
+    background-color: #444444;
+    color: #f1f1f1;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
 }
 
-/* Responsividad */
-@media (max-width: 768px) {
-    .common-container {
-        padding: 1.5rem;
+    /* Íconos grandes */
+    .custom-alert i {
+        font-size: 2rem;
+        color: #feca1b;
     }
-
-        .common-container h1 {
-            font-size: 2rem; /* Ajuste del título */
-        }
-
-    .btn-warning {
-        font-size: 0.9rem; /* Botón más pequeño */
-        padding: 0.7rem 1.5rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .common-container {
-        padding: 1rem;
-    }
-
-        .common-container h1 {
-            font-size: 1.8rem;
-        }
-
-    .btn-warning {
-        font-size: 0.8rem;
-        padding: 0.6rem 1.2rem;
-    }
-}

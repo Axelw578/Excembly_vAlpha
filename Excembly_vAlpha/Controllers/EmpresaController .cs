@@ -75,5 +75,14 @@ namespace Excembly_vAlpha.Controllers
             // Pasar el modelo a la vista
             return View(empresaViewModel);
         }
+        public IActionResult Privacidad()
+        {
+            return View();
+        }
+        public IActionResult Terminos()
+        {
+            return View();
+        }
+
     }
 }
